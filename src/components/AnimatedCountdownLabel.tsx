@@ -19,8 +19,6 @@ type AnimatedValues = {
   seconds: number;
 };
 
-type CountField = keyof AnimatedValues;
-
 function parseCountdownLabel(label: string): Parsed | null {
   if (label === "É hoje!") return null;
   const prefixMatch = label.match(/^(Há|Faltam)\s+/);
@@ -89,41 +87,14 @@ function formatAnimatedLine(parsed: Parsed, values: AnimatedValues): string {
   return `${parsed.prefix} ${joinDurationParts(parts)}`.toLowerCase();
 }
 
-function durationForCount(max: number): number {
-  if (max <= 0) return 0;
-  if (max <= 59) return Math.min(1200, 350 + max * 12);
-  return Math.min(2400, 900 + max * 9);
-}
-
-function animateCount(
-  from: number,
-  to: number,
-  durationMs: number,
-  onValue: (value: number) => void,
-): Promise<void> {
-  if (to <= from || durationMs <= 0) {
-    onValue(to);
-    return Promise.resolve();
+/** Mesma duração do contador de dias (ex.: 0 → 176), para todos subirem juntos. */
+function introDurationMs(target: AnimatedValues): number {
+  if (target.days > 0) {
+    return Math.min(2400, 900 + target.days * 9);
   }
-
-  return new Promise((resolve) => {
-    const start = performance.now();
-    let frame = 0;
-
-    const step = (now: number) => {
-      const progress = Math.min(1, (now - start) / durationMs);
-      const eased = 1 - (1 - progress) ** 3;
-      onValue(Math.round(from + eased * (to - from)));
-      if (progress < 1) {
-        frame = requestAnimationFrame(step);
-      } else {
-        onValue(to);
-        resolve();
-      }
-    };
-
-    frame = requestAnimationFrame(step);
-  });
+  const lead = Math.max(target.hours, target.minutes, target.seconds);
+  if (lead <= 59) return Math.min(1200, 350 + lead * 12);
+  return Math.min(2400, 900 + lead * 9);
 }
 
 export function AnimatedCountdownLabel({
@@ -137,6 +108,7 @@ export function AnimatedCountdownLabel({
   const [now, setNow] = useState(() => new Date());
   const [introDone, setIntroDone] = useState(reducedMotion);
   const introStarted = useRef(false);
+  const introTargetRef = useRef<AnimatedValues | null>(null);
 
   const { label } = useMemo(
     () => specialDateCountdown(data, recorrente, now),
@@ -171,35 +143,39 @@ export function AnimatedCountdownLabel({
       return;
     }
     introStarted.current = true;
+    introTargetRef.current = liveTarget;
 
     let cancelled = false;
+    let frame = 0;
+    const target = liveTarget;
+    const durationMs = introDurationMs(target);
+    const start = performance.now();
 
-    const run = async () => {
-      setValues({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+    setValues({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
-      const sequence: Array<{ field: CountField; max: number }> = [
-        { field: "days", max: liveTarget.days },
-        { field: "hours", max: liveTarget.hours },
-        { field: "minutes", max: liveTarget.minutes },
-        { field: "seconds", max: liveTarget.seconds },
-      ];
-
-      for (const { field, max } of sequence) {
-        if (cancelled || max <= 0) continue;
-        await animateCount(0, max, durationForCount(max), (value) => {
-          if (!cancelled) {
-            setValues((prev) => ({ ...prev, [field]: value }));
-          }
-        });
+    const step = (time: number) => {
+      if (cancelled) return;
+      const progress = Math.min(1, (time - start) / durationMs);
+      const eased = 1 - (1 - progress) ** 3;
+      setValues({
+        days: Math.round(eased * target.days),
+        hours: Math.round(eased * target.hours),
+        minutes: Math.round(eased * target.minutes),
+        seconds: Math.round(eased * target.seconds),
+      });
+      if (progress < 1) {
+        frame = requestAnimationFrame(step);
+      } else {
+        setValues(target);
+        setIntroDone(true);
       }
-
-      if (!cancelled) setIntroDone(true);
     };
 
-    void run();
+    frame = requestAnimationFrame(step);
 
     return () => {
       cancelled = true;
+      cancelAnimationFrame(frame);
     };
   }, [parsed, liveTarget, reducedMotion]);
 
