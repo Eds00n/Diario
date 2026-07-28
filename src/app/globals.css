@@ -39,6 +39,10 @@ body {
   font-family: var(--font-display), Georgia, serif;
 }
 
+.font-entry-rust {
+  font-family: var(--font-entry-rust), "Bebas Neue", sans-serif;
+}
+
 /** Data intro: dígitos na mesma linha tipográfica que as letras (Cormorant). */
 .entry-intro-date {
   font-variant-numeric: lining-nums;

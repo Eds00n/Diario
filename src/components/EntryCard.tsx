@@ -4,9 +4,9 @@ import { formatEntryDate, formatEntryDayMonth } from "@/lib/dates";
 import { EntryTextEmphasis } from "@/components/EntryTextEmphasis";
 import type { Entry } from "@/lib/types";
 
-/** Mesma tipografia do contador em SpecialDateChip (“há … dias…”). */
+/** Texto da memória — caps “Intro Rust” (Rubik Distressed no web). */
 const entryBodyTextClass =
-  "font-display whitespace-pre-wrap text-pretty italic leading-snug text-ink lowercase text-[clamp(17px,4.8vw,24px)] md:text-[clamp(22px,2.6vw,42px)] md:leading-[1.35]";
+  "font-entry-rust whitespace-pre-wrap text-pretty uppercase leading-[1.22] text-ink text-[clamp(13px,3.4vw,18px)] tracking-[0.04em] md:text-[clamp(14px,1.45vw,20px)] md:leading-[1.28] md:tracking-[0.05em]";
 
 /** Mesma tipografia do título em SpecialDateChip (“Nosso compromisso”). */
 const entryDateTextClass =
