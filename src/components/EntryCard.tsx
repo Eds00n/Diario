@@ -4,8 +4,13 @@ import { formatEntryDate, formatEntryDayMonth } from "@/lib/dates";
 import { EntryTextEmphasis } from "@/components/EntryTextEmphasis";
 import type { Entry } from "@/lib/types";
 
+/** Mesma tipografia do contador em SpecialDateChip (“há … dias…”). */
 const entryBodyTextClass =
-  "font-display font-normal text-ink whitespace-pre-wrap text-[15px] leading-[1.45] md:text-[26px] md:leading-[1.5]";
+  "font-display whitespace-pre-wrap text-pretty italic leading-snug text-ink lowercase text-[clamp(17px,4.8vw,24px)] md:text-[clamp(22px,2.6vw,42px)] md:leading-[1.35]";
+
+/** Mesma tipografia do título em SpecialDateChip (“Nosso compromisso”). */
+const entryDateTextClass =
+  "font-display text-[22px] font-medium uppercase tracking-[0.08em] text-ink";
 
 function EntryText({
   entry,
@@ -20,13 +25,7 @@ function EntryText({
   return (
     <>
       <time
-        className={`mb-[14px] block font-medium uppercase tracking-[0.08em] text-gold ${
-          isBanner
-            ? "text-[13px] tracking-[0.12em] md:text-[14px]"
-            : isImportant
-              ? "text-[10px] tracking-[0.08em] md:text-[11px] md:tracking-[0.1em]"
-              : "text-[10px] tracking-[0.06em] md:text-[13px] md:tracking-[0.08em]"
-        }`}
+        className={`mb-[14px] block ${entryDateTextClass}`}
         dateTime={
           entry.data_fim ? `${entry.data}/${entry.data_fim}` : entry.data
         }
@@ -34,15 +33,7 @@ function EntryText({
         {formatEntryDate(entry.data, entry.data_fim)}
       </time>
       {entry.texto.trim() ? (
-        <p
-          className={`${entryBodyTextClass} ${
-            isBanner
-              ? "text-[26px] leading-[1.4] md:text-[32px] md:leading-[1.35]"
-              : isImportant
-                ? "text-[15px] leading-[1.4] md:text-[20px] md:leading-[1.45]"
-                : ""
-          }`}
-        >
+        <p className={entryBodyTextClass}>
           <EntryTextEmphasis text={entry.texto} />
         </p>
       ) : (
@@ -59,15 +50,7 @@ function EntryText({
         </p>
       )}
       {entry.texto_complemento?.trim() ? (
-        <p
-          className={`mt-4 ${entryBodyTextClass} ${
-            isBanner
-              ? "text-[26px] leading-[1.4] md:text-[32px] md:leading-[1.35]"
-              : isImportant
-                ? "text-[15px] leading-[1.4] md:text-[20px] md:leading-[1.45]"
-                : ""
-          }`}
-        >
+        <p className={`mt-4 ${entryBodyTextClass}`}>
           <EntryTextEmphasis text={entry.texto_complemento} />
         </p>
       ) : null}
