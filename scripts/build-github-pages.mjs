@@ -96,4 +96,11 @@ const build = spawnSync("npm", ["run", "build"], {
 });
 
 restoreAll();
-process.exit(build.status ?? 1);
+
+if (build.status !== 0) process.exit(build.status ?? 1);
+
+const publish = spawnSync(process.execPath, ["scripts/publish-static-to-root.mjs"], {
+  cwd: root,
+  stdio: "inherit",
+});
+process.exit(publish.status ?? 0);

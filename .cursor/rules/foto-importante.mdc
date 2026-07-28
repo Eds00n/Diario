@@ -1,0 +1,34 @@
+---
+description: Layout "FOTO IMPORTANTE" para entradas do diário (memorias.json)
+globs: content/memorias.json
+alwaysApply: false
+---
+
+# FOTO IMPORTANTE
+
+## Modelo padrão (exemplo)
+
+**Referência:** entrada **2026-07-24** (`WhatsApp Image 2026-07-25 at 16.26.03.jpeg`) — `"foto_importante": true` **sem** `foto_importante_banner`.
+
+Layout em `EntryCard` + `PhotoStack` com `prominent`:
+
+- Grid 3 colunas no desktop: texto à esquerda (~220px), **foto centralizada** no meio (`max-w-[720px]`), coluna vazia à direita (balanceamento).
+- Foto: `rounded-2xl`, fundo `entry-photo-gradient` / grain, tamanho até ~760px de altura, clique abre carrossel.
+- Texto: variant `important` (data menor, corpo ~20–22px).
+- **Não** entra na alternância esquerda/direita da timeline (`alternateLayoutIndex` ignora `foto_importante`).
+
+Quando o usuário disser **"FOTO IMPORTANTE!"** (ou pedir igual ao exemplo de 24/07):
+
+1. Em `content/memorias.json`: `"foto_importante": true`.
+2. **Não** definir `foto_importante_banner` (salvo pedido explícito de faixa full-bleed).
+3. Manter `foto` ou `fotos` e `texto` como estiverem.
+
+## Variantes (só se o usuário pedir)
+
+| Campo | Efeito |
+|--------|--------|
+| `foto_importante_banner: true` + `foto` | Faixa full-bleed (ex.: 2026-02-02); opcional `fotos[]` = galeria 3 colunas abaixo |
+
+Vídeo com `foto_importante` (sem banner) usa o **mesmo layout central** do exemplo (ex.: “E deu certo”, 2026-06-12).
+
+`is_data_especial` é independente (banner de datas especiais no topo).
