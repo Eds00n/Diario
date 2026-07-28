@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useRef } from "react";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { useTimelineBackgroundOptional } from "@/components/TimelineBackground";
@@ -24,13 +23,11 @@ function LilyBackgroundImage({
   src,
   opacity,
   transition,
-  priority = false,
   variant = "desktop",
 }: {
   src: string;
   opacity: number;
   transition: string;
-  priority?: boolean;
   variant?: "desktop" | "mobile" | "all";
 }) {
   const frameClass =
@@ -42,19 +39,16 @@ function LilyBackgroundImage({
 
   return (
     <div className={frameClass}>
-      <Image
+      {/* img nativo: next/image remove o basePath (/Diario) no GitHub Pages */}
+      <img
         src={src}
         alt=""
-        fill
-        priority={priority}
+        decoding="async"
         className={
           variant === "mobile"
-            ? "object-cover object-top"
-            : variant === "all"
-              ? "object-cover object-center"
-              : "object-cover object-center"
+            ? "h-full w-full object-cover object-top"
+            : "h-full w-full object-cover object-center"
         }
-        sizes="100vw"
         style={{
           opacity,
           transition,
@@ -95,14 +89,12 @@ export function LilyField() {
         src={MOBILE_FUNDO}
         opacity={defaultOpacity}
         transition={fadeTransition}
-        priority
         variant="mobile"
       />
       <LilyBackgroundImage
         src={DEFAULT_FUNDO}
         opacity={defaultOpacity}
         transition={fadeTransition}
-        priority
         variant="desktop"
       />
       <LilyBackgroundImage

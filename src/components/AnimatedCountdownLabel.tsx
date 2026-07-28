@@ -7,7 +7,7 @@ type Parsed = { prefix: string; days: number; suffix: string };
 
 function parseCountdownLabel(label: string): Parsed | null {
   if (label === "É hoje!") return null;
-  const match = label.match(/^(Há|Faltam)\s+(\d+)\s+(dia|dias)([\s\S]*)$/);
+  const match = label.match(/^(Há|Faltam)\s+(\d+)\s+(dias|dia)([\s\S]*)$/);
   if (!match) return null;
   return {
     prefix: match[1]!,

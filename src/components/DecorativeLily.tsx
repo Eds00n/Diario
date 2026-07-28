@@ -1,4 +1,3 @@
-import Image from "next/image";
 import type { CSSProperties } from "react";
 import { assetPath } from "@/lib/asset-path";
 
@@ -9,7 +8,6 @@ type DecorativeLilyProps = {
   size: number;
   opacity: number;
   rotate?: number;
-  /** Primeira dobra: carrega com priority (sem lazy) */
   priority?: boolean;
   className?: string;
 };
@@ -22,7 +20,7 @@ const POSITION_CLASSES: Record<LilyPosition, string> = {
     "top-[1180px] -right-8 sm:top-[1320px] sm:-right-12 md:top-[1480px] md:-right-10 max-md:origin-bottom-right md:origin-center",
 };
 
-const LILY_SRC = assetPath("/images/lirio.jpg");
+const LILY_SRC = assetPath("/images/fundo-lirios.png");
 
 export function DecorativeLily({
   position,
@@ -58,14 +56,13 @@ export function DecorativeLily({
             clipPath: "ellipse(78% 82% at 50% 48%)",
           }}
         >
-          <Image
+          <img
             src={LILY_SRC}
             alt=""
             width={size}
             height={size}
-            sizes={`(max-width: 768px) ${mobileSize}px, ${size}px`}
-            priority={priority}
-            loading={priority ? undefined : "lazy"}
+            decoding={priority ? "sync" : "async"}
+            loading={priority ? "eager" : "lazy"}
             className="lily-photo-image h-full w-full object-cover object-center"
             draggable={false}
           />
