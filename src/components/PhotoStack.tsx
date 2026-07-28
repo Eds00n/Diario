@@ -105,9 +105,11 @@ function PhotoBlurRevealOverlay({ onReveal }: { onReveal: () => void }) {
       <span className="flex h-[52px] w-[52px] items-center justify-center rounded-full border-[1.5px] border-white/90 text-white">
         <EyeRevealIcon className="h-[22px] w-[22px]" />
       </span>
-      <p className="font-body max-w-[220px] text-[13px] font-normal leading-snug tracking-[0.01em] text-white">
-        imagem sem qualidade
-        <span className="block text-[12px] text-white/70">não me julgue</span>
+      <p className="font-body max-w-[240px] text-[13px] font-normal leading-snug tracking-[0.01em] text-white">
+        Imagem sem qualidade
+        <span className="block text-[12px] text-white/70">
+          não me julgue dona Sâmila
+        </span>
       </p>
       <button
         type="button"
