@@ -61,9 +61,7 @@ export function Timeline({
               Retrospectiva dos últimos
             </p>
           </RevealOnMount>
-          <RevealOnMount delayMs={160}>
-            <Hero200Title />
-          </RevealOnMount>
+          <Hero200Title />
           <RevealOnMount delayMs={280}>
             <p className="font-display mt-0.5 text-[clamp(32px,7vw,56px)] font-medium leading-none text-ink md:mt-1">
               dias
