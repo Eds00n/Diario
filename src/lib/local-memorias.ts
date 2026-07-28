@@ -128,12 +128,14 @@ export function loadSpecialDatesFromJson(): SpecialDate[] {
   }
   const raw = JSON.parse(fs.readFileSync(jsonPath, "utf8")) as Array<{
     nome: string;
+    subtitulo?: string;
     data: string;
     recorrente?: boolean;
   }>;
   return raw.map((item, index) => ({
     id: `local-sd-${index}`,
     nome: item.nome,
+    subtitulo: item.subtitulo,
     data: item.data,
     recorrente: item.recorrente ?? false,
     created_at: `${item.data}T12:00:00.000Z`,

@@ -30,6 +30,8 @@ export type Entry = {
 export type SpecialDate = {
   id: string;
   nome: string;
+  /** Linha abaixo do título (ex.: “Juntos…”). */
+  subtitulo?: string;
   data: string;
   recorrente: boolean;
   created_at: string;
