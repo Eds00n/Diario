@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import type { Entry, SpecialDate } from "@/lib/types";
+import { assetPath } from "@/lib/asset-path";
 
 function isStaticExportBuild(): boolean {
   return process.env.STATIC_EXPORT === "1";
@@ -95,7 +96,7 @@ export function loadMemoriasFromJson(): Entry[] {
       foto_importante_banner: item.foto_importante_banner ?? false,
       foto_direita: item.foto_direita ?? false,
       fundo_imersivo: item.fundo_imersivo
-        ? `${process.env.NEXT_PUBLIC_BASE_PATH?.trim() || ""}/images/${item.fundo_imersivo.replace(/^\/+/, "")}`
+        ? assetPath(`/images/${item.fundo_imersivo.replace(/^\/+/, "")}`)
         : undefined,
       fundo_imersivo_grupo: item.fundo_imersivo_grupo ?? false,
       created_at: `${item.data}T12:00:00.000Z`,

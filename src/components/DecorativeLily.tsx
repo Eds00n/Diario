@@ -1,5 +1,6 @@
 import Image from "next/image";
 import type { CSSProperties } from "react";
+import { assetPath } from "@/lib/asset-path";
 
 export type LilyPosition = "top-right" | "left" | "bottom-right";
 
@@ -21,7 +22,7 @@ const POSITION_CLASSES: Record<LilyPosition, string> = {
     "top-[1180px] -right-8 sm:top-[1320px] sm:-right-12 md:top-[1480px] md:-right-10 max-md:origin-bottom-right md:origin-center",
 };
 
-const LILY_SRC = "/images/lirio.jpg";
+const LILY_SRC = assetPath("/images/lirio.jpg");
 
 export function DecorativeLily({
   position,

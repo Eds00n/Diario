@@ -4,11 +4,12 @@ import Image from "next/image";
 import { useRef } from "react";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { useTimelineBackgroundOptional } from "@/components/TimelineBackground";
+import { assetPath } from "@/lib/asset-path";
 
-const DEFAULT_FUNDO = "/images/fundo-lirios.png";
-const MOBILE_FUNDO = "/images/fundo-lirios-mobile.png";
-const IMMERSIVE_FUNDO = "/images/fundo-lirios-namorados.png";
-const IMMERSIVE_MOBILE_FUNDO = "/images/fundo-lirios-namorados-mobile.png";
+const DEFAULT_FUNDO = assetPath("/images/fundo-lirios.png");
+const MOBILE_FUNDO = assetPath("/images/fundo-lirios-mobile.png");
+const IMMERSIVE_FUNDO = assetPath("/images/fundo-lirios-namorados.png");
+const IMMERSIVE_MOBILE_FUNDO = assetPath("/images/fundo-lirios-namorados-mobile.png");
 const IMMERSIVE_FADE_MS = 1650;
 const IMMERSIVE_FADE_EASE = "cubic-bezier(0.16, 1, 0.28, 1)";
 

@@ -73,6 +73,8 @@ process.on("SIGTERM", () => process.exit(1));
 for (const relative of toDisable) disablePath(relative);
 stubLoginActions();
 
+fs.rmSync(path.join(root, ".next"), { recursive: true, force: true });
+
 const prep = spawnSync(process.execPath, ["scripts/prepare-static-assets.mjs"], {
   cwd: root,
   stdio: "inherit",
