@@ -85,6 +85,7 @@ function StackPhoto({
   fill = false,
   flushEdges = false,
   prominentMobileLarge = false,
+  blurReveal = false,
 }: {
   url: string;
   onOpen: () => void;
@@ -92,68 +93,115 @@ function StackPhoto({
   fill?: boolean;
   flushEdges?: boolean;
   prominentMobileLarge?: boolean;
+  blurReveal?: boolean;
 }) {
-  if (prominent && fill) {
-    return (
+  const [revealed, setRevealed] = useState(!blurReveal);
+  const hidden = blurReveal && !revealed;
+
+  const imageBlurClass = hidden
+    ? "scale-105 blur-xl brightness-[0.85]"
+    : "transition-transform duration-300 ease-out group-hover:scale-[1.02]";
+
+  const blurOverlay = hidden ? (
+    <div className="absolute inset-0 z-[5] flex flex-col items-center justify-center gap-5 overflow-hidden rounded-2xl bg-black/35 px-5 text-center">
+      <p className="font-display max-w-[min(100%,280px)] text-pretty text-[clamp(15px,4vw,20px)] italic leading-snug text-white lowercase md:max-w-[320px] md:text-[22px] md:leading-[1.35]">
+        imagem sem qualidade não me julgue
+      </p>
       <button
         type="button"
-        className="relative block h-full w-full min-h-0 cursor-zoom-in border-0 bg-transparent p-0 text-left outline-none"
-        onClick={onOpen}
-        onDragStart={(e) => e.preventDefault()}
+        className="font-body rounded-full border border-white/70 bg-white/95 px-6 py-2.5 text-[12px] font-medium uppercase tracking-[0.14em] text-ink transition-colors hover:bg-white"
+        onClick={(e) => {
+          e.stopPropagation();
+          setRevealed(true);
+        }}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={url}
-          alt=""
-          draggable={false}
-          className="no-native-drag block h-full w-full object-cover object-center"
-        />
+        Avançar
       </button>
+    </div>
+  ) : null;
+  if (prominent && fill) {
+    return (
+      <div className="relative h-full w-full min-h-0">
+        <button
+          type="button"
+          className="relative block h-full w-full min-h-0 cursor-zoom-in border-0 bg-transparent p-0 text-left outline-none disabled:cursor-default"
+          onClick={() => {
+            if (!hidden) onOpen();
+          }}
+          disabled={hidden}
+          onDragStart={(e) => e.preventDefault()}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={url}
+            alt=""
+            draggable={false}
+            className={`no-native-drag block h-full w-full object-cover object-center ${imageBlurClass}`}
+          />
+        </button>
+        {blurOverlay}
+      </div>
     );
   }
 
   if (prominent) {
     return (
-      <button
-        type="button"
-        className="entry-photo-gradient flex w-full cursor-zoom-in justify-center overflow-hidden rounded-2xl border-0 p-0 text-left outline-none"
-        onClick={onOpen}
-      >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={url}
-          alt=""
-          className={
-            prominentMobileLarge
-              ? "mx-auto block h-auto w-full max-w-full max-h-[min(78vh,680px)] object-contain md:max-h-[min(78vh,760px)] md:w-auto"
-              : "mx-auto block h-auto max-h-[min(46vh,240px)] w-auto max-w-full md:max-h-[min(78vh,760px)]"
-          }
-        />
-      </button>
+      <div className="relative w-full">
+        <button
+          type="button"
+          className="entry-photo-gradient flex w-full cursor-zoom-in justify-center overflow-hidden rounded-2xl border-0 p-0 text-left outline-none disabled:cursor-default"
+          onClick={() => {
+            if (!hidden) onOpen();
+          }}
+          disabled={hidden}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={url}
+            alt=""
+            className={
+              prominentMobileLarge
+                ? `mx-auto block h-auto w-full max-w-full max-h-[min(78vh,680px)] object-contain md:max-h-[min(78vh,760px)] md:w-auto ${imageBlurClass}`
+                : `mx-auto block h-auto max-h-[min(46vh,240px)] w-auto max-w-full md:max-h-[min(78vh,760px)] ${imageBlurClass}`
+            }
+          />
+        </button>
+        {blurOverlay}
+      </div>
     );
   }
 
   return (
-    <button
-      type="button"
-      className={`entry-photo-gradient entry-photo-grain group relative w-full cursor-zoom-in overflow-hidden text-left ${
-        flushEdges ? "aspect-[3/4] rounded-none" : "aspect-[4/5] rounded-2xl"
+    <div
+      className={`relative w-full ${
+        flushEdges ? "aspect-[3/4]" : "aspect-[4/5]"
       }`}
-      onClick={onOpen}
     >
-      <Image
-        src={url}
-        alt=""
-        fill
-        className="object-cover transition-transform duration-300 ease-out group-hover:scale-[1.02]"
-        sizes={
-          flushEdges
-            ? "(max-width: 640px) 100vw, 33vw"
-            : "(max-width: 760px) 100vw, 480px"
-        }
-        unoptimized
-      />
-    </button>
+      <button
+        type="button"
+        className={`entry-photo-gradient entry-photo-grain group relative h-full w-full cursor-zoom-in overflow-hidden text-left ${
+          flushEdges ? "rounded-none" : "rounded-2xl"
+        } disabled:cursor-default`}
+        onClick={() => {
+          if (!hidden) onOpen();
+        }}
+        disabled={hidden}
+      >
+        <Image
+          src={url}
+          alt=""
+          fill
+          className={`object-cover ${imageBlurClass}`}
+          sizes={
+            flushEdges
+              ? "(max-width: 640px) 100vw, 33vw"
+              : "(max-width: 760px) 100vw, 480px"
+          }
+          unoptimized
+        />
+      </button>
+      {blurOverlay}
+    </div>
   );
 }
 
@@ -163,12 +211,14 @@ function PhotoPairGrid({
   prominent = false,
   fill = false,
   prominentMobileLarge = false,
+  blurReveal = false,
 }: {
   urls: string[];
   onOpen: (indexInSegment: number) => void;
   prominent?: boolean;
   fill?: boolean;
   prominentMobileLarge?: boolean;
+  blurReveal?: boolean;
 }) {
   return (
     <div
@@ -185,6 +235,7 @@ function PhotoPairGrid({
           prominent={prominent}
           fill={fill}
           prominentMobileLarge={prominentMobileLarge}
+          blurReveal={blurReveal && i === 0}
           onOpen={() => onOpen(i)}
         />
       ))}
@@ -265,6 +316,7 @@ export function PhotoStack({
   threeColumn = false,
   threeColumnFullBleed = false,
   prominentMobileLarge = false,
+  blurReveal = false,
 }: {
   urls: string[];
   prominent?: boolean;
@@ -273,6 +325,7 @@ export function PhotoStack({
   threeColumnFullBleed?: boolean;
   /** Fotos importantes no mobile: mídia maior abaixo do texto */
   prominentMobileLarge?: boolean;
+  blurReveal?: boolean;
 }) {
   const [carouselIndex, setCarouselIndex] = useState<number | null>(null);
 
@@ -320,6 +373,7 @@ export function PhotoStack({
                 <StackPhoto
                   url={url}
                   flushEdges={threeColumnFullBleed}
+                  blurReveal={blurReveal && i === 0}
                   onOpen={() => openAtGlobalIndex(url)}
                 />
               </div>
@@ -371,6 +425,7 @@ export function PhotoStack({
                 prominent={prominent}
                 fill={fill}
                 prominentMobileLarge={prominentMobileLarge}
+                blurReveal={blurReveal}
                 onOpen={(i) => openDeck(segment.urls, i)}
               />
             );
@@ -385,6 +440,7 @@ export function PhotoStack({
               prominent={prominent}
               fill={fill}
               prominentMobileLarge={prominentMobileLarge}
+              blurReveal={blurReveal}
               onOpen={() => openAtGlobalIndex(single)}
             />
           );

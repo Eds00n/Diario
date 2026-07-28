@@ -20,6 +20,8 @@ export type Entry = {
   foto_importante_banner?: boolean;
   /** Foto na coluna direita (texto à esquerda) no layout padrão da timeline. */
   foto_direita?: boolean;
+  /** Foto começa borrada até o usuário tocar em “Avançar”. */
+  foto_revelar_blur?: boolean;
   /** Fundo imersivo (public/images) ao rolar até esta entrada. */
   fundo_imersivo?: string;
   /** Continua o fundo imersivo da entrada anterior (mesma zona de scroll). */

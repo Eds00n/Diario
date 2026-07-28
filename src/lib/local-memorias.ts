@@ -41,6 +41,7 @@ type MemoriasJsonItem = {
   foto_importante?: boolean;
   foto_importante_banner?: boolean;
   foto_direita?: boolean;
+  foto_revelar_blur?: boolean;
   fundo_imersivo?: string;
   fundo_imersivo_grupo?: boolean;
 };
@@ -95,6 +96,7 @@ export function loadMemoriasFromJson(): Entry[] {
       foto_importante: item.foto_importante ?? false,
       foto_importante_banner: item.foto_importante_banner ?? false,
       foto_direita: item.foto_direita ?? false,
+      foto_revelar_blur: item.foto_revelar_blur ?? false,
       fundo_imersivo: item.fundo_imersivo
         ? assetPath(`/images/${item.fundo_imersivo.replace(/^\/+/, "")}`)
         : undefined,

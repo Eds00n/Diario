@@ -86,7 +86,7 @@ export function EntryCard({
         <article className="entry-important-photo relative z-[1] mb-[220px] md:mb-[280px] w-full">
           <div className="relative min-h-[380px] w-full overflow-hidden sm:min-h-[440px] md:min-h-[532px]">
             {photos.length > 0 ? (
-              <PhotoStack urls={photos} prominent fill />
+              <PhotoStack urls={photos} prominent fill blurReveal={entry.foto_revelar_blur} />
             ) : (
               <div
                 className="entry-photo-gradient entry-photo-grain absolute inset-0"
@@ -126,6 +126,7 @@ export function EntryCard({
                     urls={photos}
                     prominent
                     prominentMobileLarge
+                    blurReveal={entry.foto_revelar_blur}
                   />
                 ) : (
                   <div className="entry-photo-gradient entry-photo-grain relative aspect-[4/5] w-full overflow-hidden rounded-2xl">
@@ -151,7 +152,7 @@ export function EntryCard({
           <EntryText entry={entry} />
         </div>
         <div className="entry-photo-block w-full">
-          <PhotoStack urls={photos} />
+          <PhotoStack urls={photos} blurReveal={entry.foto_revelar_blur} />
         </div>
         {entry.texto_abaixo?.trim() ? (
           <div className="entry-text-block w-full max-w-[720px]">
@@ -183,7 +184,7 @@ export function EntryCard({
         className={`entry-photo-block min-w-0 space-y-4 ${reverse ? "order-2 md:order-2" : "order-1 md:order-1"}`}
       >
         {photos.length > 0 ? (
-          <PhotoStack urls={photos} />
+          <PhotoStack urls={photos} blurReveal={entry.foto_revelar_blur} />
         ) : (
           <div className="entry-photo-gradient entry-photo-grain relative aspect-[4/5] overflow-hidden rounded-2xl">
             <span className="absolute bottom-4 left-4 bg-white/70 px-2 py-1 text-[11px] uppercase tracking-widest text-ink-soft">
