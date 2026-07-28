@@ -18,11 +18,11 @@ const body = Work_Sans({
   weight: ["300", "400", "500", "600", "700", "800", "900"],
 });
 
-/** Estilo próximo ao Intro Rust (Canva) — caps desgastadas. */
-const entryRust = Rubik_Distressed({
+/** Caps bold limpas (estilo Intro Rust, sem textura). */
+const entryCaps = Bebas_Neue({
   variable: "--font-entry-rust",
-  subsets: ["latin"],
   weight: "400",
+  subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
@@ -38,7 +38,7 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
-      className={`${display.variable} ${body.variable} ${entryRust.variable} h-full`}
+      className={`${display.variable} ${body.variable} ${entryCaps.variable} h-full`}
     >
       <body className="min-h-full flex flex-col font-body antialiased">
         {isStaticSite ? <SiteAuthGate>{children}</SiteAuthGate> : children}
