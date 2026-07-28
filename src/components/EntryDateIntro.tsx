@@ -49,27 +49,32 @@ export function EntryDateIntro({
     const el = ref.current;
     if (!el) return;
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry?.isIntersecting || started.current) return;
-        started.current = true;
+    const beginIntro = () => {
+      if (started.current) return;
+      started.current = true;
 
-        timersRef.current.push(
-          window.setTimeout(() => setPhase("date"), delayMs),
-        );
-        timersRef.current.push(
-          window.setTimeout(
-            () => setPhase("content"),
-            delayMs + DATE_HOLD_MS + DATE_FADE_MS,
-          ),
-        );
-      },
-      { threshold: 0, rootMargin: CENTER_ROOT_MARGIN },
-    );
+      timersRef.current.push(
+        window.setTimeout(() => setPhase("date"), delayMs),
+      );
+      timersRef.current.push(
+        window.setTimeout(
+          () => setPhase("content"),
+          delayMs + DATE_HOLD_MS + DATE_FADE_MS,
+        ),
+      );
+    };
 
-    observer.observe(el);
+    const onScrollOrResize = () => {
+      if (isBlockCentered(el)) beginIntro();
+    };
+
+    onScrollOrResize();
+    window.addEventListener("scroll", onScrollOrResize, { passive: true });
+    window.addEventListener("resize", onScrollOrResize);
+
     return () => {
-      observer.disconnect();
+      window.removeEventListener("scroll", onScrollOrResize);
+      window.removeEventListener("resize", onScrollOrResize);
       for (const id of timersRef.current) window.clearTimeout(id);
       timersRef.current = [];
     };
