@@ -11,6 +11,7 @@ type Parsed = {
 };
 
 type AnimatedValues = { days: number; hours: number; minutes: number };
+type CountField = keyof AnimatedValues;
 
 function parseCountdownLabel(label: string): Parsed | null {
   if (label === "É hoje!") return null;
@@ -41,14 +42,10 @@ function joinDurationParts(parts: string[]): string {
 function formatAnimatedLine(parsed: Parsed, values: AnimatedValues): string {
   const parts: string[] = [];
   if (parsed.days > 0) {
-    parts.push(
-      values.days === 1 ? "1 dia" : `${values.days} dias`,
-    );
+    parts.push(values.days === 1 ? "1 dia" : `${values.days} dias`);
   }
   if (parsed.hours > 0) {
-    parts.push(
-      values.hours === 1 ? "1 hora" : `${values.hours} horas`,
-    );
+    parts.push(values.hours === 1 ? "1 hora" : `${values.hours} horas`);
   }
   if (parsed.minutes > 0 || parts.length === 0) {
     parts.push(
@@ -58,10 +55,41 @@ function formatAnimatedLine(parsed: Parsed, values: AnimatedValues): string {
   return `${parsed.prefix} ${joinDurationParts(parts)}`.toLowerCase();
 }
 
-function animationDurationMs(target: AnimatedValues): number {
-  const weight =
-    target.days * 24 * 60 + target.hours * 60 + target.minutes;
-  return Math.min(2800, 850 + Math.sqrt(weight) * 55);
+/** Mesma curva/duração do contador de dias (ex.: 0 → 176). */
+function durationForCount(max: number): number {
+  if (max <= 0) return 0;
+  return Math.min(2400, 900 + max * 9);
+}
+
+function animateCount(
+  from: number,
+  to: number,
+  durationMs: number,
+  onValue: (value: number) => void,
+): Promise<void> {
+  if (to <= from || durationMs <= 0) {
+    onValue(to);
+    return Promise.resolve();
+  }
+
+  return new Promise((resolve) => {
+    const start = performance.now();
+    let frame = 0;
+
+    const step = (now: number) => {
+      const progress = Math.min(1, (now - start) / durationMs);
+      const eased = 1 - (1 - progress) ** 3;
+      onValue(Math.round(from + eased * (to - from)));
+      if (progress < 1) {
+        frame = requestAnimationFrame(step);
+      } else {
+        onValue(to);
+        resolve();
+      }
+    };
+
+    frame = requestAnimationFrame(step);
+  });
 }
 
 export function AnimatedCountdownLabel({ label }: { label: string }) {
@@ -89,24 +117,32 @@ export function AnimatedCountdownLabel({ label }: { label: string }) {
       return;
     }
 
-    setValues({ days: 0, hours: 0, minutes: 0 });
-    const durationMs = animationDurationMs(target);
-    const start = performance.now();
-    let frame = 0;
+    let cancelled = false;
 
-    const step = (now: number) => {
-      const progress = Math.min(1, (now - start) / durationMs);
-      const eased = 1 - (1 - progress) ** 3;
-      setValues({
-        days: Math.round(eased * target.days),
-        hours: Math.round(eased * target.hours),
-        minutes: Math.round(eased * target.minutes),
-      });
-      if (progress < 1) frame = requestAnimationFrame(step);
+    const run = async () => {
+      setValues({ days: 0, hours: 0, minutes: 0 });
+
+      const sequence: Array<{ field: CountField; max: number }> = [
+        { field: "days", max: target.days },
+        { field: "hours", max: target.hours },
+        { field: "minutes", max: target.minutes },
+      ];
+
+      for (const { field, max } of sequence) {
+        if (cancelled || max <= 0) continue;
+        await animateCount(0, max, durationForCount(max), (value) => {
+          if (!cancelled) {
+            setValues((prev) => ({ ...prev, [field]: value }));
+          }
+        });
+      }
     };
 
-    frame = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(frame);
+    void run();
+
+    return () => {
+      cancelled = true;
+    };
   }, [parsed, reducedMotion, target]);
 
   if (!parsed) {
