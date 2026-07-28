@@ -109,15 +109,14 @@ export function LilyField() {
         transition={fadeTransition}
         variant="desktop"
       />
-      {showImmersive ? (
-        <div
-          className="absolute inset-0 bg-bg/15 max-md:bg-bg/10 md:bg-bg/18"
-          style={{
-            opacity: veilOpacity,
-            transition: fadeTransition,
-          }}
-        />
-      ) : null}
+      <div
+        className="absolute inset-0 bg-bg/15 max-md:bg-bg/10 md:bg-bg/18"
+        style={{
+          opacity: veilOpacity,
+          transition: fadeTransition,
+          pointerEvents: "none",
+        }}
+      />
     </div>
   );
 }
