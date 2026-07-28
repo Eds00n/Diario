@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { capitalizeFirst } from "@/lib/dates";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 const DATE_HOLD_MS = 1000;
@@ -103,8 +102,8 @@ export function EntryDateIntro({
             transition: `opacity ${DATE_FADE_MS}ms ${ease}, transform ${DATE_FADE_MS}ms ${ease}`,
           }}
         >
-          <p className="font-display whitespace-nowrap text-center text-[clamp(26px,6.5vw,54px)] font-medium uppercase leading-none tracking-[0.05em] text-ink md:text-[clamp(34px,3.8vw,58px)]">
-            {capitalizeFirst(dateLabel)}
+          <p className="entry-intro-date font-display whitespace-nowrap text-center text-[clamp(26px,6.5vw,54px)] font-normal uppercase leading-none tracking-[0.08em] text-ink md:text-[clamp(34px,3.8vw,58px)] md:tracking-[0.1em]">
+            {dateLabel.toLocaleUpperCase("pt-BR")}
           </p>
         </div>
 

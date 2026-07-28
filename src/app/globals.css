@@ -39,6 +39,12 @@ body {
   font-family: var(--font-display), Georgia, serif;
 }
 
+/** Data intro: dígitos na mesma linha tipográfica que as letras (Cormorant). */
+.entry-intro-date {
+  font-variant-numeric: lining-nums;
+  font-feature-settings: "lnum", "kern";
+}
+
 /** Carrossel / gestos: sem arrastar fantasma da imagem no navegador */
 .no-native-drag,
 .no-native-drag img {
