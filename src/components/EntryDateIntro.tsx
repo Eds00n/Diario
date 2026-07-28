@@ -3,8 +3,9 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
-const DATE_HOLD_MS = 1000;
-const DATE_FADE_MS = 700;
+const DATE_HOLD_MS = 450;
+const DATE_FADE_MS = 380;
+const CONTENT_REVEAL_MS = 520;
 
 const ease = "cubic-bezier(0.22, 1, 0.36, 1)";
 
