@@ -1,5 +1,5 @@
+import { EntryDateReveal } from "@/components/EntryDateReveal";
 import { PhotoStack } from "@/components/PhotoStack";
-import { RevealOnView } from "@/components/RevealOnView";
 import { formatEntryDate } from "@/lib/dates";
 import { EntryTextEmphasis } from "@/components/EntryTextEmphasis";
 import type { Entry } from "@/lib/types";
@@ -97,7 +97,7 @@ export function EntryCard({
 
   if (highlightBanner) {
     return (
-      <RevealOnView delayMs={revealDelay}>
+      <EntryDateReveal date={entry.data} delayMs={revealDelay}>
         <article className="entry-important-photo relative z-[1] mb-[220px] md:mb-[280px] w-full">
           <div className="relative min-h-[380px] w-full overflow-hidden sm:min-h-[440px] md:min-h-[532px]">
             {photos.length > 0 ? (
@@ -122,13 +122,13 @@ export function EntryCard({
             </div>
           )}
         </article>
-      </RevealOnView>
+      </EntryDateReveal>
     );
   }
 
   if (highlight) {
     return (
-      <RevealOnView delayMs={revealDelay}>
+      <EntryDateReveal date={entry.data} delayMs={revealDelay}>
         <article className="entry-important-photo relative z-[1] mx-auto mb-[220px] md:mb-[280px] max-w-[1040px] px-4 md:px-10">
           <div className="flex flex-col gap-5 max-md:gap-6 md:grid md:grid-cols-[minmax(0,220px)_minmax(0,1fr)_minmax(0,220px)] md:items-center md:gap-8 lg:gap-10">
             <div className="entry-text-block order-1 min-w-0 w-full max-w-none text-left md:col-start-1 md:row-start-1 md:max-w-[260px] md:justify-self-start md:pr-2">
@@ -154,13 +154,13 @@ export function EntryCard({
             <div className="hidden md:col-start-3 md:row-start-1 md:block" aria-hidden />
           </div>
         </article>
-      </RevealOnView>
+      </EntryDateReveal>
     );
   }
 
   if (twoPhotosLayout) {
     return (
-      <RevealOnView delayMs={revealDelay}>
+      <EntryDateReveal date={entry.data} delayMs={revealDelay}>
         <article className="relative z-[1] mx-auto mb-[220px] md:mb-[280px] flex max-w-[1040px] flex-col gap-7 px-10 md:gap-9">
         <div className="entry-text-block w-full max-w-[720px]">
           <EntryText entry={entry} />
@@ -183,12 +183,12 @@ export function EntryCard({
           </div>
         ) : null}
       </article>
-      </RevealOnView>
+      </EntryDateReveal>
     );
   }
 
   return (
-    <RevealOnView delayMs={revealDelay}>
+    <EntryDateReveal date={entry.data} delayMs={revealDelay}>
       <article
       className={`relative z-[1] mx-auto mb-[220px] md:mb-[280px] grid max-w-[1040px] grid-cols-2 items-center gap-3 px-4 md:grid-cols-2 md:gap-16 md:px-10 ${
         reverse ? "entry-reverse" : ""
@@ -214,6 +214,6 @@ export function EntryCard({
         <EntryText entry={entry} />
       </div>
     </article>
-    </RevealOnView>
+    </EntryDateReveal>
   );
 }

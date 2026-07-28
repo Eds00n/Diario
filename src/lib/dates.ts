@@ -31,6 +31,18 @@ export function capitalizeFirst(s: string): string {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
+/** Dia + mês para splash antes da memória (usa a data inicial). */
+export function formatEntryDayMonth(dateStr: string): {
+  day: string;
+  month: string;
+} {
+  const d = parseISO(dateStr);
+  return {
+    day: format(d, "d", { locale: ptBR }),
+    month: capitalizeFirst(format(d, "MMMM", { locale: ptBR })),
+  };
+}
+
 function pushUnit(parts: string[], value: number, singular: string, plural: string) {
   parts.push(value === 1 ? `1 ${singular}` : `${value} ${plural}`);
 }
