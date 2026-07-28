@@ -6,10 +6,18 @@ import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 const DATE_HOLD_MS = 1000;
 const DATE_FADE_MS = 700;
-/** Faixa central do viewport (~22% da altura) — intro só quando a memória entra no meio. */
-const CENTER_ROOT_MARGIN = "-39% 0px -39% 0px";
 
 const ease = "cubic-bezier(0.22, 1, 0.36, 1)";
+
+/** Quão perto do meio da tela o centro do bloco precisa estar (px). */
+function isBlockCentered(el: HTMLElement): boolean {
+  const rect = el.getBoundingClientRect();
+  if (rect.bottom <= 0 || rect.top >= window.innerHeight) return false;
+  const blockCenter = rect.top + rect.height / 2;
+  const viewCenter = window.innerHeight / 2;
+  const tolerance = Math.min(96, window.innerHeight * 0.1);
+  return Math.abs(blockCenter - viewCenter) <= tolerance;
+}
 
 type Phase = "idle" | "date" | "content";
 
