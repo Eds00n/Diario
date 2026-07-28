@@ -56,7 +56,7 @@ export function Timeline({
       <section className="relative z-[1] flex min-h-[100dvh] w-full min-w-0 flex-col items-center justify-center px-10 py-16">
         <header className="w-full max-w-[720px] text-center">
           <RevealOnMount delayMs={0}>
-            <p className="mb-3.5 text-[13px] font-medium tracking-[0.08em] text-gold md:text-[15px] md:tracking-[0.1em]">
+            <p className="mb-1 text-[13px] font-medium tracking-[0.08em] text-gold md:mb-1.5 md:text-[15px] md:tracking-[0.1em]">
               Retrospectiva dos últimos
             </p>
           </RevealOnMount>
