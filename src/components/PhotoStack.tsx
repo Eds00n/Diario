@@ -1,0 +1,403 @@
+"use client";
+
+import Image from "next/image";
+import { useMemo, useState } from "react";
+import { LoopVideoInView } from "@/components/LoopVideoInView";
+import { PhotoCarousel } from "@/components/PhotoCarousel";
+
+function isVideoUrl(url: string): boolean {
+  const decoded = decodeURIComponent(url).toLowerCase();
+  return decoded.includes(".mp4");
+}
+
+type UrlSegment =
+  | { kind: "images"; urls: string[] }
+  | { kind: "video"; url: string };
+
+function segmentUrls(urls: string[]): UrlSegment[] {
+  const segments: UrlSegment[] = [];
+  let imageBuffer: string[] = [];
+
+  const flushImages = () => {
+    if (imageBuffer.length > 0) {
+      segments.push({ kind: "images", urls: imageBuffer });
+      imageBuffer = [];
+    }
+  };
+
+  for (const url of urls) {
+    if (isVideoUrl(url)) {
+      flushImages();
+      segments.push({ kind: "video", url });
+    } else {
+      imageBuffer.push(url);
+    }
+  }
+  flushImages();
+  return segments;
+}
+
+/** depthFromFront: 0 = carta da frente */
+const DECK_TRANSFORMS = [
+  { rotate: -5, x: 0, y: 0 },
+  { rotate: -2, x: -12, y: 14 },
+  { rotate: 2, x: -22, y: 26 },
+  { rotate: 6, x: -32, y: 38 },
+] as const;
+
+function StackVideo({
+  url,
+  prominent = false,
+  fill = false,
+  prominentMobileLarge = false,
+}: {
+  url: string;
+  prominent?: boolean;
+  fill?: boolean;
+  prominentMobileLarge?: boolean;
+}) {
+  return (
+    <div
+      className={
+        fill
+          ? "absolute inset-0 h-full w-full overflow-hidden bg-black"
+          : `relative w-full overflow-hidden rounded-2xl ${
+              prominent
+                ? prominentMobileLarge
+                  ? "relative mx-auto aspect-[4/5] w-full max-w-full max-md:max-h-[min(78vh,680px)] md:max-h-[min(78vh,760px)] md:max-w-[760px]"
+                  : "relative mx-auto aspect-[4/5] max-h-[min(78vh,760px)] max-w-[760px]"
+                : "entry-photo-gradient entry-photo-grain relative aspect-[4/5]"
+            }`
+      }
+    >
+      <LoopVideoInView
+        src={url}
+        className="h-full w-full object-cover object-center"
+      />
+    </div>
+  );
+}
+
+function StackPhoto({
+  url,
+  onOpen,
+  prominent = false,
+  fill = false,
+  flushEdges = false,
+  prominentMobileLarge = false,
+}: {
+  url: string;
+  onOpen: () => void;
+  prominent?: boolean;
+  fill?: boolean;
+  flushEdges?: boolean;
+  prominentMobileLarge?: boolean;
+}) {
+  if (prominent && fill) {
+    return (
+      <button
+        type="button"
+        className="relative block h-full w-full min-h-0 cursor-zoom-in border-0 bg-transparent p-0 text-left outline-none"
+        onClick={onOpen}
+        onDragStart={(e) => e.preventDefault()}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={url}
+          alt=""
+          draggable={false}
+          className="no-native-drag block h-full w-full object-cover object-center"
+        />
+      </button>
+    );
+  }
+
+  if (prominent) {
+    return (
+      <button
+        type="button"
+        className="entry-photo-gradient flex w-full cursor-zoom-in justify-center overflow-hidden rounded-2xl border-0 p-0 text-left outline-none"
+        onClick={onOpen}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={url}
+          alt=""
+          className={
+            prominentMobileLarge
+              ? "mx-auto block h-auto w-full max-w-full max-h-[min(78vh,680px)] object-contain md:max-h-[min(78vh,760px)] md:w-auto"
+              : "mx-auto block h-auto max-h-[min(46vh,240px)] w-auto max-w-full md:max-h-[min(78vh,760px)]"
+          }
+        />
+      </button>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      className={`entry-photo-gradient entry-photo-grain group relative w-full cursor-zoom-in overflow-hidden text-left ${
+        flushEdges ? "aspect-[3/4] rounded-none" : "aspect-[4/5] rounded-2xl"
+      }`}
+      onClick={onOpen}
+    >
+      <Image
+        src={url}
+        alt=""
+        fill
+        className="object-cover transition-transform duration-300 ease-out group-hover:scale-[1.02]"
+        sizes={
+          flushEdges
+            ? "(max-width: 640px) 100vw, 33vw"
+            : "(max-width: 760px) 100vw, 480px"
+        }
+        unoptimized
+      />
+    </button>
+  );
+}
+
+function PhotoPairGrid({
+  urls,
+  onOpen,
+  prominent = false,
+  fill = false,
+  prominentMobileLarge = false,
+}: {
+  urls: string[];
+  onOpen: (indexInSegment: number) => void;
+  prominent?: boolean;
+  fill?: boolean;
+  prominentMobileLarge?: boolean;
+}) {
+  return (
+    <div
+      className={
+        fill
+          ? "absolute inset-0 grid h-full grid-cols-2 gap-0.5"
+          : "grid grid-cols-2 gap-3 sm:gap-4"
+      }
+    >
+      {urls.map((url, i) => (
+        <StackPhoto
+          key={`${url}-${i}`}
+          url={url}
+          prominent={prominent}
+          fill={fill}
+          prominentMobileLarge={prominentMobileLarge}
+          onOpen={() => onOpen(i)}
+        />
+      ))}
+    </div>
+  );
+}
+
+function PhotoDeck({
+  urls,
+  onOpen,
+}: {
+  urls: string[];
+  onOpen: (index: number) => void;
+}) {
+  const count = urls.length;
+  const layerCount = Math.min(4, count);
+
+  const layers = Array.from({ length: layerCount }, (_, depthFromFront) => ({
+    depthFromFront,
+    photoIndex: depthFromFront,
+    url: urls[depthFromFront]!,
+  })).sort((a, b) => b.depthFromFront - a.depthFromFront);
+
+  return (
+    <button
+      type="button"
+      className="group relative w-full cursor-zoom-in text-left"
+      onClick={() => onOpen(0)}
+      aria-label={`Ver ${count} fotos`}
+    >
+      <div className="relative aspect-[4/5] w-full">
+        <div className="absolute inset-0 pl-6 pb-8 pt-2">
+          {layers.map(({ depthFromFront, url, photoIndex }) => {
+            const t =
+              DECK_TRANSFORMS[depthFromFront] ?? DECK_TRANSFORMS[3]!;
+            const zIndex = 10 + (layerCount - depthFromFront);
+
+            return (
+              <div
+                key={`${url}-${depthFromFront}`}
+                className="absolute inset-0 pl-6 pb-8 pt-2 transition-transform duration-300 ease-out will-change-transform group-hover:translate-y-[-2px]"
+                style={{
+                  zIndex,
+                  transform: `translate(${t.x}px, ${t.y}px) rotate(${t.rotate}deg)`,
+                }}
+              >
+                <div className="entry-photo-grain relative h-full w-full overflow-hidden rounded-2xl bg-[#f2f1ec] shadow-[0_8px_24px_rgba(28,28,26,0.12)] ring-1 ring-black/[0.06]">
+                  <Image
+                    src={url}
+                    alt=""
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 760px) 100vw, 480px"
+                    unoptimized
+                    priority={photoIndex === 0}
+                  />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <span
+          className="absolute right-1 top-1 z-[50] flex h-9 min-w-9 items-center justify-center rounded-full bg-white px-2 font-body text-[15px] font-medium tabular-nums text-ink shadow-[0_4px_14px_rgba(28,28,26,0.15)] ring-1 ring-black/[0.04]"
+          aria-hidden
+        >
+          {count}
+        </span>
+      </div>
+    </button>
+  );
+}
+
+export function PhotoStack({
+  urls,
+  prominent = false,
+  fill = false,
+  threeColumn = false,
+  threeColumnFullBleed = false,
+  prominentMobileLarge = false,
+}: {
+  urls: string[];
+  prominent?: boolean;
+  fill?: boolean;
+  threeColumn?: boolean;
+  threeColumnFullBleed?: boolean;
+  /** Fotos importantes no mobile: mídia maior abaixo do texto */
+  prominentMobileLarge?: boolean;
+}) {
+  const [carouselIndex, setCarouselIndex] = useState<number | null>(null);
+
+  const segments = useMemo(() => segmentUrls(urls), [urls]);
+
+  const allImageUrls = useMemo(
+    () => urls.filter((u) => !isVideoUrl(u)),
+    [urls],
+  );
+
+  const openAtGlobalIndex = (url: string) => {
+    const i = allImageUrls.indexOf(url);
+    if (i >= 0) setCarouselIndex(i);
+  };
+
+  const openDeck = (segmentUrlsList: string[], indexInSegment: number) => {
+    const url = segmentUrlsList[indexInSegment];
+    if (url) openAtGlobalIndex(url);
+  };
+
+  if (threeColumn && allImageUrls.length > 0) {
+    const singleBelow = threeColumnFullBleed && allImageUrls.length === 1;
+    return (
+      <>
+        <div
+          className={
+            singleBelow
+              ? "mx-auto w-full max-w-[640px] sm:max-w-[720px]"
+              : threeColumnFullBleed
+                ? "grid grid-cols-1 gap-1 sm:grid-cols-3 sm:gap-1"
+                : "grid grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-5"
+          }
+        >
+          {allImageUrls.map((url, i) => {
+            const hideOnMobile =
+              threeColumnFullBleed &&
+              allImageUrls.length === 3 &&
+              i !== 1;
+
+            return (
+              <div
+                key={url}
+                className={hideOnMobile ? "hidden sm:block" : undefined}
+              >
+                <StackPhoto
+                  url={url}
+                  flushEdges={threeColumnFullBleed}
+                  onOpen={() => openAtGlobalIndex(url)}
+                />
+              </div>
+            );
+          })}
+        </div>
+        {carouselIndex !== null && (
+          <PhotoCarousel
+            urls={allImageUrls}
+            initialIndex={carouselIndex}
+            onClosed={() => setCarouselIndex(null)}
+          />
+        )}
+      </>
+    );
+  }
+
+  return (
+    <>
+      <div className={fill ? "absolute inset-0" : "space-y-4"}>
+        {segments.map((segment, segIndex) => {
+          if (segment.kind === "video") {
+            return (
+              <StackVideo
+                key={segment.url}
+                url={segment.url}
+                prominent={prominent}
+                fill={fill}
+                prominentMobileLarge={prominentMobileLarge}
+              />
+            );
+          }
+
+          if (segment.urls.length >= 3) {
+            return (
+              <PhotoDeck
+                key={`deck-${segIndex}-${segment.urls[0]}`}
+                urls={segment.urls}
+                onOpen={() => openDeck(segment.urls, 0)}
+              />
+            );
+          }
+
+          if (segment.urls.length === 2) {
+            return (
+              <PhotoPairGrid
+                key={`pair-${segIndex}-${segment.urls[0]}`}
+                urls={segment.urls}
+                prominent={prominent}
+                fill={fill}
+                prominentMobileLarge={prominentMobileLarge}
+                onOpen={(i) => openDeck(segment.urls, i)}
+              />
+            );
+          }
+
+          const single = segment.urls[0];
+          if (!single) return null;
+          return (
+            <StackPhoto
+              key={single}
+              url={single}
+              prominent={prominent}
+              fill={fill}
+              prominentMobileLarge={prominentMobileLarge}
+              onOpen={() => openAtGlobalIndex(single)}
+            />
+          );
+        })}
+      </div>
+
+      {carouselIndex !== null && allImageUrls.length > 0 && (
+        <PhotoCarousel
+          urls={allImageUrls}
+          initialIndex={carouselIndex}
+          onClosed={() => setCarouselIndex(null)}
+        />
+      )}
+    </>
+  );
+}

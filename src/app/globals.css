@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #ffffff;
+  --ink: #1c1c1a;
+  --ink-soft: #6b6b64;
+  --hairline: #e8e7e2;
+  --sage: #eef1ea;
+  --sage-line: #c7d1bf;
+  --gold: #b99a5b;
+  /* aliases for admin/forms */
+  --canvas: var(--bg);
+  --paper: var(--bg);
+  --accent: var(--gold);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-canvas: var(--bg);
+  --color-paper: var(--bg);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-hairline: var(--hairline);
+  --color-gold: var(--gold);
+  --color-sage-line: var(--sage-line);
+  --color-accent: var(--gold);
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-display {
+  font-family: var(--font-display), Georgia, serif;
+}
+
+/** Carrossel / gestos: sem arrastar fantasma da imagem no navegador */
+.no-native-drag,
+.no-native-drag img {
+  -webkit-user-drag: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.font-body {
+  font-family: var(--font-body), system-ui, sans-serif;
+}
+
+.entry-text-heavy {
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-weight: 900;
+  font-style: normal;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.entry-photo-gradient {
+  background: linear-gradient(160deg, #f2f1ec, #e2e0d6);
+}
+
+/* Lírio decorativo (foto) */
+.lily-photo-mask {
+  -webkit-mask-image: radial-gradient(
+    ellipse 72% 76% at 50% 45%,
+    #000 52%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    ellipse 72% 76% at 50% 45%,
+    #000 52%,
+    transparent 100%
+  );
+}
+
+.lily-photo-image {
+  filter: grayscale(15%) contrast(105%) brightness(108%);
+}
