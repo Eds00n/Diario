@@ -108,7 +108,6 @@ export function AnimatedCountdownLabel({
   const [now, setNow] = useState(() => new Date());
   const [introDone, setIntroDone] = useState(reducedMotion);
   const introStarted = useRef(false);
-  const introTargetRef = useRef<AnimatedValues | null>(null);
 
   const { label } = useMemo(
     () => specialDateCountdown(data, recorrente, now),
@@ -143,7 +142,6 @@ export function AnimatedCountdownLabel({
       return;
     }
     introStarted.current = true;
-    introTargetRef.current = liveTarget;
 
     let cancelled = false;
     let frame = 0;
