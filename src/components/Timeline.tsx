@@ -8,6 +8,7 @@ import { RevealOnMount } from "@/components/RevealOnMount";
 import { RevealOnView } from "@/components/RevealOnView";
 import { SpecialDateBanner } from "@/components/SpecialDateChip";
 import { TimelineBackgroundProvider } from "@/components/TimelineBackground";
+import { Hero200Title } from "@/components/Hero200Title";
 import { capitalizeFirst, formatMonthYear } from "@/lib/dates";
 import type { Entry, SpecialDate } from "@/lib/types";
 
@@ -60,6 +61,7 @@ export function Timeline({
               Retrospectiva dos últimos
             </p>
           </RevealOnMount>
+          <Hero200Title />
           <RevealOnMount delayMs={280}>
             <p className="font-display mt-0.5 text-[clamp(32px,7vw,56px)] font-medium leading-none text-ink md:mt-1">
               dias
