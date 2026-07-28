@@ -27,20 +27,24 @@ export function formatEntryDate(dateStr: string, dateEndStr?: string): string {
   return `${format(start, "d 'de' MMMM", { locale: ptBR })} – ${format(end, "d 'de' MMMM, yyyy", { locale: ptBR })}`;
 }
 
-export function capitalizeFirst(s: string): string {
-  return s.charAt(0).toUpperCase() + s.slice(1);
+/** Dia e mês (uma linha) para intro da memória ao rolar. */
+export function formatEntryDayMonth(dateStr: string, dateEndStr?: string): string {
+  const start = parseISO(dateStr);
+  if (!dateEndStr || dateEndStr === dateStr) {
+    return format(start, "d 'de' MMMM", { locale: ptBR });
+  }
+  const end = parseISO(dateEndStr);
+  if (
+    start.getFullYear() === end.getFullYear() &&
+    start.getMonth() === end.getMonth()
+  ) {
+    return `${format(start, "d", { locale: ptBR })}–${format(end, "d 'de' MMMM", { locale: ptBR })}`;
+  }
+  return `${format(start, "d 'de' MMMM", { locale: ptBR })} – ${format(end, "d 'de' MMMM", { locale: ptBR })}`;
 }
 
-/** Dia + mês para splash antes da memória (usa a data inicial). */
-export function formatEntryDayMonth(dateStr: string): {
-  day: string;
-  month: string;
-} {
-  const d = parseISO(dateStr);
-  return {
-    day: format(d, "d", { locale: ptBR }),
-    month: capitalizeFirst(format(d, "MMMM", { locale: ptBR })),
-  };
+export function capitalizeFirst(s: string): string {
+  return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
 function pushUnit(parts: string[], value: number, singular: string, plural: string) {
