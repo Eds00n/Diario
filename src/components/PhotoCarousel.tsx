@@ -359,7 +359,7 @@ export function PhotoCarousel({
               <button
                 type="button"
                 aria-label="Fechar"
-                className="pointer-events-auto absolute right-2 top-2 z-[102] flex h-9 w-9 items-center justify-center rounded-full bg-black/45 text-xl leading-none text-white backdrop-blur-sm transition-colors hover:bg-black/55 sm:right-3 sm:top-3 sm:h-10 sm:w-10 sm:text-2xl"
+                className="pointer-events-auto absolute right-2 top-2 z-[102] flex h-9 w-9 items-center justify-center border-0 bg-transparent p-0 text-xl leading-none text-white shadow-[0_1px_4px_rgba(0,0,0,0.55)] transition-opacity hover:opacity-80 sm:right-3 sm:top-3 sm:h-10 sm:w-10 sm:text-2xl"
                 onClick={requestClose}
               >
                 ×

@@ -26,5 +26,9 @@ export async function submitSiteLogin(formData: FormData) {
     maxAge: 60 * 60 * 24 * 400,
   });
 
-  redirect(safeNext);
+  redirect(
+    safeNext === "/"
+      ? "/bem-vindo"
+      : `/bem-vindo?next=${encodeURIComponent(safeNext)}`,
+  );
 }

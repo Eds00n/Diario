@@ -105,9 +105,12 @@ function introDurationMs(target: AnimatedValues): number {
 export function AnimatedCountdownLabel({
   data,
   recorrente,
+  omitElapsedPrefix = false,
 }: {
   data: string;
   recorrente: boolean;
+  /** Ex.: subtítulo já diz "Juntos há" — contador só com a duração. */
+  omitElapsedPrefix?: boolean;
 }) {
   const reducedMotion = usePrefersReducedMotion();
   const [now, setNow] = useState(() => new Date());
@@ -187,7 +190,8 @@ export function AnimatedCountdownLabel({
   }
 
   const parts = buildDurationParts(parsed, values);
-  const prefix = parsed.prefix.toLowerCase();
+  const prefix = omitElapsedPrefix ? "" : parsed.prefix.toLowerCase();
+  const prefixPrefix = prefix ? `${prefix} ` : "";
   const hasDays = parsed.days > 0;
   const daysPart = hasDays ? parts[0]! : null;
   const afterDays = hasDays ? parts.slice(1) : parts;
@@ -196,7 +200,8 @@ export function AnimatedCountdownLabel({
     return (
       <span className="tabular-nums">
         <span className="block">
-          {prefix} {daysPart.toLowerCase()},
+          {prefixPrefix}
+          {daysPart.toLowerCase()},
         </span>
         <span className="block">{joinDurationParts(afterDays).toLowerCase()}</span>
       </span>
@@ -204,6 +209,10 @@ export function AnimatedCountdownLabel({
   }
 
   return (
-    <span className="tabular-nums">{formatAnimatedLine(parsed, values)}</span>
+    <span className="tabular-nums">
+      {omitElapsedPrefix
+        ? joinDurationParts(parts).toLowerCase()
+        : formatAnimatedLine(parsed, values)}
+    </span>
   );
 }

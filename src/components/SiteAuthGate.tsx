@@ -14,7 +14,11 @@ export function SiteAuthGate({ children }: { children: React.ReactNode }) {
     pathname === "/login" ||
     pathname === "/login/" ||
     pathname.endsWith("/login") ||
-    pathname.endsWith("/login/");
+    pathname.endsWith("/login/") ||
+    pathname === "/entrar" ||
+    pathname === "/entrar/" ||
+    pathname.endsWith("/entrar") ||
+    pathname.endsWith("/entrar/");
 
   useEffect(() => {
     const ok = isClientAuthenticated();

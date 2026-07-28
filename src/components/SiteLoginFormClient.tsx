@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import {
   setClientAuthenticated,
@@ -9,6 +9,7 @@ import {
 
 export function SiteLoginFormClient() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [showError, setShowError] = useState(false);
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -20,8 +21,14 @@ export function SiteLoginFormClient() {
       return;
     }
     setClientAuthenticated();
-    router.replace("/");
-    router.refresh();
+    const next = searchParams.get("next");
+    const safeNext =
+      next?.startsWith("/") && !next.startsWith("//") ? next : "/";
+    const dest =
+      safeNext === "/"
+        ? "/bem-vindo"
+        : `/bem-vindo?next=${encodeURIComponent(safeNext)}`;
+    router.replace(dest);
   }
 
   return (
