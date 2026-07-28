@@ -1,4 +1,4 @@
-:HL["/Diario/_next/static/chunks/2pjsrqx4bvcde.css","style"]
+:HL["/Diario/_next/static/chunks/2k_leibdg3y9n.css","style"]
 :HL["/Diario/_next/static/media/01e4147cff8141ee-s.p.3huc2loe0ie8a.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/Diario/_next/static/media/612bd71aa396cae6-s.p.0y-3ea_6ee5g5.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/Diario/_next/static/media/65968dad6bcc3c8d-s.p.1z_yc9od1lq47.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
@@ -10,4 +10,5 @@
 :HL["/Diario/_next/static/media/fabcf92ba1ccea36-s.p.1w_qz2ahumqmz.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/Diario/_next/static/chunks/0ypmrijcb9fzj.css","style"]
 :HL["/Diario/images/fundo-lirios.png","image"]
-0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}},"staleTime":300,"buildId":"o6zV5o9_bJ_xMcUaZnkpx"}
+:HL["/Diario/images/hero-200.png","image",{"fetchPriority":"high"}]
+0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}},"staleTime":300,"buildId":"9lwEZJCAzy7epjTl5gI8Q"}

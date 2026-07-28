@@ -9,6 +9,7 @@ import { RevealOnView } from "@/components/RevealOnView";
 import { SpecialDateBanner } from "@/components/SpecialDateChip";
 import { TimelineBackgroundProvider } from "@/components/TimelineBackground";
 import { capitalizeFirst, formatMonthYear } from "@/lib/dates";
+import { assetPath } from "@/lib/asset-path";
 import type { Entry, SpecialDate } from "@/lib/types";
 
 function groupEntriesByMonth(entries: Entry[]): Map<string, Entry[]> {
@@ -61,12 +62,20 @@ export function Timeline({
             </p>
           </RevealOnMount>
           <RevealOnMount delayMs={160}>
-            <h1 className="font-display text-[clamp(72px,16vw,128px)] font-medium leading-none tracking-[0.01em]">
-              200
+            <h1 className="mx-auto w-full">
+              <img
+                src={assetPath("/images/hero-200.png")}
+                alt="200"
+                width={1120}
+                height={420}
+                className="mx-auto h-auto w-full max-w-[min(100%,clamp(300px,78vw,620px))] object-contain"
+                decoding="async"
+                fetchPriority="high"
+              />
             </h1>
           </RevealOnMount>
           <RevealOnMount delayMs={280}>
-            <p className="font-display -mt-1 text-[clamp(32px,7vw,56px)] font-medium leading-none text-ink">
+            <p className="font-display mt-0.5 text-[clamp(32px,7vw,56px)] font-medium leading-none text-ink md:mt-1">
               dias
             </p>
           </RevealOnMount>
