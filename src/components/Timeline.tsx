@@ -53,7 +53,7 @@ export function Timeline({
         rotate={4}
       />
 
-      <section className="relative z-[1] flex min-h-[100dvh] flex-col items-center justify-center px-10 py-16">
+      <section className="relative z-[1] flex w-full min-w-0 flex-col items-center justify-center px-10 py-16">
         <header className="w-full max-w-[720px] text-center">
           <RevealOnMount delayMs={0}>
             <p className="mb-3.5 text-xs font-medium uppercase tracking-[0.35em] text-gold">
@@ -81,7 +81,7 @@ export function Timeline({
         </header>
 
         {specialDates.length > 0 && (
-          <div className="mt-12 w-full max-w-[720px]">
+          <div className="mt-12 w-full min-w-0 max-w-[720px]">
             {specialDates.map((d, i) => (
               <RevealOnMount key={d.id} delayMs={520 + i * 140}>
                 <SpecialDateBanner item={d} />

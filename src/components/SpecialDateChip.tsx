@@ -12,10 +12,12 @@ export function SpecialDateBanner({ item }: { item: SpecialDate }) {
           {item.recorrente ? " · todo ano" : ""}
         </p>
       </div>
-      <div className="w-full max-w-full overflow-x-auto px-2 text-center [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-        <p className="font-display inline-block whitespace-nowrap text-[clamp(16px,3.35vw,42px)] italic leading-snug text-gold lowercase">
-          <AnimatedCountdownLabel data={item.data} recorrente={item.recorrente} />
-        </p>
+      <div className="relative -mx-10 w-[calc(100%+5rem)] min-w-0 max-w-[100vw] px-4 sm:-mx-6 sm:w-[calc(100%+3rem)] sm:px-3 md:mx-0 md:w-full md:max-w-full">
+        <div className="w-full min-w-0 overflow-x-auto overscroll-x-contain px-1 text-center [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+          <p className="font-display mx-auto inline-block w-max max-w-none whitespace-nowrap text-[clamp(11px,calc((100vw-4.5rem)/36),40px)] italic leading-snug text-gold lowercase sm:text-[clamp(12px,calc((100vw-5rem)/38),42px)]">
+            <AnimatedCountdownLabel data={item.data} recorrente={item.recorrente} />
+          </p>
+        </div>
       </div>
     </div>
   );
