@@ -1,0 +1,7 @@
+1:"$Sreact.fragment"
+2:I[6948,["/Diario/_next/static/chunks/0v56hj38pw6vk.js","/Diario/_next/static/chunks/14mrh2-p_w84d.js","/Diario/_next/static/chunks/2ggn1oypxt37j.js"],"SiteLoginFormClient"]
+3:I[22016,["/Diario/_next/static/chunks/0v56hj38pw6vk.js","/Diario/_next/static/chunks/14mrh2-p_w84d.js","/Diario/_next/static/chunks/2ggn1oypxt37j.js"],""]
+4:I[97367,["/Diario/_next/static/chunks/0v56hj38pw6vk.js","/Diario/_next/static/chunks/14mrh2-p_w84d.js"],"OutletBoundary"]
+5:"$Sreact.suspense"
+0:{"rsc":["$","$1","c",{"children":[["$","main",null,{"className":"flex min-h-[100dvh] flex-col items-center justify-center bg-bg px-6 py-16","children":["$","div",null,{"className":"w-full max-w-[320px] text-center","children":[["$","p",null,{"className":"font-display text-[clamp(36px,8vw,52px)] font-medium leading-none text-ink","children":"Diário"}],["$","$L2",null,{}],["$","p",null,{"className":"mt-8","children":["$","$L3",null,{"href":"/","className":"text-[13px] text-ink-soft underline-offset-2 hover:underline","children":"Voltar"}]}]]}]}],[["$","script","script-0",{"src":"/Diario/_next/static/chunks/2ggn1oypxt37j.js","async":true}]],["$","$L4",null,{"children":["$","$5",null,{"name":"Next.MetadataOutlet","children":"$@6"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"H1kncswFU25hdm985ryIq"}
+6:null
