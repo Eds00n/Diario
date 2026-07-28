@@ -56,18 +56,23 @@ export function Timeline({
       <section className="relative z-[1] flex min-h-[100dvh] w-full min-w-0 flex-col items-center justify-center px-10 py-16">
         <header className="w-full max-w-[720px] text-center">
           <RevealOnMount delayMs={0}>
-            <p className="mb-3.5 text-xs font-medium uppercase tracking-[0.35em] text-gold">
-              Nosso
+            <p className="mb-3.5 text-[13px] font-medium tracking-[0.08em] text-gold md:text-[15px] md:tracking-[0.1em]">
+              Retrospectiva dos últimos
             </p>
           </RevealOnMount>
           <RevealOnMount delayMs={160}>
-            <h1 className="font-display text-[clamp(48px,8vw,78px)] font-medium leading-none tracking-[0.01em]">
-              Diário
+            <h1 className="font-display text-[clamp(72px,16vw,128px)] font-medium leading-none tracking-[0.01em]">
+              200
             </h1>
           </RevealOnMount>
-          <RevealOnMount delayMs={320}>
-            <p className="mt-4 text-[15px] tracking-wide text-ink-soft">
-              Memórias guardadas com carinho
+          <RevealOnMount delayMs={280}>
+            <p className="font-display -mt-1 text-[clamp(32px,7vw,56px)] font-medium leading-none text-ink">
+              dias
+            </p>
+          </RevealOnMount>
+          <RevealOnMount delayMs={400}>
+            <p className="mt-4 text-[15px] tracking-wide text-ink-soft lowercase">
+              memórias guardadas
             </p>
             {showAdminLink && (
               <Link
