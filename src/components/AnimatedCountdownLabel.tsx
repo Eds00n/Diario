@@ -1,16 +1,24 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
+import { specialDateCountdown } from "@/lib/dates";
 
 type Parsed = {
   prefix: string;
   days: number;
   hours: number;
   minutes: number;
+  seconds: number;
 };
 
-type AnimatedValues = { days: number; hours: number; minutes: number };
+type AnimatedValues = {
+  days: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
+};
+
 type CountField = keyof AnimatedValues;
 
 function parseCountdownLabel(label: string): Parsed | null {
@@ -22,14 +30,25 @@ function parseCountdownLabel(label: string): Parsed | null {
   const dayMatch = rest.match(/(\d+)\s+(?:dia|dias)\b/);
   const hourMatch = rest.match(/(\d+)\s+(?:hora|horas)\b/);
   const minuteMatch = rest.match(/(\d+)\s+(?:minuto|minutos)\b/);
+  const secondMatch = rest.match(/(\d+)\s+(?:segundo|segundos)\b/);
 
-  if (!dayMatch && !hourMatch && !minuteMatch) return null;
+  if (!dayMatch && !hourMatch && !minuteMatch && !secondMatch) return null;
 
   return {
     prefix: prefixMatch[1]!,
     days: dayMatch ? Number.parseInt(dayMatch[1]!, 10) : 0,
     hours: hourMatch ? Number.parseInt(hourMatch[1]!, 10) : 0,
     minutes: minuteMatch ? Number.parseInt(minuteMatch[1]!, 10) : 0,
+    seconds: secondMatch ? Number.parseInt(secondMatch[1]!, 10) : 0,
+  };
+}
+
+function parsedToValues(parsed: Parsed): AnimatedValues {
+  return {
+    days: parsed.days,
+    hours: parsed.hours,
+    minutes: parsed.minutes,
+    seconds: parsed.seconds,
   };
 }
 
@@ -47,17 +66,32 @@ function formatAnimatedLine(parsed: Parsed, values: AnimatedValues): string {
   if (parsed.hours > 0) {
     parts.push(values.hours === 1 ? "1 hora" : `${values.hours} horas`);
   }
-  if (parsed.minutes > 0 || parts.length === 0) {
+  const detailed = parsed.days > 0 || parsed.hours > 0;
+  if (detailed) {
     parts.push(
       values.minutes === 1 ? "1 minuto" : `${values.minutes} minutos`,
     );
+    parts.push(
+      values.seconds === 1 ? "1 segundo" : `${values.seconds} segundos`,
+    );
+  } else {
+    if (parsed.minutes > 0) {
+      parts.push(
+        values.minutes === 1 ? "1 minuto" : `${values.minutes} minutos`,
+      );
+    }
+    if (parsed.seconds > 0 || parts.length === 0) {
+      parts.push(
+        values.seconds === 1 ? "1 segundo" : `${values.seconds} segundos`,
+      );
+    }
   }
   return `${parsed.prefix} ${joinDurationParts(parts)}`.toLowerCase();
 }
 
-/** Mesma curva/duração do contador de dias (ex.: 0 → 176). */
 function durationForCount(max: number): number {
   if (max <= 0) return 0;
+  if (max <= 59) return Math.min(1200, 350 + max * 12);
   return Math.min(2400, 900 + max * 9);
 }
 
@@ -92,40 +126,62 @@ function animateCount(
   });
 }
 
-export function AnimatedCountdownLabel({ label }: { label: string }) {
+export function AnimatedCountdownLabel({
+  data,
+  recorrente,
+}: {
+  data: string;
+  recorrente: boolean;
+}) {
   const reducedMotion = usePrefersReducedMotion();
-  const parsed = useMemo(() => parseCountdownLabel(label), [label]);
+  const [now, setNow] = useState(() => new Date());
+  const [introDone, setIntroDone] = useState(reducedMotion);
+  const introStarted = useRef(false);
 
-  const target: AnimatedValues = useMemo(
-    () => ({
-      days: parsed?.days ?? 0,
-      hours: parsed?.hours ?? 0,
-      minutes: parsed?.minutes ?? 0,
-    }),
+  const { label } = useMemo(
+    () => specialDateCountdown(data, recorrente, now),
+    [data, recorrente, now],
+  );
+
+  const parsed = useMemo(() => parseCountdownLabel(label), [label]);
+  const liveTarget = useMemo(
+    () => (parsed ? parsedToValues(parsed) : null),
     [parsed],
   );
 
   const [values, setValues] = useState<AnimatedValues>(() =>
-    reducedMotion || !parsed
-      ? target
-      : { days: 0, hours: 0, minutes: 0 },
+    liveTarget && !reducedMotion
+      ? { days: 0, hours: 0, minutes: 0, seconds: 0 }
+      : liveTarget ?? { days: 0, hours: 0, minutes: 0, seconds: 0 },
   );
 
   useEffect(() => {
-    if (!parsed || reducedMotion) {
-      setValues(target);
+    if (!introDone) return;
+    const id = window.setInterval(() => setNow(new Date()), 1000);
+    return () => window.clearInterval(id);
+  }, [introDone]);
+
+  useEffect(() => {
+    if (!introDone || !liveTarget) return;
+    setValues(liveTarget);
+  }, [introDone, liveTarget]);
+
+  useEffect(() => {
+    if (!parsed || !liveTarget || reducedMotion || introStarted.current) {
       return;
     }
+    introStarted.current = true;
 
     let cancelled = false;
 
     const run = async () => {
-      setValues({ days: 0, hours: 0, minutes: 0 });
+      setValues({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
       const sequence: Array<{ field: CountField; max: number }> = [
-        { field: "days", max: target.days },
-        { field: "hours", max: target.hours },
-        { field: "minutes", max: target.minutes },
+        { field: "days", max: liveTarget.days },
+        { field: "hours", max: liveTarget.hours },
+        { field: "minutes", max: liveTarget.minutes },
+        { field: "seconds", max: liveTarget.seconds },
       ];
 
       for (const { field, max } of sequence) {
@@ -136,6 +192,8 @@ export function AnimatedCountdownLabel({ label }: { label: string }) {
           }
         });
       }
+
+      if (!cancelled) setIntroDone(true);
     };
 
     void run();
@@ -143,7 +201,7 @@ export function AnimatedCountdownLabel({ label }: { label: string }) {
     return () => {
       cancelled = true;
     };
-  }, [parsed, reducedMotion, target]);
+  }, [parsed, liveTarget, reducedMotion]);
 
   if (!parsed) {
     return <>{label.toLowerCase()}</>;

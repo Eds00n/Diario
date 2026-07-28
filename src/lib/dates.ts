@@ -1,6 +1,6 @@
 import {
   differenceInCalendarDays,
-  differenceInMinutes,
+  differenceInSeconds,
   format,
   parseISO,
   setYear,
@@ -31,21 +31,30 @@ export function capitalizeFirst(s: string): string {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
-function formatDurationParts(totalMinutes: number): string[] {
-  const safe = Math.max(0, totalMinutes);
-  const days = Math.floor(safe / (24 * 60));
-  const hours = Math.floor((safe % (24 * 60)) / 60);
-  const minutes = safe % 60;
+function pushUnit(parts: string[], value: number, singular: string, plural: string) {
+  parts.push(value === 1 ? `1 ${singular}` : `${value} ${plural}`);
+}
+
+function formatDurationPartsFromSeconds(totalSeconds: number): string[] {
+  const safe = Math.max(0, totalSeconds);
+  const days = Math.floor(safe / 86400);
+  const hours = Math.floor((safe % 86400) / 3600);
+  const minutes = Math.floor((safe % 3600) / 60);
+  const seconds = safe % 60;
   const parts: string[] = [];
 
-  if (days > 0) {
-    parts.push(days === 1 ? "1 dia" : `${days} dias`);
-  }
-  if (hours > 0) {
-    parts.push(hours === 1 ? "1 hora" : `${hours} horas`);
-  }
-  if (minutes > 0 || parts.length === 0) {
-    parts.push(minutes === 1 ? "1 minuto" : `${minutes} minutos`);
+  if (days > 0) pushUnit(parts, days, "dia", "dias");
+  if (hours > 0) pushUnit(parts, hours, "hora", "horas");
+
+  const detailed = days > 0 || hours > 0;
+  if (detailed) {
+    pushUnit(parts, minutes, "minuto", "minutos");
+    pushUnit(parts, seconds, "segundo", "segundos");
+  } else {
+    if (minutes > 0) pushUnit(parts, minutes, "minuto", "minutos");
+    if (seconds > 0 || parts.length === 0) {
+      pushUnit(parts, seconds, "segundo", "segundos");
+    }
   }
 
   return parts;
@@ -58,8 +67,8 @@ function joinDurationParts(parts: string[]): string {
 }
 
 function formatElapsedLabel(from: Date, to: Date, prefix: "Há" | "Faltam"): string {
-  const totalMinutes = differenceInMinutes(to, from);
-  const parts = formatDurationParts(totalMinutes);
+  const totalSeconds = differenceInSeconds(to, from);
+  const parts = formatDurationPartsFromSeconds(totalSeconds);
   return `${prefix} ${joinDurationParts(parts)}`;
 }
 

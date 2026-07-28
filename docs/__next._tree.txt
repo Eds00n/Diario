@@ -10,4 +10,4 @@
 :HL["/Diario/_next/static/media/fabcf92ba1ccea36-s.p.1w_qz2ahumqmz.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/Diario/_next/static/chunks/0ypmrijcb9fzj.css","style"]
 :HL["/Diario/images/fundo-lirios.png","image"]
-0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}},"staleTime":300,"buildId":"IDrihL0CjFq-ikbExaI0U"}
+0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}},"staleTime":300,"buildId":"CmosD8C2I89eY4_eKCCzD"}
