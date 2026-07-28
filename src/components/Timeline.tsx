@@ -42,7 +42,7 @@ export function Timeline({
 
   return (
     <TimelineBackgroundProvider>
-    <div className="relative overflow-x-hidden pb-24">
+    <div className="relative pb-24">
       <LilyField />
       <DecorativeLily position="top-right" size={300} opacity={0.42} priority />
       <DecorativeLily position="left" size={320} opacity={0.38} rotate={-6} />
@@ -96,7 +96,7 @@ export function Timeline({
           Ainda não há entradas por aqui.
         </p>
       ) : (
-        <div className="relative z-[1]">
+        <div className="relative z-[1] overflow-x-hidden">
         <>
           {months.map((monthKey, sectionIndex) => {
             const monthEntries = grouped.get(monthKey)!;
