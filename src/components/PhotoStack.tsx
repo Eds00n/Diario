@@ -78,6 +78,51 @@ function StackVideo({
   );
 }
 
+const BLUR_IMAGE_CLASS = "scale-[1.08] blur-2xl brightness-[0.75] saturate-[0.85]";
+
+function EyeRevealIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden
+    >
+      <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z" />
+      <circle cx="12" cy="12" r="3" />
+    </svg>
+  );
+}
+
+function PhotoBlurRevealOverlay({ onReveal }: { onReveal: () => void }) {
+  return (
+    <div className="absolute inset-0 z-[5] flex flex-col items-center justify-center gap-3 overflow-hidden rounded-2xl bg-black/25 px-6 text-center">
+      <span className="flex h-[52px] w-[52px] items-center justify-center rounded-full border-[1.5px] border-white/90 text-white">
+        <EyeRevealIcon className="h-[22px] w-[22px]" />
+      </span>
+      <p className="font-body max-w-[220px] text-[13px] font-normal leading-snug tracking-[0.01em] text-white">
+        imagem sem qualidade
+        <span className="block text-[12px] text-white/70">não me julgue</span>
+      </p>
+      <button
+        type="button"
+        className="font-body mt-0.5 text-[14px] font-semibold text-white transition-opacity hover:opacity-80"
+        onClick={(e) => {
+          e.stopPropagation();
+          onReveal();
+        }}
+      >
+        Ver foto
+      </button>
+    </div>
+  );
+}
+
 function StackPhoto({
   url,
   onOpen,
@@ -99,25 +144,11 @@ function StackPhoto({
   const hidden = blurReveal && !revealed;
 
   const imageBlurClass = hidden
-    ? "scale-105 blur-xl brightness-[0.85]"
+    ? BLUR_IMAGE_CLASS
     : "transition-transform duration-300 ease-out group-hover:scale-[1.02]";
 
   const blurOverlay = hidden ? (
-    <div className="absolute inset-0 z-[5] flex flex-col items-center justify-center gap-5 overflow-hidden rounded-2xl bg-black/35 px-5 text-center">
-      <p className="font-display max-w-[min(100%,280px)] text-pretty text-[clamp(15px,4vw,20px)] italic leading-snug text-white lowercase md:max-w-[320px] md:text-[22px] md:leading-[1.35]">
-        imagem sem qualidade não me julgue
-      </p>
-      <button
-        type="button"
-        className="font-body rounded-full border border-white/70 bg-white/95 px-6 py-2.5 text-[12px] font-medium uppercase tracking-[0.14em] text-ink transition-colors hover:bg-white"
-        onClick={(e) => {
-          e.stopPropagation();
-          setRevealed(true);
-        }}
-      >
-        Avançar
-      </button>
-    </div>
+    <PhotoBlurRevealOverlay onReveal={() => setRevealed(true)} />
   ) : null;
   if (prominent && fill) {
     return (
