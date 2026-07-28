@@ -39,7 +39,7 @@ export const demoEntries: Entry[] = [
 export const demoSpecialDates: SpecialDate[] = [
   {
     id: "demo-sd-1",
-    nome: "Nosso compromisso",
+    subtitulo: "Juntos...",
     data: "2026-02-02",
     recorrente: false,
     created_at: new Date().toISOString(),

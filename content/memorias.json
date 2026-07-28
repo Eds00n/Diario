@@ -41,8 +41,8 @@
       "123123.jpeg"
     ],
     "texto": "Grande dia que paramos para conversar no Tudo ou Nada, para saber o que seria porque tinha nos afastado",
-    "texto_complemento": "Nunca saí do treino e tomei um banho tão rápido para te ver kkkk",
-    "texto_abaixo": "Eu fui tão nervoso porque, em alguma quinta-feira, tivemos aquela conversa do não estou pronta para namorar agora.",
+    "texto_complemento": "Nunca saí do treino e tomei um banho tão rápido",
+    "texto_abaixo": "Eu fui tão nervoso porque, em alguma quinta-feira, tivemos aquela conversa do \"não estou pronta para namorar agora.\"",
     "texto_abaixo_direita": "Mas você esclareceu seus limites e continuamos a nos aproximar.",
     "is_data_especial": false
   },
@@ -152,6 +152,9 @@
     "data": "2025-03-17",
     "foto": "memoria-marco-2025-treino-v5.png",
     "foto_revelar_blur": true,
+    "foto_object_position": "50% 38%",
+    "foto_object_scale": 1.12,
+    "citacao_apenas": true,
     "texto": "A gente treinava e você fugia de mim, e eu, que nem tinha intenções diretas, não ia. (Eu lembro desse dia como se fosse ontem kkkkk)",
     "is_data_especial": false
   },
@@ -159,6 +162,8 @@
     "data": "2025-03-25",
     "foto": "memoria-desmaiei-gi-v5.png",
     "foto_revelar_blur": true,
+    "foto_object_position": "50% 40%",
+    "foto_object_scale": 1.14,
     "texto": "O dia que te desmaiei kkkkk",
     "is_data_especial": false
   },

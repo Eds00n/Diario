@@ -24,7 +24,7 @@ export function EntryImmersiveZone({
       ([entry]) => {
         setZoneActive(zoneId, backgroundUrl, !!entry?.isIntersecting);
       },
-      { threshold: 0.06, rootMargin: "-4% 0px -10% 0px" },
+      { threshold: 0.03, rootMargin: "10% 0px -38% 0px" },
     );
 
     observer.observe(el);

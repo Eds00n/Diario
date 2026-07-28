@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #ffffff;
+  --bg: #f7f4ef;
   --ink: #1c1c1a;
   --ink-soft: #6b6b64;
   --hairline: #e8e7e2;
@@ -29,6 +29,12 @@
   --color-accent: var(--gold);
   --font-display: var(--font-display);
   --font-body: var(--font-body);
+  --font-title: var(--font-title);
+  --font-serif: var(--font-display), Georgia, "Times New Roman", serif;
+}
+
+html {
+  overflow-x: clip;
 }
 
 body {
@@ -36,10 +42,15 @@ body {
   color: var(--ink);
   font-weight: 300;
   -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
 }
 
 .font-display {
   font-family: var(--font-display), Georgia, serif;
+}
+
+.font-serif {
+  font-family: var(--font-display), Georgia, "Times New Roman", serif;
 }
 
 .font-title {
@@ -79,58 +90,180 @@ body {
   color: var(--entry-muted);
 }
 
-.entry-gold-ornament__line {
-  height: 1px;
-  width: min(4.5rem, 22vw);
-  background: var(--gold);
-  opacity: 0.72;
-  border-radius: 1px;
-}
-
-.entry-gold-ornament__heart {
-  font-size: 7px;
-  line-height: 1;
-  color: var(--gold);
-  opacity: 0.88;
-}
-
-.entry-page-number {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.45rem;
-  font-family: var(--font-display), Georgia, serif;
-  font-size: 20px;
+/** Citação editorial — sempre Cormorant itálico, nunca escala de título. */
+.entry-diary-section .entry-quote {
+  font-family: inherit;
   font-weight: 400;
-  color: var(--entry-muted);
-  font-variant-numeric: lining-nums;
+  font-style: italic;
+  font-size: 0.8125rem;
+  line-height: 1.55;
 }
 
-.entry-page-number__line {
-  display: block;
-  height: 1px;
-  width: 1.75rem;
-  background: var(--gold);
-  opacity: 0.65;
-  border-radius: 1px;
+@media (min-width: 640px) {
+  .entry-diary-section .entry-quote {
+    font-size: 1.125rem;
+    line-height: 1.65;
+  }
+}
+
+.entry-diary-section .entry-quote--with-title {
+  line-height: 1.55;
+}
+
+@media (min-width: 640px) {
+  .entry-diary-section .entry-quote--with-title {
+    line-height: 1.65;
+  }
+}
+
+.entry-diary-section .entry-quote--solo {
+  line-height: 1.55;
+}
+
+@media (min-width: 640px) {
+  .entry-diary-section .entry-quote--solo {
+    line-height: 1.65;
+  }
+}
+
+@media (min-width: 768px) {
+  .entry-diary-section .entry-quote {
+    font-size: 1.25rem;
+    line-height: 1.7;
+  }
+
+  .entry-diary-section .entry-quote--solo {
+    line-height: 1.75;
+  }
+}
+
+/** 17 mar 2025 — texto longo como citação (incl. HTML legado com .entry-title-text). */
+.entry-diary-section[data-entry-date="2025-03-17"] .entry-quote,
+.entry-text-block:has(time[datetime="2025-03-17"]) p.entry-title-text,
+.entry-text-block:has(time[datetime="2025-03-17"]) .entry-title-text {
+  font-family: var(--font-display), Georgia, serif !important;
+  font-size: 1rem !important;
+  font-weight: 400 !important;
+  font-style: italic !important;
+  line-height: 1.6 !important;
+  color: var(--entry-muted) !important;
+}
+
+@media (min-width: 768px) {
+  .entry-diary-section[data-entry-date="2025-03-17"] .entry-quote,
+  .entry-text-block:has(time[datetime="2025-03-17"]) p.entry-title-text,
+  .entry-text-block:has(time[datetime="2025-03-17"]) .entry-title-text {
+    font-size: 1.0625rem !important;
+    line-height: 1.65 !important;
+  }
 }
 
 .entry-photo-print {
+  position: relative;
+  z-index: 0;
   background: #ffffff;
-  padding: 6px;
-  border-radius: 18px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  padding: 8px;
+  border-radius: 6px;
+  overflow: visible;
+  box-shadow:
+    0 10px 30px rgba(28, 28, 26, 0.18),
+    0 24px 48px -10px rgba(28, 28, 26, 0.14);
+}
+
+@media (min-width: 640px) {
+  .entry-photo-print {
+    padding: 16px;
+  }
 }
 
 .entry-photo-print__inner {
   overflow: hidden;
-  border-radius: 12px;
+  border-radius: 6px;
   background: #ffffff;
+  box-shadow: none;
+  filter: none;
+  width: 100%;
+}
+
+.entry-photo-print__inner > button,
+.entry-photo-print__inner > .relative,
+.entry-photo-print__inner img {
+  box-shadow: none;
 }
 
 .entry-photo-print__inner > button,
 .entry-photo-print__inner > .relative {
-  border-radius: 12px;
+  border-radius: 6px;
+}
+
+/** Ornamento ♥ centralizado logo abaixo da data (layout legado + editorial). */
+.entry-text-block > time + .entry-gold-ornament,
+.entry-date-header .entry-gold-ornament {
+  width: 100%;
+  max-width: 14rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (min-width: 640px) {
+  .entry-text-block > time + .entry-gold-ornament,
+  .entry-date-header .entry-gold-ornament {
+    max-width: 16rem;
+  }
+}
+
+/**
+ * Número da página — canto inferior direito da seção inteira (foto + texto),
+ * mesma posição em todas as entradas (layout novo + legado no footer).
+ */
+.entry-page-marker,
+.entry-page-number {
+  position: absolute;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 5;
+  pointer-events: none;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 0.875rem;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  color: #78716c;
+}
+
+@media (min-width: 768px) {
+  .entry-page-marker,
+  .entry-page-number {
+    bottom: 2.5rem;
+    right: 2.5rem;
+  }
+}
+
+article:has(.entry-page-number) footer {
+  position: absolute;
+  bottom: 2rem;
+  right: 2rem;
+  margin: 0 !important;
+  padding: 0;
+  border: none;
+  z-index: 5;
+  pointer-events: none;
+}
+
+@media (min-width: 768px) {
+  article:has(.entry-page-number) footer {
+    bottom: 2.5rem;
+    right: 2.5rem;
+  }
+}
+
+article:has(.entry-page-number) footer .entry-gold-ornament,
+.entry-page-number__line {
+  display: none;
+}
+
+article:has(.entry-page-number) .entry-page-number {
+  position: static;
 }
 
 .entry-title-text .entry-text-heavy {
@@ -167,8 +300,27 @@ body {
   text-transform: uppercase;
 }
 
+.entry-important-title .entry-text-heavy {
+  max-width: none;
+  white-space: nowrap;
+}
+
 .entry-photo-gradient {
-  background: linear-gradient(165deg, #fafafa, #f3f2ef);
+  background: linear-gradient(165deg, #faf8f4, #efe9e0);
+}
+
+.photo-blur-reveal-overlay {
+  color: #ffffff;
+}
+
+.photo-blur-reveal-overlay p,
+.photo-blur-reveal-overlay button {
+  color: #ffffff;
+}
+
+.photo-blur-reveal-overlay__icon {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.82);
 }
 
 /* Lírio decorativo (foto) */
@@ -186,5 +338,5 @@ body {
 }
 
 .lily-photo-image {
-  filter: grayscale(15%) contrast(105%) brightness(108%);
+  filter: grayscale(12%) contrast(102%) brightness(102%);
 }

@@ -3,6 +3,10 @@ export type Entry = {
   data: string;
   /** Fim do intervalo (mesmo mês/ano) exibido no cabeçalho da entrada. */
   data_fim?: string;
+  /** Força o texto principal como citação (itálico, tamanho médio), nunca título grande. */
+  citacao_apenas?: boolean;
+  /** Título curto editorial (opcional). Se omitido, `texto` longo vira citação. */
+  titulo?: string;
   texto: string;
   /** Parágrafo logo abaixo do texto principal (antes das fotos). */
   texto_complemento?: string;
@@ -22,6 +26,10 @@ export type Entry = {
   foto_direita?: boolean;
   /** Foto começa borrada até o usuário tocar em “Avançar”. */
   foto_revelar_blur?: boolean;
+  /** Enquadramento CSS object-position (ex.: "50% 38%"). */
+  foto_object_position?: string;
+  /** Zoom leve com object-cover (ex.: 1.1 recorta bordas). */
+  foto_object_scale?: number;
   /** Fundo imersivo (public/images) ao rolar até esta entrada. */
   fundo_imersivo?: string;
   /** Continua o fundo imersivo da entrada anterior (mesma zona de scroll). */
@@ -31,8 +39,8 @@ export type Entry = {
 
 export type SpecialDate = {
   id: string;
-  nome: string;
-  /** Linha abaixo do título (ex.: “Juntos…”). */
+  nome?: string;
+  /** Linha principal (ex.: “Juntos…”). */
   subtitulo?: string;
   data: string;
   recorrente: boolean;

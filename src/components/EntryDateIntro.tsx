@@ -9,14 +9,16 @@ const CONTENT_REVEAL_MS = 520;
 
 const ease = "cubic-bezier(0.22, 1, 0.36, 1)";
 
-/** Quão perto do meio da tela o centro do bloco precisa estar (px). */
-function isBlockCentered(el: HTMLElement): boolean {
+/** Quão perto da linha de revelação o centro do bloco precisa estar (px). */
+function isBlockReadyToReveal(el: HTMLElement): boolean {
   const rect = el.getBoundingClientRect();
   if (rect.bottom <= 0 || rect.top >= window.innerHeight) return false;
   const blockCenter = rect.top + rect.height / 2;
   const viewCenter = window.innerHeight / 2;
-  const tolerance = Math.min(96, window.innerHeight * 0.1);
-  return Math.abs(blockCenter - viewCenter) <= tolerance;
+  /** Metade da metade abaixo do centro → 50% + 12,5% = 62,5% da viewport. */
+  const viewTrigger = viewCenter + viewCenter / 4;
+  const tolerance = Math.min(128, window.innerHeight * 0.14);
+  return Math.abs(blockCenter - viewTrigger) <= tolerance;
 }
 
 type Phase = "idle" | "date" | "content";
@@ -65,7 +67,7 @@ export function EntryDateIntro({
     };
 
     const onScrollOrResize = () => {
-      if (isBlockCentered(el)) beginIntro();
+      if (isBlockReadyToReveal(el)) beginIntro();
     };
 
     onScrollOrResize();
@@ -113,7 +115,7 @@ export function EntryDateIntro({
           style={{
             opacity: showContent ? 1 : 0,
             transform: contentTransform,
-            transition: `opacity 950ms ${ease}, transform 950ms ${ease}`,
+            transition: `opacity ${CONTENT_REVEAL_MS}ms ${ease}, transform ${CONTENT_REVEAL_MS}ms ${ease}`,
           }}
         >
           {children}

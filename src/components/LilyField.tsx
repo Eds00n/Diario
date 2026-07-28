@@ -9,8 +9,8 @@ const DEFAULT_FUNDO = assetPath("/images/fundo-lirios.png");
 const MOBILE_FUNDO = assetPath("/images/fundo-lirios-mobile.png");
 const IMMERSIVE_FUNDO = assetPath("/images/fundo-lirios-namorados.png");
 const IMMERSIVE_MOBILE_FUNDO = assetPath("/images/fundo-lirios-namorados-mobile.png");
-const IMMERSIVE_FADE_MS = 1650;
-const IMMERSIVE_FADE_EASE = "cubic-bezier(0.16, 1, 0.28, 1)";
+const IMMERSIVE_FADE_MS = 3800;
+const IMMERSIVE_FADE_EASE = "cubic-bezier(0.33, 1, 0.58, 1)";
 
 function immersiveMobileSrc(desktopSrc: string): string {
   if (desktopSrc.includes("fundo-lirios-namorados")) {
@@ -76,13 +76,13 @@ export function LilyField() {
     ? `opacity ${transitionMs}ms ${IMMERSIVE_FADE_EASE}`
     : "none";
 
-  const defaultOpacity = showImmersive ? 0 : 0.92;
+  const defaultOpacity = showImmersive ? 0 : 0.88;
   const immersiveOpacity = showImmersive ? 0.95 : 0;
-  const veilOpacity = showImmersive ? 0.22 : 1;
+  const veilOpacity = showImmersive ? 0.18 : 0;
 
   return (
     <div
-      className="pointer-events-none fixed inset-0 z-0 min-h-[100dvh] overflow-hidden bg-[#f3f1eb] md:bg-[#f3f1eb]"
+      className="pointer-events-none fixed inset-0 z-0 min-h-[100dvh] overflow-hidden bg-bg"
       aria-hidden
     >
       <LilyBackgroundImage
@@ -109,13 +109,15 @@ export function LilyField() {
         transition={fadeTransition}
         variant="desktop"
       />
-      <div
-        className="absolute inset-0 bg-bg/25 max-md:bg-bg/12 md:bg-bg/35"
-        style={{
-          opacity: veilOpacity,
-          transition: fadeTransition,
-        }}
-      />
+      {showImmersive ? (
+        <div
+          className="absolute inset-0 bg-bg/15 max-md:bg-bg/10 md:bg-bg/18"
+          style={{
+            opacity: veilOpacity,
+            transition: fadeTransition,
+          }}
+        />
+      ) : null}
     </div>
   );
 }

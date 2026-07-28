@@ -56,7 +56,7 @@ function joinDurationParts(parts: string[]): string {
   return `${parts.slice(0, -1).join(", ")} e ${parts.at(-1)}`;
 }
 
-function formatAnimatedLine(parsed: Parsed, values: AnimatedValues): string {
+function buildDurationParts(parsed: Parsed, values: AnimatedValues): string[] {
   const parts: string[] = [];
   if (parsed.days > 0) {
     parts.push(values.days === 1 ? "1 dia" : `${values.days} dias`);
@@ -84,6 +84,11 @@ function formatAnimatedLine(parsed: Parsed, values: AnimatedValues): string {
       );
     }
   }
+  return parts;
+}
+
+function formatAnimatedLine(parsed: Parsed, values: AnimatedValues): string {
+  const parts = buildDurationParts(parsed, values);
   return `${parsed.prefix} ${joinDurationParts(parts)}`.toLowerCase();
 }
 
@@ -179,6 +184,23 @@ export function AnimatedCountdownLabel({
 
   if (!parsed) {
     return <>{label.toLowerCase()}</>;
+  }
+
+  const parts = buildDurationParts(parsed, values);
+  const prefix = parsed.prefix.toLowerCase();
+  const hasDays = parsed.days > 0;
+  const daysPart = hasDays ? parts[0]! : null;
+  const afterDays = hasDays ? parts.slice(1) : parts;
+
+  if (daysPart && afterDays.length > 0) {
+    return (
+      <span className="tabular-nums">
+        <span className="block">
+          {prefix} {daysPart.toLowerCase()},
+        </span>
+        <span className="block">{joinDurationParts(afterDays).toLowerCase()}</span>
+      </span>
+    );
   }
 
   return (

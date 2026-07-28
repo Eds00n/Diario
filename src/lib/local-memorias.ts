@@ -17,9 +17,15 @@ export function getMemoriasRoot(): string {
 
 function mediaUrlForFile(relativeFile: string): string {
   const normalized = relativeFile.replace(/\\/g, "/");
+  const fileName = path.basename(normalized);
+  const encodedName = encodeURIComponent(fileName);
   if (isStaticExportBuild()) {
     const base = process.env.NEXT_PUBLIC_BASE_PATH?.trim() || "";
-    return `${base}/memorias/${encodeURIComponent(path.basename(normalized))}`;
+    return `${base}/memorias/${encodedName}`;
+  }
+  const publicCopy = path.join(process.cwd(), "public", "memorias", fileName);
+  if (fs.existsSync(publicCopy)) {
+    return `/memorias/${encodedName}`;
   }
   return `/api/memoria-foto/${encodeURIComponent(normalized)}`;
 }
@@ -34,6 +40,8 @@ type MemoriasJsonItem = {
   foto?: string;
   fotos?: string[];
   texto: string;
+  titulo?: string;
+  citacao_apenas?: boolean;
   texto_complemento?: string;
   texto_abaixo?: string;
   texto_abaixo_direita?: string;
@@ -42,6 +50,8 @@ type MemoriasJsonItem = {
   foto_importante_banner?: boolean;
   foto_direita?: boolean;
   foto_revelar_blur?: boolean;
+  foto_object_position?: string;
+  foto_object_scale?: number;
   fundo_imersivo?: string;
   fundo_imersivo_grupo?: boolean;
 };
@@ -86,6 +96,8 @@ export function loadMemoriasFromJson(): Entry[] {
       id: `memoria-local-${index}`,
       data: item.data,
       data_fim: item.data_fim,
+      titulo: item.titulo,
+      citacao_apenas: item.citacao_apenas ?? false,
       texto: item.texto ?? "",
       texto_complemento: item.texto_complemento,
       texto_abaixo: item.texto_abaixo,
@@ -97,6 +109,8 @@ export function loadMemoriasFromJson(): Entry[] {
       foto_importante_banner: item.foto_importante_banner ?? false,
       foto_direita: item.foto_direita ?? false,
       foto_revelar_blur: item.foto_revelar_blur ?? false,
+      foto_object_position: item.foto_object_position,
+      foto_object_scale: item.foto_object_scale,
       fundo_imersivo: item.fundo_imersivo
         ? assetPath(`/images/${item.fundo_imersivo.replace(/^\/+/, "")}`)
         : undefined,
@@ -129,7 +143,7 @@ export function loadSpecialDatesFromJson(): SpecialDate[] {
     return [];
   }
   const raw = JSON.parse(fs.readFileSync(jsonPath, "utf8")) as Array<{
-    nome: string;
+    nome?: string;
     subtitulo?: string;
     data: string;
     recorrente?: boolean;

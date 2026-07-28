@@ -1,7 +1,6 @@
 "use client";
 
-import Image from "next/image";
-import { useMemo, useState } from "react";
+import { useMemo, useState, type CSSProperties } from "react";
 import { EntryPhotoPrintFrame } from "@/components/EntryPhotoPrintFrame";
 import { LoopVideoInView } from "@/components/LoopVideoInView";
 import { PhotoCarousel } from "@/components/PhotoCarousel";
@@ -57,29 +56,58 @@ function StackVideo({
   fill?: boolean;
   prominentMobileLarge?: boolean;
 }) {
-  return (
+  if (fill) {
+    return (
+      <div className="absolute inset-0 h-full w-full overflow-hidden bg-black">
+        <LoopVideoInView
+          src={url}
+          className="h-full w-full object-cover object-center"
+        />
+      </div>
+    );
+  }
+
+  const mediaBox = (
     <div
       className={
-        fill
-          ? "absolute inset-0 h-full w-full overflow-hidden bg-black"
-          : `relative w-full overflow-hidden rounded-2xl ${
-              prominent
-                ? prominentMobileLarge
-                  ? "relative mx-auto aspect-[4/5] w-full max-w-full max-md:max-h-[min(78vh,680px)] md:max-h-[min(78vh,760px)] md:max-w-[760px]"
-                  : "relative mx-auto aspect-[4/5] max-h-[min(78vh,760px)] max-w-[760px]"
-                : "entry-photo-gradient entry-photo-grain relative aspect-[4/5]"
-            }`
+        prominent
+          ? prominentMobileLarge
+            ? "relative mx-auto aspect-[4/5] w-full max-w-full overflow-hidden rounded-md max-md:max-h-[min(72vh,620px)] md:max-h-[min(75vh,680px)] md:max-w-[580px]"
+            : "relative mx-auto aspect-[4/5] w-full max-h-[min(72vh,680px)] max-w-[580px] overflow-hidden rounded-md"
+          : "relative aspect-[4/5] w-full min-w-0 overflow-hidden rounded-md bg-stone-200/40"
       }
     >
       <LoopVideoInView
         src={url}
-        className="h-full w-full object-cover object-center"
+        className="absolute inset-0 h-full w-full object-cover object-center"
       />
     </div>
   );
+
+  return (
+    <EntryPhotoPrintFrame
+      className={prominent ? "relative w-full" : "w-full min-w-0"}
+    >
+      {mediaBox}
+    </EntryPhotoPrintFrame>
+  );
 }
 
-const BLUR_IMAGE_CLASS = "scale-[1.08] blur-2xl brightness-[0.75] saturate-[0.85]";
+const BLUR_IMAGE_CLASS =
+  "scale-[1.04] blur-xl saturate-[0.95]";
+
+function coverImageStyle(
+  objectPosition?: string,
+  objectScale?: number,
+): CSSProperties | undefined {
+  if (!objectPosition && !objectScale) return undefined;
+  const style: CSSProperties = {};
+  if (objectPosition) style.objectPosition = objectPosition;
+  if (objectScale && objectScale !== 1) {
+    style.transform = `scale(${objectScale})`;
+  }
+  return style;
+}
 
 function EyeRevealIcon({ className }: { className?: string }) {
   return (
@@ -102,19 +130,19 @@ function EyeRevealIcon({ className }: { className?: string }) {
 
 function PhotoBlurRevealOverlay({ onReveal }: { onReveal: () => void }) {
   return (
-    <div className="absolute inset-0 z-[5] flex flex-col items-center justify-center gap-3 overflow-hidden rounded-2xl bg-black/25 px-6 text-center">
-      <span className="flex h-[52px] w-[52px] items-center justify-center rounded-full border-[1.5px] border-white/90 text-white">
-        <EyeRevealIcon className="h-[22px] w-[22px]" />
+    <div className="photo-blur-reveal-overlay absolute inset-0 z-[5] flex flex-col items-center justify-center gap-3 overflow-hidden rounded-md px-6 text-center text-white">
+      <span className="photo-blur-reveal-overlay__icon flex h-[52px] w-[52px] items-center justify-center rounded-full border-[1.5px] border-white/80 text-white">
+        <EyeRevealIcon className="h-[22px] w-[22px] text-white" />
       </span>
-      <p className="font-body max-w-[240px] text-[13px] font-normal leading-snug tracking-[0.01em] text-white">
+      <p className="font-body max-w-[240px] text-[13px] font-normal leading-snug tracking-[0.01em] !text-white text-white">
         Imagem sem qualidade
-        <span className="block text-[12px] text-white/70">
+        <span className="block text-[12px] text-white/85">
           não me julgue dona Sâmila
         </span>
       </p>
       <button
         type="button"
-        className="font-body mt-0.5 text-[14px] font-semibold text-white transition-opacity hover:opacity-80"
+        className="font-body mt-0.5 border-0 bg-transparent p-0 text-[14px] font-semibold !text-white transition-opacity hover:opacity-80"
         onClick={(e) => {
           e.stopPropagation();
           onReveal();
@@ -134,6 +162,8 @@ function StackPhoto({
   flushEdges = false,
   prominentMobileLarge = false,
   blurReveal = false,
+  objectPosition,
+  objectScale,
 }: {
   url: string;
   onOpen: () => void;
@@ -142,13 +172,23 @@ function StackPhoto({
   flushEdges?: boolean;
   prominentMobileLarge?: boolean;
   blurReveal?: boolean;
+  objectPosition?: string;
+  objectScale?: number;
 }) {
   const [revealed, setRevealed] = useState(!blurReveal);
   const hidden = blurReveal && !revealed;
 
-  const imageBlurClass = hidden
-    ? BLUR_IMAGE_CLASS
-    : "transition-transform duration-300 ease-out group-hover:scale-[1.02]";
+  const hoverZoomClass =
+    objectScale != null
+      ? ""
+      : "transition-transform duration-300 ease-out group-hover:scale-[1.02]";
+
+  const imageBlurClass = hidden ? BLUR_IMAGE_CLASS : hoverZoomClass;
+
+  const frameStyle = coverImageStyle(
+    objectPosition,
+    hidden && objectScale ? objectScale * 1.04 : objectScale,
+  );
 
   const blurOverlay = hidden ? (
     <PhotoBlurRevealOverlay onReveal={() => setRevealed(true)} />
@@ -171,6 +211,7 @@ function StackPhoto({
             alt=""
             draggable={false}
             className={`no-native-drag block h-full w-full object-cover object-center ${imageBlurClass}`}
+            style={frameStyle}
           />
         </button>
         {blurOverlay}
@@ -196,7 +237,7 @@ function StackPhoto({
               alt=""
               className={
                 prominentMobileLarge
-                  ? `mx-auto block h-auto w-full max-w-full max-h-[min(78vh,680px)] object-contain md:max-h-[min(78vh,760px)] md:w-auto ${imageBlurClass}`
+                  ? `mx-auto block h-auto w-full max-w-full max-h-[min(72vh,620px)] object-contain sm:max-h-[min(74vh,660px)] md:max-h-[min(75vh,680px)] md:w-auto md:max-w-[580px] ${imageBlurClass}`
                   : `mx-auto block h-auto max-h-[min(46vh,240px)] w-auto max-w-full md:max-h-[min(78vh,760px)] ${imageBlurClass}`
               }
             />
@@ -209,33 +250,27 @@ function StackPhoto({
 
   const photoButton = (
     <div
-      className={`relative w-full ${
+      className={`relative w-full min-w-0 overflow-hidden ${
         flushEdges ? "aspect-[3/4]" : "aspect-[4/5]"
-      }`}
+      } ${flushEdges ? "" : "rounded-md"}`}
     >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={url}
+        alt=""
+        draggable={false}
+        className={`no-native-drag absolute inset-0 h-full w-full object-cover ${imageBlurClass}`}
+        style={frameStyle}
+      />
       <button
         type="button"
-        className={`entry-photo-gradient group relative h-full w-full cursor-zoom-in overflow-hidden text-left ${
-          flushEdges ? "rounded-none" : "rounded-[12px]"
-        } disabled:cursor-default`}
+        className="absolute inset-0 z-[1] cursor-zoom-in border-0 bg-transparent p-0 text-left outline-none disabled:cursor-default"
         onClick={() => {
           if (!hidden) onOpen();
         }}
         disabled={hidden}
-      >
-        <Image
-          src={url}
-          alt=""
-          fill
-          className={`object-cover ${imageBlurClass}`}
-          sizes={
-            flushEdges
-              ? "(max-width: 640px) 100vw, 33vw"
-              : "(max-width: 760px) 100vw, 480px"
-          }
-          unoptimized
-        />
-      </button>
+        aria-label="Ampliar foto"
+      />
       {blurOverlay}
     </div>
   );
@@ -245,7 +280,9 @@ function StackPhoto({
   }
 
   return (
-    <EntryPhotoPrintFrame className="w-full">{photoButton}</EntryPhotoPrintFrame>
+    <EntryPhotoPrintFrame className="w-full min-w-0">
+      {photoButton}
+    </EntryPhotoPrintFrame>
   );
 }
 
@@ -256,6 +293,9 @@ function PhotoPairGrid({
   fill = false,
   prominentMobileLarge = false,
   blurReveal = false,
+  photoObjectPosition,
+  photoObjectScale,
+  sideBySide = false,
 }: {
   urls: string[];
   onOpen: (indexInSegment: number) => void;
@@ -263,25 +303,34 @@ function PhotoPairGrid({
   fill?: boolean;
   prominentMobileLarge?: boolean;
   blurReveal?: boolean;
+  photoObjectPosition?: string;
+  photoObjectScale?: number;
+  /** Duas fotos lado a lado (ex.: abaixo do texto). */
+  sideBySide?: boolean;
 }) {
   return (
     <div
       className={
         fill
-          ? "absolute inset-0 grid h-full grid-cols-2 gap-0.5"
-          : "grid grid-cols-2 gap-3 sm:gap-4"
+          ? "absolute inset-0 grid h-full w-full grid-cols-2 gap-0.5"
+          : sideBySide
+            ? "grid w-full min-w-0 grid-cols-2 gap-4 sm:gap-5 md:gap-6 lg:gap-8"
+            : "grid w-full min-w-0 grid-cols-1 gap-3"
       }
     >
       {urls.map((url, i) => (
-        <StackPhoto
-          key={`${url}-${i}`}
-          url={url}
-          prominent={prominent}
-          fill={fill}
-          prominentMobileLarge={prominentMobileLarge}
-          blurReveal={blurReveal && i === 0}
-          onOpen={() => onOpen(i)}
-        />
+        <div key={`${url}-${i}`} className="min-w-0">
+          <StackPhoto
+            url={url}
+            prominent={prominent}
+            fill={fill}
+            prominentMobileLarge={prominentMobileLarge}
+            blurReveal={blurReveal && i === 0}
+            objectPosition={photoObjectPosition}
+            objectScale={photoObjectScale}
+            onOpen={() => onOpen(i)}
+          />
+        </div>
       ))}
     </div>
   );
@@ -326,16 +375,16 @@ function PhotoDeck({
                   transform: `translate(${t.x}px, ${t.y}px) rotate(${t.rotate}deg)`,
                 }}
               >
-                <div className="entry-photo-print relative h-full w-full overflow-hidden rounded-[12px] bg-white shadow-[0_12px_30px_rgba(0,0,0,0.08)]">
-                  <Image
-                    src={url}
-                    alt=""
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 760px) 100vw, 480px"
-                    unoptimized
-                    priority={photoIndex === 0}
-                  />
+                <div className="entry-photo-print relative h-full w-full overflow-visible">
+                  <div className="entry-photo-print__inner relative h-full w-full">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={url}
+                      alt=""
+                      draggable={false}
+                      className="no-native-drag absolute inset-0 h-full w-full object-cover"
+                    />
+                  </div>
                 </div>
               </div>
             );
@@ -361,6 +410,9 @@ export function PhotoStack({
   threeColumnFullBleed = false,
   prominentMobileLarge = false,
   blurReveal = false,
+  photoObjectPosition,
+  photoObjectScale,
+  pairSideBySide = false,
 }: {
   urls: string[];
   prominent?: boolean;
@@ -370,6 +422,10 @@ export function PhotoStack({
   /** Fotos importantes no mobile: mídia maior abaixo do texto */
   prominentMobileLarge?: boolean;
   blurReveal?: boolean;
+  photoObjectPosition?: string;
+  photoObjectScale?: number;
+  /** Duas fotos em linha (layout texto acima). */
+  pairSideBySide?: boolean;
 }) {
   const [carouselIndex, setCarouselIndex] = useState<number | null>(null);
 
@@ -437,7 +493,7 @@ export function PhotoStack({
 
   return (
     <>
-      <div className={fill ? "absolute inset-0" : "space-y-4"}>
+      <div className={fill ? "absolute inset-0" : "w-full min-w-0 space-y-4"}>
         {segments.map((segment, segIndex) => {
           if (segment.kind === "video") {
             return (
@@ -470,6 +526,9 @@ export function PhotoStack({
                 fill={fill}
                 prominentMobileLarge={prominentMobileLarge}
                 blurReveal={blurReveal}
+                photoObjectPosition={photoObjectPosition}
+                photoObjectScale={photoObjectScale}
+                sideBySide={pairSideBySide}
                 onOpen={(i) => openDeck(segment.urls, i)}
               />
             );
@@ -485,6 +544,8 @@ export function PhotoStack({
               fill={fill}
               prominentMobileLarge={prominentMobileLarge}
               blurReveal={blurReveal}
+              objectPosition={photoObjectPosition}
+              objectScale={photoObjectScale}
               onOpen={() => openAtGlobalIndex(single)}
             />
           );

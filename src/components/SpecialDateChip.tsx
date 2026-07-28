@@ -6,7 +6,9 @@ export function SpecialDateBanner({ item }: { item: SpecialDate }) {
   return (
     <div className="flex flex-col items-center gap-5 border-y border-hairline py-8 text-center">
       <div>
-        <p className="font-display text-[22px] font-medium text-ink">{item.nome}</p>
+        {item.nome?.trim() ? (
+          <p className="font-display text-[22px] font-medium text-ink">{item.nome}</p>
+        ) : null}
         {item.subtitulo ? (
           <p className="font-display mt-1 text-[20px] font-normal italic text-ink md:text-[22px]">
             {item.subtitulo}

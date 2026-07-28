@@ -1,15 +1,12 @@
 import Link from "next/link";
 import { useMemo, type ReactNode } from "react";
-import { DecorativeLily } from "@/components/DecorativeLily";
 import { EntryCard } from "@/components/EntryCard";
 import { EntryImmersiveZone } from "@/components/EntryImmersiveZone";
 import { LilyField } from "@/components/LilyField";
 import { RevealOnMount } from "@/components/RevealOnMount";
-import { RevealOnView } from "@/components/RevealOnView";
 import { SpecialDateBanner } from "@/components/SpecialDateChip";
 import { TimelineBackgroundProvider } from "@/components/TimelineBackground";
 import { Hero200Title } from "@/components/Hero200Title";
-import { capitalizeFirst, formatMonthYear } from "@/lib/dates";
 import type { Entry, SpecialDate } from "@/lib/types";
 
 function groupEntriesByMonth(entries: Entry[]): Map<string, Entry[]> {
@@ -51,23 +48,17 @@ export function Timeline({
     <TimelineBackgroundProvider>
     <div className="relative pb-24">
       <LilyField />
-      <DecorativeLily position="top-right" size={300} opacity={0.42} priority />
-      <DecorativeLily position="left" size={320} opacity={0.38} rotate={-6} />
-      <DecorativeLily
-        position="bottom-right"
-        size={280}
-        opacity={0.36}
-        rotate={4}
-      />
 
-      <section className="relative z-[1] flex min-h-[100dvh] w-full min-w-0 flex-col items-center justify-center px-10 py-16">
-        <header className="w-full max-w-[720px] text-center">
+      <section className="relative z-[1] flex min-h-[100dvh] w-full min-w-0 flex-col items-center justify-center bg-transparent px-10 py-16">
+        <header className="w-full max-w-[720px] bg-transparent text-center">
           <RevealOnMount delayMs={0}>
             <p className="mb-1 text-[13px] font-medium tracking-[0.08em] text-gold md:mb-1.5 md:text-[15px] md:tracking-[0.1em]">
               Retrospectiva dos últimos
             </p>
           </RevealOnMount>
-          <Hero200Title />
+          <RevealOnMount delayMs={140}>
+            <Hero200Title />
+          </RevealOnMount>
           <RevealOnMount delayMs={280}>
             <p className="font-display mt-0.5 text-[clamp(32px,7vw,56px)] font-medium leading-none text-ink md:mt-1">
               dias
@@ -104,23 +95,17 @@ export function Timeline({
           Ainda não há entradas por aqui.
         </p>
       ) : (
-        <div className="relative z-[1] overflow-x-hidden">
+        <div className="relative z-[1]">
         <>
           {months.map((monthKey, sectionIndex) => {
             const monthEntries = grouped.get(monthKey)!;
-            const label = capitalizeFirst(formatMonthYear(`${monthKey}-01`));
             return (
               <section
                 key={monthKey}
                 className={`relative z-[1] ${
-                  sectionIndex > 0 ? "mt-28 md:mt-40" : "pt-4 md:pt-8"
+                  sectionIndex > 0 ? "mt-20 md:mt-40" : "pt-2 md:pt-8"
                 }`}
               >
-                <RevealOnView>
-                  <h2 className="relative z-[1] mx-auto mb-10 max-w-[1040px] px-10 font-display text-[15px] uppercase tracking-[0.25em] text-ink-soft">
-                    {label}
-                  </h2>
-                </RevealOnView>
                 <div>
                   {(() => {
                     const nodes: ReactNode[] = [];

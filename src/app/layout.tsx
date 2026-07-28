@@ -15,7 +15,7 @@ const display = Cormorant_Garamond({
 const title = Playfair_Display({
   variable: "--font-title",
   subsets: ["latin"],
-  weight: ["600"],
+  weight: ["400", "600", "700"],
 });
 
 const body = Work_Sans({
