@@ -4,9 +4,9 @@ import { formatEntryDate, formatEntryDayMonth } from "@/lib/dates";
 import { EntryTextEmphasis } from "@/components/EntryTextEmphasis";
 import type { Entry } from "@/lib/types";
 
-/** Texto da memória — caps “Intro Rust” (Rubik Distressed no web). */
+/** Texto da memória — caps bold sólidas (sem efeito “falhado”). */
 const entryBodyTextClass =
-  "font-entry-rust whitespace-pre-wrap text-pretty uppercase leading-[1.22] text-ink text-[clamp(13px,3.4vw,18px)] tracking-[0.04em] md:text-[clamp(14px,1.45vw,20px)] md:leading-[1.28] md:tracking-[0.05em]";
+  "font-entry-rust whitespace-pre-wrap text-pretty uppercase leading-[1.15] text-ink text-[clamp(16px,4vw,22px)] tracking-[0.06em] md:text-[clamp(18px,1.6vw,26px)] md:leading-[1.12] md:tracking-[0.07em]";
 
 /** Mesma tipografia do título em SpecialDateChip (“Nosso compromisso”). */
 const entryDateTextClass =

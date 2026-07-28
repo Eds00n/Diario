@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Rubik_Distressed, Work_Sans } from "next/font/google";
+import { Bebas_Neue, Cormorant_Garamond, Work_Sans } from "next/font/google";
 import { SiteAuthGate } from "@/components/SiteAuthGate";
 import "./globals.css";
 
