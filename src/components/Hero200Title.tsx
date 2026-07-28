@@ -1,4 +1,4 @@
-import hero200 from "@/assets/hero-200-transparent.png";
+import hero200 from "@/assets/hero-200.png";
 
 export function Hero200Title() {
   return (

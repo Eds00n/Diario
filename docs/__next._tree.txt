@@ -10,5 +10,5 @@
 :HL["/Diario/_next/static/media/fabcf92ba1ccea36-s.p.1w_qz2ahumqmz.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/Diario/_next/static/chunks/0ypmrijcb9fzj.css","style"]
 :HL["/Diario/images/fundo-lirios.png","image"]
-:HL["/Diario/_next/static/media/hero-200-transparent.2d78pf_uwq-_e.png","image",{"fetchPriority":"high"}]
-0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}},"staleTime":300,"buildId":"JJoyfX2Fnb_Cp0ToqXDyI"}
+:HL["/Diario/_next/static/media/hero-200.1c_tftzrwj1eu.png","image",{"fetchPriority":"high"}]
+0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}},"staleTime":300,"buildId":"FxCSXAATcGdP1YroNhnrG"}
