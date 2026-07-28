@@ -51,21 +51,23 @@ export function LoginWelcomeTransition() {
         className="relative z-[1] flex min-h-[100dvh] items-center justify-center px-8"
         aria-live="polite"
       >
-        <p
-          className="font-display max-w-[min(100%,28rem)] text-center text-[clamp(24px,5.5vw,40px)] font-medium leading-snug tracking-[0.01em] text-ink motion-reduce:transition-none"
-          style={{
-            opacity: hidden ? 0 : 1,
-            transform:
-              phase === "idle"
-                ? "translateY(56px)"
-                : phase === "exit"
-                  ? "translateY(-28px)"
-                  : "translateY(0)",
-            transition: `opacity 900ms ${EASE}, transform 1100ms ${EASE}`,
-          }}
-        >
-          {PHRASE}
-        </p>
+        <div className="entry-diary-section font-serif">
+          <p
+            className="entry-quote entry-quote--solo mx-auto whitespace-nowrap text-center italic text-stone-700 motion-reduce:transition-none"
+            style={{
+              opacity: hidden ? 0 : 1,
+              transform:
+                phase === "idle"
+                  ? "translateY(56px)"
+                  : phase === "exit"
+                    ? "translateY(-28px)"
+                    : "translateY(0)",
+              transition: `opacity 900ms ${EASE}, transform 1100ms ${EASE}`,
+            }}
+          >
+            {PHRASE}
+          </p>
+        </div>
       </div>
     </div>
   );
