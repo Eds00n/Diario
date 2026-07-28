@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Bebas_Neue, Cormorant_Garamond, Work_Sans } from "next/font/google";
+import { Cormorant_Garamond, Playfair_Display, Work_Sans } from "next/font/google";
 import { SiteAuthGate } from "@/components/SiteAuthGate";
 import "./globals.css";
 
@@ -12,17 +12,16 @@ const display = Cormorant_Garamond({
   style: ["normal", "italic"],
 });
 
+const title = Playfair_Display({
+  variable: "--font-title",
+  subsets: ["latin"],
+  weight: ["600"],
+});
+
 const body = Work_Sans({
   variable: "--font-body",
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700", "800", "900"],
-});
-
-/** Caps bold limpas (estilo Intro Rust, sem textura). */
-const entryCaps = Bebas_Neue({
-  variable: "--font-entry-rust",
-  weight: "400",
-  subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
@@ -38,7 +37,7 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
-      className={`${display.variable} ${body.variable} ${entryCaps.variable} h-full`}
+      className={`${display.variable} ${title.variable} ${body.variable} h-full`}
     >
       <body className="min-h-full flex flex-col font-body antialiased">
         {isStaticSite ? <SiteAuthGate>{children}</SiteAuthGate> : children}

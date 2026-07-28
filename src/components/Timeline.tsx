@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { useMemo, type ReactNode } from "react";
 import { DecorativeLily } from "@/components/DecorativeLily";
 import { EntryCard } from "@/components/EntryCard";
 import { EntryImmersiveZone } from "@/components/EntryImmersiveZone";
@@ -39,6 +39,12 @@ export function Timeline({
 }) {
   const grouped = groupEntriesByMonth(entries);
   const months = [...grouped.keys()].sort((a, b) => a.localeCompare(b));
+  const entryPageNumbers = useMemo(() => {
+    const sorted = [...entries].sort((a, b) => a.data.localeCompare(b.data));
+    const map = new Map<string, number>();
+    sorted.forEach((entry, index) => map.set(entry.id, index + 1));
+    return map;
+  }, [entries]);
   let alternateLayoutIndex = 0;
 
   return (
@@ -153,6 +159,7 @@ export function Timeline({
                             entry={e}
                             reverse={reverse}
                             revealDelay={Math.min(idx * 90, 270)}
+                            pageNumber={entryPageNumbers.get(e.id)}
                           />
                         );
                       };

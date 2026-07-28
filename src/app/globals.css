@@ -7,7 +7,10 @@
   --hairline: #e8e7e2;
   --sage: #eef1ea;
   --sage-line: #c7d1bf;
-  --gold: #b99a5b;
+  --gold: #c8a96a;
+  --entry-date: #4a4a4a;
+  --entry-title: #2b2b2b;
+  --entry-muted: #666666;
   /* aliases for admin/forms */
   --canvas: var(--bg);
   --paper: var(--bg);
@@ -39,14 +42,109 @@ body {
   font-family: var(--font-display), Georgia, serif;
 }
 
-.font-entry-rust {
-  font-family: var(--font-entry-rust), "Bebas Neue", sans-serif;
+.font-title {
+  font-family: var(--font-title), "Playfair Display", Georgia, serif;
+}
+
+/** Data da memória — Cormorant regular. */
+.entry-date-label {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(20px, 3.8vw, 24px);
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  color: var(--entry-date);
+}
+
+/** Título / texto principal — Playfair Display. */
+.entry-title-text {
+  font-family: var(--font-title), Georgia, serif;
+  font-size: clamp(42px, 5.2vw, 52px);
+  font-weight: 600;
+  line-height: 1.38;
+  color: var(--entry-title);
+}
+
+.entry-title-text--compact {
+  font-size: clamp(28px, 4vw, 36px);
+  line-height: 1.35;
+}
+
+/** Frase inferior — Cormorant itálico. */
+.entry-subtitle-text {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(26px, 3.2vw, 30px);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.45;
+  color: var(--entry-muted);
+}
+
+.entry-gold-ornament__line {
+  height: 1px;
+  width: min(4.5rem, 22vw);
+  background: var(--gold);
+  opacity: 0.72;
+  border-radius: 1px;
+}
+
+.entry-gold-ornament__heart {
+  font-size: 7px;
+  line-height: 1;
+  color: var(--gold);
+  opacity: 0.88;
+}
+
+.entry-page-number {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.45rem;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--entry-muted);
+  font-variant-numeric: lining-nums;
+}
+
+.entry-page-number__line {
+  display: block;
+  height: 1px;
+  width: 1.75rem;
+  background: var(--gold);
+  opacity: 0.65;
+  border-radius: 1px;
+}
+
+.entry-photo-print {
+  background: #ffffff;
+  padding: 6px;
+  border-radius: 18px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+}
+
+.entry-photo-print__inner {
+  overflow: hidden;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.entry-photo-print__inner > button,
+.entry-photo-print__inner > .relative {
+  border-radius: 12px;
+}
+
+.entry-title-text .entry-text-heavy {
+  font-family: var(--font-title), Georgia, serif;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: none;
 }
 
 /** Data intro: dígitos na mesma linha tipográfica que as letras (Cormorant). */
 .entry-intro-date {
   font-variant-numeric: lining-nums;
   font-feature-settings: "lnum", "kern";
+  color: var(--entry-date);
 }
 
 /** Carrossel / gestos: sem arrastar fantasma da imagem no navegador */
@@ -70,7 +168,7 @@ body {
 }
 
 .entry-photo-gradient {
-  background: linear-gradient(160deg, #f2f1ec, #e2e0d6);
+  background: linear-gradient(165deg, #fafafa, #f3f2ef);
 }
 
 /* Lírio decorativo (foto) */

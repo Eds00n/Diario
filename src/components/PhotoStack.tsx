@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useMemo, useState } from "react";
+import { EntryPhotoPrintFrame } from "@/components/EntryPhotoPrintFrame";
 import { LoopVideoInView } from "@/components/LoopVideoInView";
 import { PhotoCarousel } from "@/components/PhotoCarousel";
 
@@ -179,32 +180,34 @@ function StackPhoto({
 
   if (prominent) {
     return (
-      <div className="relative w-full">
-        <button
-          type="button"
-          className="entry-photo-gradient flex w-full cursor-zoom-in justify-center overflow-hidden rounded-2xl border-0 p-0 text-left outline-none disabled:cursor-default"
-          onClick={() => {
-            if (!hidden) onOpen();
-          }}
-          disabled={hidden}
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={url}
-            alt=""
-            className={
-              prominentMobileLarge
-                ? `mx-auto block h-auto w-full max-w-full max-h-[min(78vh,680px)] object-contain md:max-h-[min(78vh,760px)] md:w-auto ${imageBlurClass}`
-                : `mx-auto block h-auto max-h-[min(46vh,240px)] w-auto max-w-full md:max-h-[min(78vh,760px)] ${imageBlurClass}`
-            }
-          />
-        </button>
-        {blurOverlay}
-      </div>
+      <EntryPhotoPrintFrame className="relative w-full">
+        <div className="relative w-full">
+          <button
+            type="button"
+            className="entry-photo-gradient flex w-full cursor-zoom-in justify-center overflow-hidden rounded-[12px] border-0 p-0 text-left outline-none disabled:cursor-default"
+            onClick={() => {
+              if (!hidden) onOpen();
+            }}
+            disabled={hidden}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={url}
+              alt=""
+              className={
+                prominentMobileLarge
+                  ? `mx-auto block h-auto w-full max-w-full max-h-[min(78vh,680px)] object-contain md:max-h-[min(78vh,760px)] md:w-auto ${imageBlurClass}`
+                  : `mx-auto block h-auto max-h-[min(46vh,240px)] w-auto max-w-full md:max-h-[min(78vh,760px)] ${imageBlurClass}`
+              }
+            />
+          </button>
+          {blurOverlay}
+        </div>
+      </EntryPhotoPrintFrame>
     );
   }
 
-  return (
+  const photoButton = (
     <div
       className={`relative w-full ${
         flushEdges ? "aspect-[3/4]" : "aspect-[4/5]"
@@ -212,8 +215,8 @@ function StackPhoto({
     >
       <button
         type="button"
-        className={`entry-photo-gradient entry-photo-grain group relative h-full w-full cursor-zoom-in overflow-hidden text-left ${
-          flushEdges ? "rounded-none" : "rounded-2xl"
+        className={`entry-photo-gradient group relative h-full w-full cursor-zoom-in overflow-hidden text-left ${
+          flushEdges ? "rounded-none" : "rounded-[12px]"
         } disabled:cursor-default`}
         onClick={() => {
           if (!hidden) onOpen();
@@ -235,6 +238,14 @@ function StackPhoto({
       </button>
       {blurOverlay}
     </div>
+  );
+
+  if (flushEdges) {
+    return photoButton;
+  }
+
+  return (
+    <EntryPhotoPrintFrame className="w-full">{photoButton}</EntryPhotoPrintFrame>
   );
 }
 
@@ -315,7 +326,7 @@ function PhotoDeck({
                   transform: `translate(${t.x}px, ${t.y}px) rotate(${t.rotate}deg)`,
                 }}
               >
-                <div className="entry-photo-grain relative h-full w-full overflow-hidden rounded-2xl bg-[#f2f1ec] shadow-[0_8px_24px_rgba(28,28,26,0.12)] ring-1 ring-black/[0.06]">
+                <div className="entry-photo-print relative h-full w-full overflow-hidden rounded-[12px] bg-white shadow-[0_12px_30px_rgba(0,0,0,0.08)]">
                   <Image
                     src={url}
                     alt=""
