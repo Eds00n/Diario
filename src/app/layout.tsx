@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Playfair_Display, Work_Sans } from "next/font/google";
+import { Cormorant_Garamond, Great_Vibes, Playfair_Display, Work_Sans } from "next/font/google";
 import { SiteAuthGate } from "@/components/SiteAuthGate";
 import "./globals.css";
 
@@ -16,6 +16,12 @@ const title = Playfair_Display({
   variable: "--font-title",
   subsets: ["latin"],
   weight: ["400", "600", "700"],
+});
+
+const script = Great_Vibes({
+  variable: "--font-script",
+  subsets: ["latin"],
+  weight: ["400"],
 });
 
 const body = Work_Sans({
@@ -37,7 +43,7 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
-      className={`${display.variable} ${title.variable} ${body.variable} h-full`}
+      className={`${display.variable} ${title.variable} ${body.variable} ${script.variable} h-full`}
     >
       <body className="min-h-full flex flex-col font-body antialiased">
         {isStaticSite ? <SiteAuthGate>{children}</SiteAuthGate> : children}

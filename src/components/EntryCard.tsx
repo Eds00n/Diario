@@ -31,9 +31,9 @@ function entryArticleDataAttrs(entry: Entry) {
   };
 }
 
-function entryPhotoStackProps(entry: Entry) {
+function entryPhotoStackProps(entry: Entry, revealedOnLoad = false) {
   return {
-    blurReveal: entry.foto_revelar_blur,
+    blurReveal: revealedOnLoad ? false : entry.foto_revelar_blur,
     photoObjectPosition: entry.foto_object_position,
     photoObjectScale: entry.foto_object_scale,
   };
@@ -126,11 +126,13 @@ export function EntryCard({
   entry,
   reverse = false,
   revealDelay = 0,
+  revealedOnLoad = false,
   pageNumber,
 }: {
   entry: Entry;
   reverse?: boolean;
   revealDelay?: number;
+  revealedOnLoad?: boolean;
   pageNumber?: number;
 }) {
   const photos = entry.fotos ?? [];
@@ -147,7 +149,7 @@ export function EntryCard({
 
   if (highlightBanner) {
     return (
-      <EntryDateIntro dateLabel={introLabel} delayMs={revealDelay}>
+      <EntryDateIntro dateLabel={introLabel} delayMs={revealDelay} immediate={revealedOnLoad}>
         <article
           {...entryArticleDataAttrs(entry)}
           className="entry-important-photo entry-diary-section font-serif relative z-[1] mb-16 w-full md:mb-[280px]"
@@ -158,7 +160,7 @@ export function EntryCard({
                 urls={photos}
                 prominent
                 fill
-                {...entryPhotoStackProps(entry)}
+                {...entryPhotoStackProps(entry, revealedOnLoad)}
               />
             ) : (
               <div className="entry-photo-gradient absolute inset-0" aria-hidden />
@@ -184,7 +186,7 @@ export function EntryCard({
 
   if (highlight) {
     return (
-      <EntryDateIntro dateLabel={introLabel} delayMs={revealDelay}>
+      <EntryDateIntro dateLabel={introLabel} delayMs={revealDelay} immediate={revealedOnLoad}>
         <article
           {...entryArticleDataAttrs(entry)}
           className={`${diarySectionClass} entry-foto-importante min-h-0 max-w-[min(100%,1200px)] flex-col gap-5 md:min-h-[min(88vh,820px)] md:gap-10`}
@@ -200,7 +202,7 @@ export function EntryCard({
                     urls={photos}
                     prominent
                     prominentMobileLarge
-                    {...entryPhotoStackProps(entry)}
+                    {...entryPhotoStackProps(entry, revealedOnLoad)}
                   />
                 ) : (
                   <div className="entry-photo-print">
@@ -223,7 +225,7 @@ export function EntryCard({
 
   if (twoPhotosBelowText) {
     return (
-      <EntryDateIntro dateLabel={introLabel} delayMs={revealDelay}>
+      <EntryDateIntro dateLabel={introLabel} delayMs={revealDelay} immediate={revealedOnLoad}>
         <article
           {...entryArticleDataAttrs(entry)}
           className={`${diarySectionClass} min-h-0 flex-col items-stretch gap-5 md:gap-10`}
@@ -235,7 +237,7 @@ export function EntryCard({
             <PhotoStack
               urls={photos}
               pairSideBySide
-              {...entryPhotoStackProps(entry)}
+              {...entryPhotoStackProps(entry, revealedOnLoad)}
             />
           </div>
           {entry.texto_abaixo?.trim() ? (
@@ -254,8 +256,34 @@ export function EntryCard({
     );
   }
 
+  if (entry.polaroid_hero) {
+    return (
+      <EntryDateIntro dateLabel={introLabel} delayMs={revealDelay} immediate={revealedOnLoad}>
+        <article
+          {...entryArticleDataAttrs(entry)}
+          className={`${diarySectionClass} min-h-0 flex-col md:min-h-[min(72dvh,720px)]`}
+        >
+          <div className="entry-text-col mx-auto w-full max-w-xl">
+            <EntryEditorialText entry={entry} centered />
+          </div>
+          {entry.texto_abaixo?.trim() ? (
+            <p className="entry-quote entry-quote--with-title mx-auto mt-4 max-w-xl italic text-stone-700 md:mt-10">
+              <EntryTextEmphasis text={entry.texto_abaixo} />
+            </p>
+          ) : null}
+          {entry.texto_abaixo_direita?.trim() ? (
+            <p className="entry-quote entry-quote--with-title mx-auto mt-4 max-w-xl text-right italic text-stone-700 md:mt-6">
+              <EntryTextEmphasis text={entry.texto_abaixo_direita} />
+            </p>
+          ) : null}
+          <EntryPageMarker pageNumber={pageNumber} />
+        </article>
+      </EntryDateIntro>
+    );
+  }
+
   return (
-    <EntryDateIntro dateLabel={introLabel} delayMs={revealDelay}>
+    <EntryDateIntro dateLabel={introLabel} delayMs={revealDelay} immediate={revealedOnLoad}>
       <article
         {...entryArticleDataAttrs(entry)}
         className={`${diarySectionClass} entry-diary-section--side-by-side min-h-0 flex-col max-md:justify-start md:min-h-[min(100dvh,960px)]`}
@@ -265,7 +293,11 @@ export function EntryCard({
         >
           <EntryPhotoColumn>
             {photos.length > 0 ? (
-              <PhotoStack urls={photos} {...entryPhotoStackProps(entry)} />
+              <PhotoStack
+                urls={photos}
+                photoOnRight={reverse}
+                {...entryPhotoStackProps(entry, revealedOnLoad)}
+              />
             ) : (
               <div className="entry-photo-print">
                 <div className="entry-photo-print__inner entry-photo-gradient relative aspect-[4/5] w-full overflow-hidden">

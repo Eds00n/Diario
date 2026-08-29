@@ -49,6 +49,8 @@ type MemoriasJsonItem = {
   foto_importante?: boolean;
   foto_importante_banner?: boolean;
   foto_direita?: boolean;
+  polaroid_hero?: boolean;
+  polaroid_foto?: string;
   foto_revelar_blur?: boolean;
   foto_object_position?: string;
   foto_object_scale?: number;
@@ -108,6 +110,10 @@ export function loadMemoriasFromJson(): Entry[] {
       foto_importante: item.foto_importante ?? false,
       foto_importante_banner: item.foto_importante_banner ?? false,
       foto_direita: item.foto_direita ?? false,
+      polaroid_hero: item.polaroid_hero ?? false,
+      polaroid_foto: item.polaroid_foto
+        ? mediaUrlForFile(item.polaroid_foto)
+        : undefined,
       foto_revelar_blur: item.foto_revelar_blur ?? false,
       foto_object_position: item.foto_object_position,
       foto_object_scale: item.foto_object_scale,

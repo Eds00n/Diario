@@ -16,7 +16,8 @@
   },
   {
     "data": "2026-01-23",
-    "foto": "WhatsApp Image 2026-07-25 at 16.00.31.jpeg",
+    "foto": "memoria-gravou-video-2025-08-02.png",
+    "foto_object_position": "50% 40%",
     "texto": "O incrível vídeo que rodou e você me mandou kkkk",
     "is_data_especial": false
   },
@@ -117,7 +118,9 @@
   },
   {
     "data": "2026-06-12",
-    "foto": "WhatsApp Video 2026-07-25 at 16.19.44.mp4",
+    "foto": "memoria-buque-video-2026-06-12.mp4",
+    "polaroid_foto": "memoria-buque-lirios-2026-06-12.png",
+    "foto_object_position": "50% 42%",
     "texto": "E deu certo",
     "foto_importante": true,
     "fundo_imersivo_grupo": true,
@@ -186,12 +189,6 @@
     "is_data_especial": false
   },
   {
-    "data": "2025-08-02",
-    "foto": "memoria-gravou-video-2025-08-02.png",
-    "texto": "Você me gravou esse video e me marcou",
-    "is_data_especial": false
-  },
-  {
     "data": "2025-11-30",
     "foto": "primeiro.jpeg",
     "texto": "Antes de fevereiro, as nossas conversas eram sem rumo, era um Reels e papo sem intenção",
@@ -210,6 +207,53 @@
     "data": "2025-12-07",
     "foto": "WhatsApp Video 2026-07-25 at 15.16.27.mp4",
     "texto": "Me gravou lutando sem eu pedir, e eu lutando com os dedos do pé enfaixado depois da cirurgia kkkkkkkkk",
+    "is_data_especial": false
+  },
+  {
+    "data": "2026-08-12",
+    "data_fim": "2026-08-13",
+    "foto": "WhatsApp Image 2026-08-29 at 15.49.48.jpeg",
+    "texto": "Descobri umas coisas sobre meu pai e eu, passei por um momento difícil e você quis me ver",
+    "is_data_especial": false
+  },
+  {
+    "data": "2026-08-13",
+    "foto": "WhatsApp Video 2026-08-29 at 15.52.42.mp4",
+    "texto": "Entrei no meu primeiro emprego na \"minha área\"",
+    "foto_importante": true,
+    "is_data_especial": false
+  },
+  {
+    "data": "2026-08-20",
+    "foto": "WhatsApp Image 2026-08-29 at 15.53.47.jpeg",
+    "texto": "Muito tempo sem ver minha menina",
+    "is_data_especial": false
+  },
+  {
+    "data": "2026-08-23",
+    "foto": "WhatsApp Image 2026-08-29 at 15.55.56.jpeg",
+    "texto": "Um dia antes do meu serviço você foi me ver, nunca vou esquecer desse dia!",
+    "is_data_especial": false
+  },
+  {
+    "data": "2026-08-24",
+    "foto": "WhatsApp Image 2026-08-29 at 15.57.20.jpeg",
+    "texto": "No serviço 24hr, torando de dor nas costas pq não parei nesse dia",
+    "is_data_especial": false
+  },
+  {
+    "data": "2026-08-25",
+    "foto": "WhatsApp Image 2026-08-29 at 15.58.05.jpeg",
+    "texto": "Minha princesa fez um bolinho pra mim, comi tudo levei até pra faculdade kkk",
+    "is_data_especial": false
+  },
+  {
+    "data": "2026-08-28",
+    "fotos": [
+      "WhatsApp Image 2026-08-29 at 15.58.49.jpeg",
+      "WhatsApp Image 2026-08-29 at 15.59.43.jpeg"
+    ],
+    "texto": "Você tá andando a caminho do seu sonho, não tenho palavras pra descrever quão desejável isso é pra mim, te ver crescer!!!",
     "is_data_especial": false
   }
 ]

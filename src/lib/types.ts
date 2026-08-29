@@ -24,6 +24,10 @@ export type Entry = {
   foto_importante_banner?: boolean;
   /** Foto na coluna direita (texto à esquerda) no layout padrão da timeline. */
   foto_direita?: boolean;
+  /** Foto aparece no hero Polaroid; não repete na coluna da entrada. */
+  polaroid_hero?: boolean;
+  /** Mídia do Polaroid do hero quando diferente da foto da entrada. */
+  polaroid_foto?: string;
   /** Foto começa borrada até o usuário tocar em “Avançar”. */
   foto_revelar_blur?: boolean;
   /** Enquadramento CSS object-position (ex.: "50% 38%"). */

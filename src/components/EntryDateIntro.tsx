@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { RevealOnMount } from "@/components/RevealOnMount";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 const DATE_HOLD_MS = 450;
@@ -27,11 +28,13 @@ export function EntryDateIntro({
   dateLabel,
   children,
   delayMs = 0,
+  immediate = false,
   className = "",
 }: {
   dateLabel: string;
   children: ReactNode;
   delayMs?: number;
+  immediate?: boolean;
   className?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -43,6 +46,8 @@ export function EntryDateIntro({
   const timersRef = useRef<number[]>([]);
 
   useEffect(() => {
+    if (immediate) return;
+
     if (reducedMotion) {
       setPhase("content");
       return;
@@ -80,7 +85,16 @@ export function EntryDateIntro({
       for (const id of timersRef.current) window.clearTimeout(id);
       timersRef.current = [];
     };
-  }, [delayMs, reducedMotion]);
+  }, [delayMs, immediate, reducedMotion]);
+
+  /** Primeira memória: mesma entrada do hero, no load — sem esperar o centro da tela. */
+  if (immediate) {
+    return (
+      <RevealOnMount delayMs={delayMs > 0 ? delayMs : 320} className={className}>
+        {children}
+      </RevealOnMount>
+    );
+  }
 
   const showDate = phase === "date";
   const showContent = phase === "content";

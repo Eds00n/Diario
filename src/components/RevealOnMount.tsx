@@ -8,10 +8,14 @@ export function RevealOnMount({
   children,
   className = "",
   delayMs = 0,
+  hiddenTransform = "translateY(-36px)",
+  visibleTransform = "translateY(0)",
 }: {
   children: ReactNode;
   className?: string;
   delayMs?: number;
+  hiddenTransform?: string;
+  visibleTransform?: string;
 }) {
   const reducedMotion = usePrefersReducedMotion();
   const [visible, setVisible] = useState(false);
@@ -32,7 +36,7 @@ export function RevealOnMount({
       className={`will-change-[opacity,transform] transition-[opacity,transform] duration-[1000ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${className}`}
       style={{
         opacity: show ? 1 : 0,
-        transform: show ? "translateY(0)" : "translateY(-36px)",
+        transform: show ? visibleTransform : hiddenTransform,
       }}
     >
       {children}

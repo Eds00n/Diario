@@ -1,13 +1,15 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type SyntheticEvent } from "react";
 
 export function LoopVideoInView({
   src,
   className = "h-full w-full object-cover",
+  onLoadedMetadata,
 }: {
   src: string;
   className?: string;
+  onLoadedMetadata?: (e: SyntheticEvent<HTMLVideoElement>) => void;
 }) {
   const ref = useRef<HTMLVideoElement>(null);
 
@@ -42,6 +44,7 @@ export function LoopVideoInView({
       playsInline
       preload="metadata"
       aria-hidden
+      onLoadedMetadata={onLoadedMetadata}
     />
   );
 }

@@ -5,9 +5,43 @@ import { EntryPhotoPrintFrame } from "@/components/EntryPhotoPrintFrame";
 import { LoopVideoInView } from "@/components/LoopVideoInView";
 import { PhotoCarousel } from "@/components/PhotoCarousel";
 
+/** Graus extras (0-4) somados à base, só pra variar levemente entre fotos. */
+function extraTiltForUrl(url: string): number {
+  let hash = 0;
+  for (let i = 0; i < url.length; i++) {
+    hash = (hash * 31 + url.charCodeAt(i)) | 0;
+  }
+  return Math.abs(hash) % 5;
+}
+
+/** Foto à direita inclina pra esquerda (rotateY negativo) e vice-versa. */
+function tiltYForUrl(
+  url: string,
+  photoOnRight: boolean,
+  baseMagnitude = 8,
+): number {
+  const magnitude = baseMagnitude + extraTiltForUrl(url);
+  return photoOnRight ? -magnitude : magnitude;
+}
+
 function isVideoUrl(url: string): boolean {
   const decoded = decodeURIComponent(url).toLowerCase();
   return decoded.includes(".mp4");
+}
+
+/** Rect "achatado" do elemento clicado — ignora a distorção de perspectiva
+ * de um ancestral com rotateY (tilt 3D do polaroid), usando o centro
+ * projetado (aprox. igual ao centro real pros ângulos que usamos) mas a
+ * largura/altura de layout real (offsetWidth/offsetHeight, que o CSS
+ * transform não afeta). Sem isso o FLIP nasce com tamanho/posição errados
+ * e "salta" ao abrir. */
+function flatOriginRect(el: HTMLElement): DOMRect {
+  const rect = el.getBoundingClientRect();
+  const width = el.offsetWidth;
+  const height = el.offsetHeight;
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+  return new DOMRect(cx - width / 2, cy - height / 2, width, height);
 }
 
 type UrlSegment =
@@ -50,12 +84,23 @@ function StackVideo({
   prominent = false,
   fill = false,
   prominentMobileLarge = false,
+  onOpen,
 }: {
   url: string;
   prominent?: boolean;
   fill?: boolean;
   prominentMobileLarge?: boolean;
+  onOpen: (rect: DOMRect) => void;
 }) {
+  const openButton = (
+    <button
+      type="button"
+      className="absolute inset-0 z-[1] cursor-zoom-in border-0 bg-transparent p-0 text-left outline-none"
+      onClick={(e) => onOpen(flatOriginRect(e.currentTarget))}
+      aria-label="Ampliar vídeo"
+    />
+  );
+
   if (fill) {
     return (
       <div className="absolute inset-0 h-full w-full overflow-hidden bg-black">
@@ -63,6 +108,7 @@ function StackVideo({
           src={url}
           className="h-full w-full object-cover object-center"
         />
+        {openButton}
       </div>
     );
   }
@@ -81,6 +127,7 @@ function StackVideo({
         src={url}
         className="absolute inset-0 h-full w-full object-cover object-center"
       />
+      {openButton}
     </div>
   );
 
@@ -130,27 +177,24 @@ function EyeRevealIcon({ className }: { className?: string }) {
 
 function PhotoBlurRevealOverlay({ onReveal }: { onReveal: () => void }) {
   return (
-    <div className="photo-blur-reveal-overlay absolute inset-0 z-[5] flex flex-col items-center justify-center gap-3 overflow-hidden rounded-md px-6 text-center text-white">
-      <span className="photo-blur-reveal-overlay__icon flex h-[52px] w-[52px] items-center justify-center rounded-full border-[1.5px] border-white/80 text-white">
+    <button
+      type="button"
+      onClick={onReveal}
+      className="photo-blur-reveal-overlay absolute inset-0 z-[5] flex w-full cursor-pointer flex-col items-center justify-center gap-1 overflow-hidden rounded-md border-0 bg-transparent px-2 text-center text-white sm:gap-3 sm:px-6"
+    >
+      <span className="photo-blur-reveal-overlay__icon hidden h-[52px] w-[52px] items-center justify-center rounded-full border-[1.5px] border-white/80 text-white sm:flex">
         <EyeRevealIcon className="h-[22px] w-[22px] text-white" />
       </span>
-      <p className="font-body max-w-[240px] text-[13px] font-normal leading-snug tracking-[0.01em] text-white">
+      <p className="font-body max-w-[92%] text-[10px] font-normal leading-snug tracking-[0.01em] text-white sm:max-w-[240px] sm:text-[13px]">
         Imagem sem qualidade
-        <span className="block text-[12px] text-white/85">
+        <span className="block text-[9px] text-white/85 sm:text-[12px]">
           não me julgue dona Sâmila
         </span>
       </p>
-      <button
-        type="button"
-        className="font-body mt-0.5 border-0 bg-transparent p-0 text-[14px] font-semibold !text-white transition-opacity hover:opacity-80"
-        onClick={(e) => {
-          e.stopPropagation();
-          onReveal();
-        }}
-      >
+      <span className="font-body mt-0.5 text-[11px] font-semibold text-white transition-opacity hover:opacity-80 sm:text-[14px]">
         Ver foto
-      </button>
-    </div>
+      </span>
+    </button>
   );
 }
 
@@ -164,9 +208,11 @@ function StackPhoto({
   blurReveal = false,
   objectPosition,
   objectScale,
+  photoOnRight = false,
+  tiltMagnitude = 8,
 }: {
   url: string;
-  onOpen: () => void;
+  onOpen: (rect: DOMRect) => void;
   prominent?: boolean;
   fill?: boolean;
   flushEdges?: boolean;
@@ -174,6 +220,10 @@ function StackPhoto({
   blurReveal?: boolean;
   objectPosition?: string;
   objectScale?: number;
+  /** Lado em que a foto fica no layout texto+foto (define a direção da inclinação 3D). */
+  photoOnRight?: boolean;
+  /** Graus base da inclinação 3D (antes da variação por foto). */
+  tiltMagnitude?: number;
 }) {
   const [revealed, setRevealed] = useState(!blurReveal);
   const hidden = blurReveal && !revealed;
@@ -199,8 +249,8 @@ function StackPhoto({
         <button
           type="button"
           className="relative block h-full w-full min-h-0 cursor-zoom-in border-0 bg-transparent p-0 text-left outline-none disabled:cursor-default"
-          onClick={() => {
-            if (!hidden) onOpen();
+          onClick={(e) => {
+            if (!hidden) onOpen(flatOriginRect(e.currentTarget));
           }}
           disabled={hidden}
           onDragStart={(e) => e.preventDefault()}
@@ -226,8 +276,8 @@ function StackPhoto({
           <button
             type="button"
             className="entry-photo-gradient flex w-full cursor-zoom-in justify-center overflow-hidden rounded-[12px] border-0 p-0 text-left outline-none disabled:cursor-default"
-            onClick={() => {
-              if (!hidden) onOpen();
+            onClick={(e) => {
+              if (!hidden) onOpen(flatOriginRect(e.currentTarget));
             }}
             disabled={hidden}
           >
@@ -265,8 +315,8 @@ function StackPhoto({
       <button
         type="button"
         className="absolute inset-0 z-[1] cursor-zoom-in border-0 bg-transparent p-0 text-left outline-none disabled:cursor-default"
-        onClick={() => {
-          if (!hidden) onOpen();
+        onClick={(e) => {
+          if (!hidden) onOpen(flatOriginRect(e.currentTarget));
         }}
         disabled={hidden}
         aria-label="Ampliar foto"
@@ -280,7 +330,10 @@ function StackPhoto({
   }
 
   return (
-    <EntryPhotoPrintFrame className="w-full min-w-0">
+    <EntryPhotoPrintFrame
+      className="w-full min-w-0"
+      tiltY={tiltYForUrl(url, photoOnRight, tiltMagnitude)}
+    >
       {photoButton}
     </EntryPhotoPrintFrame>
   );
@@ -298,7 +351,7 @@ function PhotoPairGrid({
   sideBySide = false,
 }: {
   urls: string[];
-  onOpen: (indexInSegment: number) => void;
+  onOpen: (indexInSegment: number, rect: DOMRect) => void;
   prominent?: boolean;
   fill?: boolean;
   prominentMobileLarge?: boolean;
@@ -328,7 +381,9 @@ function PhotoPairGrid({
             blurReveal={blurReveal && i === 0}
             objectPosition={photoObjectPosition}
             objectScale={photoObjectScale}
-            onOpen={() => onOpen(i)}
+            photoOnRight={sideBySide && i === urls.length - 1}
+            tiltMagnitude={sideBySide ? 3 : 8}
+            onOpen={(rect) => onOpen(i, rect)}
           />
         </div>
       ))}
@@ -341,7 +396,7 @@ function PhotoDeck({
   onOpen,
 }: {
   urls: string[];
-  onOpen: (index: number) => void;
+  onOpen: (index: number, rect: DOMRect) => void;
 }) {
   const count = urls.length;
   const layerCount = Math.min(4, count);
@@ -356,7 +411,7 @@ function PhotoDeck({
     <button
       type="button"
       className="group relative w-full cursor-zoom-in text-left"
-      onClick={() => onOpen(0)}
+      onClick={(e) => onOpen(0, flatOriginRect(e.currentTarget))}
       aria-label={`Ver ${count} fotos`}
     >
       <div className="relative aspect-[4/5] w-full">
@@ -413,6 +468,7 @@ export function PhotoStack({
   photoObjectPosition,
   photoObjectScale,
   pairSideBySide = false,
+  photoOnRight = false,
 }: {
   urls: string[];
   prominent?: boolean;
@@ -426,8 +482,11 @@ export function PhotoStack({
   photoObjectScale?: number;
   /** Duas fotos em linha (layout texto acima). */
   pairSideBySide?: boolean;
+  /** Lado da foto no layout texto+foto (define a direção da inclinação 3D). */
+  photoOnRight?: boolean;
 }) {
   const [carouselIndex, setCarouselIndex] = useState<number | null>(null);
+  const [originRect, setOriginRect] = useState<DOMRect | null>(null);
 
   const segments = useMemo(() => segmentUrls(urls), [urls]);
 
@@ -436,14 +495,38 @@ export function PhotoStack({
     [urls],
   );
 
-  const openAtGlobalIndex = (url: string) => {
-    const i = allImageUrls.indexOf(url);
-    if (i >= 0) setCarouselIndex(i);
+  /** Todas as mídias (fotos + vídeos), na ordem original — usada quando o
+   * segmento pode conter vídeo (galeria padrão da entrada). */
+  const allMediaUrls = urls;
+
+  const closeCarousel = () => {
+    setCarouselIndex(null);
+    setOriginRect(null);
   };
 
-  const openDeck = (segmentUrlsList: string[], indexInSegment: number) => {
+  const openImageIndex = (url: string, rect: DOMRect) => {
+    const i = allImageUrls.indexOf(url);
+    if (i >= 0) {
+      setCarouselIndex(i);
+      setOriginRect(rect);
+    }
+  };
+
+  const openAtGlobalIndex = (url: string, rect: DOMRect) => {
+    const i = allMediaUrls.indexOf(url);
+    if (i >= 0) {
+      setCarouselIndex(i);
+      setOriginRect(rect);
+    }
+  };
+
+  const openDeck = (
+    segmentUrlsList: string[],
+    indexInSegment: number,
+    rect: DOMRect,
+  ) => {
     const url = segmentUrlsList[indexInSegment];
-    if (url) openAtGlobalIndex(url);
+    if (url) openAtGlobalIndex(url, rect);
   };
 
   if (threeColumn && allImageUrls.length > 0) {
@@ -474,7 +557,7 @@ export function PhotoStack({
                   url={url}
                   flushEdges={threeColumnFullBleed}
                   blurReveal={blurReveal && i === 0}
-                  onOpen={() => openAtGlobalIndex(url)}
+                  onOpen={(rect) => openImageIndex(url, rect)}
                 />
               </div>
             );
@@ -484,7 +567,9 @@ export function PhotoStack({
           <PhotoCarousel
             urls={allImageUrls}
             initialIndex={carouselIndex}
-            onClosed={() => setCarouselIndex(null)}
+            originRect={originRect}
+            slideFit="contain"
+            onClosed={closeCarousel}
           />
         )}
       </>
@@ -503,6 +588,7 @@ export function PhotoStack({
                 prominent={prominent}
                 fill={fill}
                 prominentMobileLarge={prominentMobileLarge}
+                onOpen={(rect) => openAtGlobalIndex(segment.url, rect)}
               />
             );
           }
@@ -512,7 +598,7 @@ export function PhotoStack({
               <PhotoDeck
                 key={`deck-${segIndex}-${segment.urls[0]}`}
                 urls={segment.urls}
-                onOpen={() => openDeck(segment.urls, 0)}
+                onOpen={(i, rect) => openDeck(segment.urls, i, rect)}
               />
             );
           }
@@ -529,7 +615,7 @@ export function PhotoStack({
                 photoObjectPosition={photoObjectPosition}
                 photoObjectScale={photoObjectScale}
                 sideBySide={pairSideBySide}
-                onOpen={(i) => openDeck(segment.urls, i)}
+                onOpen={(i, rect) => openDeck(segment.urls, i, rect)}
               />
             );
           }
@@ -546,17 +632,22 @@ export function PhotoStack({
               blurReveal={blurReveal}
               objectPosition={photoObjectPosition}
               objectScale={photoObjectScale}
-              onOpen={() => openAtGlobalIndex(single)}
+              photoOnRight={photoOnRight}
+              onOpen={(rect) => openAtGlobalIndex(single, rect)}
             />
           );
         })}
       </div>
 
-      {carouselIndex !== null && allImageUrls.length > 0 && (
+      {carouselIndex !== null && allMediaUrls.length > 0 && (
         <PhotoCarousel
-          urls={allImageUrls}
+          urls={allMediaUrls}
           initialIndex={carouselIndex}
-          onClosed={() => setCarouselIndex(null)}
+          originRect={originRect}
+          slideFit="contain"
+          objectPosition={photoObjectPosition}
+          objectScale={photoObjectScale}
+          onClosed={closeCarousel}
         />
       )}
     </>

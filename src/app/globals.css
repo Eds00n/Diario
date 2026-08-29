@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./polaroid.css";
 
 :root {
   --bg: #f7f4ef;
@@ -55,6 +56,18 @@ body {
 
 .font-title {
   font-family: var(--font-title), "Playfair Display", Georgia, serif;
+}
+
+/**
+ * Texto surgindo em cascata (usado por <TextRevealOnMount>): cada filho
+ * direto ganha essa classe e anima opacidade + posição + desfoque, um de
+ * cada vez, via transition-delay controlado no componente.
+ */
+.text-reveal-item {
+  transition-property: opacity, transform, filter;
+  transition-duration: 950ms;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform, filter;
 }
 
 /** Data da memória — Cormorant regular. */
@@ -162,8 +175,8 @@ body {
   position: relative;
   z-index: 0;
   background: #ffffff;
-  padding: 8px;
-  border-radius: 6px;
+  padding: 3px;
+  border-radius: 4px;
   overflow: visible;
   box-shadow:
     0 10px 30px rgba(28, 28, 26, 0.18),
@@ -172,13 +185,23 @@ body {
 
 @media (min-width: 640px) {
   .entry-photo-print {
-    padding: 16px;
+    padding: 4px;
+  }
+}
+
+.entry-photo-print--tilt3d {
+  transform: perspective(900px) rotateY(calc(var(--photo-tilt-y) * 1deg));
+}
+
+@media (max-width: 767px) {
+  .entry-photo-print--tilt3d {
+    transform: perspective(900px) rotateY(calc(var(--photo-tilt-y) * 1.6deg));
   }
 }
 
 .entry-photo-print__inner {
   overflow: hidden;
-  border-radius: 6px;
+  border-radius: 4px;
   background: #ffffff;
   box-shadow: none;
   filter: none;
@@ -193,7 +216,7 @@ body {
 
 .entry-photo-print__inner > button,
 .entry-photo-print__inner > .relative {
-  border-radius: 6px;
+  border-radius: 4px;
 }
 
 /** Ornamento ♥ centralizado logo abaixo da data (layout legado + editorial). */

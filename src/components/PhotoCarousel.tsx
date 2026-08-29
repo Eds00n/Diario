@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { EntryPhotoPrintFrame } from "@/components/EntryPhotoPrintFrame";
+import { LoopVideoInView } from "@/components/LoopVideoInView";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 const OVERLAY_MS = 250;
@@ -18,6 +20,16 @@ const SLIDE_MAX_WIDTH = 480;
 const SINGLE_SLIDE_MAX_WIDTH = 440;
 const SINGLE_SLIDE_WIDTH_RATIO = 0.52;
 const SINGLE_SLIDE_MAX_HEIGHT_RATIO = 0.72;
+/** Transição "crescendo do lugar de origem até o centro" (FLIP). */
+const FLIP_MS = 420;
+const FLIP_EASE = "cubic-bezier(0.22, 1, 0.36, 1)";
+/** Ao fechar: só some transparecendo (não encolhe de volta pra miniatura). */
+const CLOSE_FADE_MS = 240;
+
+function isVideoUrl(url: string): boolean {
+  const decoded = decodeURIComponent(url).toLowerCase();
+  return decoded.includes(".mp4");
+}
 
 type CarouselMetrics = {
   viewportWidth: number;
@@ -33,18 +45,40 @@ export function PhotoCarousel({
   urls,
   initialIndex,
   onClosed,
+  originRect = null,
+  slideFit = "contain",
+  slideAspect = 4 / 5,
+  objectPosition,
+  objectScale,
 }: {
   urls: string[];
   initialIndex: number;
   onClosed: () => void;
+  /** Posição/tamanho da miniatura clicada — a foto "cresce" dali até o centro. */
+  originRect?: DOMRect | null;
+  /** "cover": mantém o mesmo recorte/proporção da miniatura. "contain": mostra a imagem inteira. */
+  slideFit?: "cover" | "contain";
+  /** Proporção largura/altura da miniatura (só usada com slideFit="cover"). */
+  slideAspect?: number;
+  objectPosition?: string;
+  objectScale?: number;
 }) {
   const reducedMotion = usePrefersReducedMotion();
+  const usingFlip = !reducedMotion && originRect != null;
+
   const [mounted, setMounted] = useState(false);
   const [index, setIndex] = useState(() =>
     clampIndex(initialIndex, urls.length),
   );
   const [overlayOpacity, setOverlayOpacity] = useState(reducedMotion ? 1 : 0);
   const [shellOpen, setShellOpen] = useState(reducedMotion);
+  /** true assim que o fechamento começa — a partir daí o shell só some transparecendo. */
+  const [closing, setClosing] = useState(false);
+  const [flipTransform, setFlipTransform] = useState<string | null>(null);
+  /** Proporção real (largura/altura) da mídia ativa, assim que carrega —
+   * usada em modo "contain" pra caixa do slide abraçar o conteúdo em vez de
+   * sobrar faixa branca (letterbox) grande de um lado. */
+  const [naturalRatio, setNaturalRatio] = useState<number | null>(null);
   const [metrics, setMetrics] = useState<CarouselMetrics>({
     viewportWidth: 0,
     slideWidth: 280,
@@ -52,6 +86,7 @@ export function PhotoCarousel({
   });
 
   const measureRef = useRef<HTMLDivElement>(null);
+  const shellRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
   const closingRef = useRef(false);
   const navLockRef = useRef(false);
@@ -62,6 +97,7 @@ export function PhotoCarousel({
   const dragPxRef = useRef(0);
   const didDragRef = useRef(false);
   const draggingRef = useRef(false);
+  const flipComputedRef = useRef(false);
 
   const [dragPx, setDragPx] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -74,7 +110,7 @@ export function PhotoCarousel({
     const vw = el.clientWidth;
     const isSingle = urls.length <= 1;
 
-    const slideWidth = isSingle
+    let slideWidth = isSingle
       ? Math.round(
           Math.min(
             SINGLE_SLIDE_MAX_WIDTH,
@@ -85,25 +121,63 @@ export function PhotoCarousel({
           Math.min(SLIDE_MAX_WIDTH, Math.max(260, vw * SLIDE_WIDTH_RATIO)),
         );
 
-    const maxSingleHeight = Math.round(
-      window.innerHeight * SINGLE_SLIDE_MAX_HEIGHT_RATIO,
+    const maxHeight = Math.round(
+      window.innerHeight * (isSingle ? SINGLE_SLIDE_MAX_HEIGHT_RATIO : 0.78),
     );
-    const slideHeight = isSingle
-      ? Math.round(Math.min(maxSingleHeight, slideWidth * (5 / 4)))
-      : Math.round(
-          Math.min(window.innerHeight * 0.78, slideWidth * 1.05),
-        );
+
+    let slideHeight: number;
+    if (slideFit === "cover") {
+      // Mesma proporção da miniatura — só cresce, sem recortar diferente.
+      slideHeight = Math.round(slideWidth / slideAspect);
+      if (slideHeight > maxHeight) {
+        slideHeight = maxHeight;
+        slideWidth = Math.round(slideHeight * slideAspect);
+      }
+    } else {
+      const ratio = naturalRatio ?? (isSingle ? 4 / 5 : 1 / 1.05);
+      slideHeight = Math.round(slideWidth / ratio);
+      if (slideHeight > maxHeight) {
+        slideHeight = maxHeight;
+        slideWidth = Math.round(slideHeight * ratio);
+      }
+    }
 
     setMetrics({
       viewportWidth: isSingle ? slideWidth : vw,
       slideWidth,
       slideHeight,
     });
-  }, [urls.length]);
+  }, [urls.length, slideFit, slideAspect, naturalRatio]);
 
   useLayoutEffect(() => {
     measure();
   }, [measure, mounted, urls.length]);
+
+  useEffect(() => {
+    setNaturalRatio(null);
+  }, [index]);
+
+  /** FLIP: mede o retângulo final (sem transform) e calcula a transformação
+   * que faz o shell nascer exatamente no lugar/tamanho da miniatura clicada. */
+  useLayoutEffect(() => {
+    if (!usingFlip || flipComputedRef.current) return;
+    const el = shellRef.current;
+    if (!el || metrics.viewportWidth === 0) return;
+    const finalRect = el.getBoundingClientRect();
+    if (finalRect.width === 0 || finalRect.height === 0) return;
+
+    const scaleX = originRect!.width / finalRect.width;
+    const scaleY = originRect!.height / finalRect.height;
+    const translateX =
+      originRect!.left + originRect!.width / 2 - (finalRect.left + finalRect.width / 2);
+    const translateY =
+      originRect!.top + originRect!.height / 2 - (finalRect.top + finalRect.height / 2);
+
+    flipComputedRef.current = true;
+    setFlipTransform(
+      `translate(${translateX}px, ${translateY}px) scale(${scaleX}, ${scaleY})`,
+    );
+  }, [usingFlip, metrics, originRect]);
 
   useEffect(() => {
     setMounted(true);
@@ -120,6 +194,9 @@ export function PhotoCarousel({
       setShellOpen(true);
       return;
     }
+    if (usingFlip && flipTransform == null) {
+      return;
+    }
     const id = requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         setOverlayOpacity(1);
@@ -127,7 +204,7 @@ export function PhotoCarousel({
       });
     });
     return () => cancelAnimationFrame(id);
-  }, [reducedMotion]);
+  }, [reducedMotion, usingFlip, flipTransform]);
 
   const finishClose = useCallback(() => {
     closingRef.current = false;
@@ -145,7 +222,8 @@ export function PhotoCarousel({
 
     setOverlayOpacity(0);
     setShellOpen(false);
-    window.setTimeout(finishClose, Math.max(OVERLAY_MS, SHELL_MS));
+    setClosing(true);
+    window.setTimeout(finishClose, CLOSE_FADE_MS);
   }, [reducedMotion, finishClose]);
 
   const goToIndex = useCallback(
@@ -297,6 +375,9 @@ export function PhotoCarousel({
     ? "none"
     : `opacity ${SHELL_MS}ms ease, transform ${SHELL_MS}ms ease`;
 
+  const flipShellTransition =
+    flipTransform != null ? `transform ${FLIP_MS}ms ${FLIP_EASE}` : "none";
+
   const trackTransition = reducedMotion
     ? "none"
     : `transform ${SLIDE_MS}ms ${SLIDE_EASE}`;
@@ -312,6 +393,24 @@ export function PhotoCarousel({
         index * (slideWidth + SLIDE_GAP) -
         slideWidth / 2
       : 0;
+
+  const shellStyle: React.CSSProperties = closing
+    ? {
+        opacity: 0,
+        transform: "translate(0px, 0px) scale(0.98)",
+        transition: `opacity ${CLOSE_FADE_MS}ms ease, transform ${CLOSE_FADE_MS}ms ease`,
+      }
+    : usingFlip
+      ? {
+          opacity: 1,
+          transform: shellOpen ? "translate(0px, 0px) scale(1, 1)" : (flipTransform ?? "none"),
+          transition: flipShellTransition,
+        }
+      : {
+          opacity: shellOpen ? 1 : 0,
+          transform: shellOpen ? "scale(1)" : "scale(0.96)",
+          transition: shellTransition,
+        };
 
   return createPortal(
     <div
@@ -332,14 +431,7 @@ export function PhotoCarousel({
 
       <div className="pointer-events-none relative flex h-full w-full items-center justify-center p-4 sm:p-8">
         <div className="pointer-events-auto relative z-[101] flex w-full max-w-6xl flex-col items-center px-1 sm:px-2">
-          <div
-            className="flex w-full items-center justify-center"
-            style={{
-              opacity: shellOpen ? 1 : 0,
-              transform: shellOpen ? "scale(1)" : "scale(0.96)",
-              transition: shellTransition,
-            }}
-          >
+          <div ref={shellRef} className="flex w-full items-center justify-center" style={shellStyle}>
             <div ref={measureRef} className="relative w-full min-w-0">
             <div
               ref={viewportRef}
@@ -374,14 +466,15 @@ export function PhotoCarousel({
               >
                 {urls.map((url, i) => {
                   const isActive = i === index;
+                  const isVideo = isVideoUrl(url);
                   return (
                     <button
                       key={`${url}-${i}`}
                       type="button"
                       aria-label={
                         isActive
-                          ? `Foto ${i + 1} de ${urls.length}`
-                          : `Ir para foto ${i + 1}`
+                          ? `${isVideo ? "Vídeo" : "Foto"} ${i + 1} de ${urls.length}`
+                          : `Ir para ${i + 1}`
                       }
                       aria-current={isActive ? "true" : undefined}
                       className="relative shrink-0 overflow-hidden border-0 bg-transparent p-0 shadow-none outline-none ring-0"
@@ -405,16 +498,57 @@ export function PhotoCarousel({
                       }}
                       onDragStart={(e) => e.preventDefault()}
                     >
-                      <Image
-                        src={url}
-                        alt=""
-                        fill
-                        draggable={false}
-                        className="pointer-events-none object-contain select-none"
-                        sizes="400px"
-                        unoptimized
-                        priority={Math.abs(i - index) <= 1}
-                      />
+                      <EntryPhotoPrintFrame
+                        className="relative h-full w-full"
+                        innerClassName="relative h-full"
+                      >
+                        {isVideo ? (
+                          <LoopVideoInView
+                            src={url}
+                            className={`pointer-events-none absolute inset-0 h-full w-full ${
+                              slideFit === "cover" ? "object-cover" : "object-contain"
+                            }`}
+                            onLoadedMetadata={(e) => {
+                              if (!isActive || slideFit === "cover") return;
+                              const v = e.currentTarget;
+                              if (v.videoWidth && v.videoHeight) {
+                                setNaturalRatio(v.videoWidth / v.videoHeight);
+                              }
+                            }}
+                          />
+                        ) : (
+                          <Image
+                            src={url}
+                            alt=""
+                            fill
+                            draggable={false}
+                            className={`pointer-events-none select-none ${
+                              slideFit === "cover" ? "object-cover" : "object-contain"
+                            }`}
+                            style={
+                              slideFit === "cover"
+                                ? {
+                                    objectPosition: objectPosition ?? undefined,
+                                    transform:
+                                      objectScale && objectScale !== 1
+                                        ? `scale(${objectScale})`
+                                        : undefined,
+                                  }
+                                : undefined
+                            }
+                            sizes="400px"
+                            unoptimized
+                            priority={Math.abs(i - index) <= 1}
+                            onLoad={(e) => {
+                              if (!isActive || slideFit === "cover") return;
+                              const img = e.currentTarget;
+                              if (img.naturalWidth && img.naturalHeight) {
+                                setNaturalRatio(img.naturalWidth / img.naturalHeight);
+                              }
+                            }}
+                          />
+                        )}
+                      </EntryPhotoPrintFrame>
                     </button>
                   );
                 })}
@@ -427,7 +561,7 @@ export function PhotoCarousel({
             <div className="mt-5 flex items-center justify-center gap-3 sm:gap-4">
               <button
                 type="button"
-                aria-label="Foto anterior"
+                aria-label="Anterior"
                 disabled={index <= 0}
                 className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/10 text-lg text-white backdrop-blur-sm transition-colors hover:bg-white/20 disabled:pointer-events-none disabled:opacity-30"
                 onClick={() => goTo(-1)}
@@ -439,7 +573,7 @@ export function PhotoCarousel({
                   <button
                     key={`dot-${url}-${i}`}
                     type="button"
-                    aria-label={`Ir para foto ${i + 1}`}
+                    aria-label={`Ir para ${i + 1}`}
                     className={`h-2 w-2 rounded-full transition-colors ${
                       i === index ? "bg-white" : "bg-white/35 hover:bg-white/55"
                     }`}
@@ -449,7 +583,7 @@ export function PhotoCarousel({
               </div>
               <button
                 type="button"
-                aria-label="Próxima foto"
+                aria-label="Próximo"
                 disabled={index >= urls.length - 1}
                 className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/10 text-lg text-white backdrop-blur-sm transition-colors hover:bg-white/20 disabled:pointer-events-none disabled:opacity-30"
                 onClick={() => goTo(1)}
