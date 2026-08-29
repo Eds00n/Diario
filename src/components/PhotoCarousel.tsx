@@ -85,6 +85,12 @@ export function PhotoCarousel({
     slideHeight: Math.round(280 * (16 / 9)),
   });
 
+  /** Elemento de mídia do slide ativo — usado pra checar a proporção real
+   * assim que possível, mesmo quando já veio do cache (onLoad pode não
+   * disparar de novo pra imagem/vídeo já carregado). */
+  const activeMediaRef = useRef<HTMLImageElement | HTMLVideoElement | null>(
+    null,
+  );
   const measureRef = useRef<HTMLDivElement>(null);
   const shellRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
@@ -153,7 +159,21 @@ export function PhotoCarousel({
     measure();
   }, [measure, mounted, urls.length]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    const el = activeMediaRef.current;
+    if (el instanceof HTMLImageElement && el.complete && el.naturalWidth && el.naturalHeight) {
+      setNaturalRatio(el.naturalWidth / el.naturalHeight);
+      return;
+    }
+    if (
+      el instanceof HTMLVideoElement &&
+      el.readyState >= 1 &&
+      el.videoWidth &&
+      el.videoHeight
+    ) {
+      setNaturalRatio(el.videoWidth / el.videoHeight);
+      return;
+    }
     setNaturalRatio(null);
   }, [index]);
 
@@ -504,6 +524,7 @@ export function PhotoCarousel({
                       >
                         {isVideo ? (
                           <LoopVideoInView
+                            ref={isActive ? (el) => { activeMediaRef.current = el; } : undefined}
                             src={url}
                             className={`pointer-events-none absolute inset-0 h-full w-full ${
                               slideFit === "cover" ? "object-cover" : "object-contain"
@@ -518,6 +539,7 @@ export function PhotoCarousel({
                           />
                         ) : (
                           <Image
+                            ref={isActive ? (el) => { activeMediaRef.current = el; } : undefined}
                             src={url}
                             alt=""
                             fill

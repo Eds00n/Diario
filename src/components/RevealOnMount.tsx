@@ -8,7 +8,7 @@ export function RevealOnMount({
   children,
   className = "",
   delayMs = 0,
-  hiddenTransform = "translateY(-36px)",
+  hiddenTransform = "translateY(-18px)",
   visibleTransform = "translateY(0)",
 }: {
   children: ReactNode;
@@ -33,7 +33,7 @@ export function RevealOnMount({
 
   return (
     <div
-      className={`will-change-[opacity,transform] transition-[opacity,transform] duration-[1000ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${className}`}
+      className={`will-change-[opacity,transform] transition-[opacity,transform] duration-[480ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${className}`}
       style={{
         opacity: show ? 1 : 0,
         transform: show ? visibleTransform : hiddenTransform,

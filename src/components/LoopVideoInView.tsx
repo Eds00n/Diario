@@ -1,16 +1,22 @@
 "use client";
 
-import { useEffect, useRef, type SyntheticEvent } from "react";
+import { forwardRef, useEffect, useRef, type SyntheticEvent } from "react";
 
-export function LoopVideoInView({
-  src,
-  className = "h-full w-full object-cover",
-  onLoadedMetadata,
-}: {
-  src: string;
-  className?: string;
-  onLoadedMetadata?: (e: SyntheticEvent<HTMLVideoElement>) => void;
-}) {
+export const LoopVideoInView = forwardRef<
+  HTMLVideoElement,
+  {
+    src: string;
+    className?: string;
+    onLoadedMetadata?: (e: SyntheticEvent<HTMLVideoElement>) => void;
+  }
+>(function LoopVideoInView(
+  {
+    src,
+    className = "h-full w-full object-cover",
+    onLoadedMetadata,
+  },
+  forwardedRef,
+) {
   const ref = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -36,7 +42,11 @@ export function LoopVideoInView({
 
   return (
     <video
-      ref={ref}
+      ref={(el) => {
+        ref.current = el;
+        if (typeof forwardedRef === "function") forwardedRef(el);
+        else if (forwardedRef) forwardedRef.current = el;
+      }}
       src={src}
       className={className}
       loop
@@ -47,4 +57,4 @@ export function LoopVideoInView({
       onLoadedMetadata={onLoadedMetadata}
     />
   );
-}
+});

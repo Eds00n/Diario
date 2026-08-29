@@ -260,6 +260,8 @@ function StackPhoto({
             src={url}
             alt=""
             draggable={false}
+            loading="lazy"
+            decoding="async"
             className={`no-native-drag block h-full w-full object-cover object-center ${imageBlurClass}`}
             style={frameStyle}
           />
@@ -285,6 +287,8 @@ function StackPhoto({
             <img
               src={url}
               alt=""
+              loading="lazy"
+              decoding="async"
               className={
                 prominentMobileLarge
                   ? `mx-auto block h-auto w-full max-w-full max-h-[min(72vh,620px)] object-contain sm:max-h-[min(74vh,660px)] md:max-h-[min(75vh,680px)] md:w-auto md:max-w-[580px] ${imageBlurClass}`
@@ -309,6 +313,8 @@ function StackPhoto({
         src={url}
         alt=""
         draggable={false}
+        loading="lazy"
+        decoding="async"
         className={`no-native-drag absolute inset-0 h-full w-full object-cover ${imageBlurClass}`}
         style={frameStyle}
       />
@@ -437,6 +443,8 @@ function PhotoDeck({
                       src={url}
                       alt=""
                       draggable={false}
+                      loading="lazy"
+                      decoding="async"
                       className="no-native-drag absolute inset-0 h-full w-full object-cover"
                     />
                   </div>

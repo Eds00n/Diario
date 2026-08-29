@@ -4,9 +4,9 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { RevealOnMount } from "@/components/RevealOnMount";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
-const DATE_HOLD_MS = 450;
-const DATE_FADE_MS = 380;
-const CONTENT_REVEAL_MS = 520;
+const DATE_HOLD_MS = 220;
+const DATE_FADE_MS = 200;
+const CONTENT_REVEAL_MS = 320;
 
 const ease = "cubic-bezier(0.22, 1, 0.36, 1)";
 
@@ -102,10 +102,10 @@ export function EntryDateIntro({
   const dateTransform = showDate
     ? "translateY(0)"
     : phase === "idle"
-      ? "translateY(56px)"
-      : "translateY(-40px)";
+      ? "translateY(24px)"
+      : "translateY(-18px)";
 
-  const contentTransform = showContent ? "translateY(0)" : "translateY(56px)";
+  const contentTransform = showContent ? "translateY(0)" : "translateY(22px)";
 
   return (
     <div ref={ref} className={className}>

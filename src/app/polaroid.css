@@ -243,29 +243,40 @@
 }
 
 @media (max-width: 767px) {
+  /*
+   * Mobile layout, rebuilt so text and photos can never overlap:
+   * the message block now flows normally (instead of being absolutely
+   * centered on top of the photo layer) and reserves fixed side
+   * margins wide enough for the largest size each polaroid can reach
+   * at any width up to 767px. That guarantee removes the need for the
+   * old per-element "nudge text up/left" magic-number transforms.
+   */
   .hero-200-stage {
     display: block;
     position: relative;
     width: 100%;
     max-width: 100%;
     margin-left: 0;
-    min-height: clamp(400px, 108vw, 560px);
+    min-height: clamp(320px, 88vw, 420px);
     padding-inline: clamp(0.85rem, 4vw, 1.15rem);
+    padding-block: clamp(0.75rem, 3vw, 1.1rem);
     box-sizing: border-box;
   }
 
   .hero-200-stage__message {
-    position: absolute;
-    left: 50%;
-    top: 50%;
+    position: relative;
+    left: auto;
+    top: auto;
     z-index: 1;
-    display: flex;
-    justify-content: center;
-    width: min(100%, clamp(180px, 52vw, 250px));
+    display: block;
+    width: 100%;
     max-width: none;
-    padding-left: clamp(0.5rem, 3vw, 1rem);
+    /* Reserve room for the left polaroid (max ~76px wide + inset + gap). */
+    padding-left: clamp(4.75rem, 18vw, 6rem);
+    /* Reserve room for the wider top/bottom-right polaroid (max ~96px). */
+    padding-right: clamp(5.25rem, 20vw, 7.25rem);
     box-sizing: border-box;
-    transform: translate(-50%, -50%);
+    transform: none;
   }
 
   .hero-frame-photo--left {
@@ -280,7 +291,7 @@
 
   .hero-frame-photo--top-right {
     right: clamp(0.4rem, 2.5vw, 0.75rem);
-    top: -3.5rem;
+    top: clamp(0.2rem, 1.5vw, 0.5rem);
   }
 
   .hero-frame-photo--top-right .polaroid {
@@ -317,27 +328,27 @@
   }
 
   .hero-birthday-lead {
-    transform: translateY(clamp(-0.55rem, -2.2vw, -0.9rem));
+    transform: none;
   }
 
   .hero-birthday-kicker {
     margin: 0 0 0.4rem;
     font-size: clamp(1rem, 4.8vw, 1.25rem);
     line-height: 1.25;
-    transform: translateY(clamp(-1.75rem, -7vw, -2.5rem));
+    transform: none;
   }
 
   .hero-birthday-title__line {
     font-size: clamp(1.75rem, 9.5vw, 2.45rem);
     line-height: 1.06;
     display: inline-block;
-    transform: translateY(clamp(-1.75rem, -7vw, -2.5rem));
+    transform: none;
   }
 
   .hero-birthday-title__script-wrap {
     height: clamp(1.35rem, 4.5vw, 1.85rem);
     margin-top: 0.35rem;
-    transform: translateY(clamp(-1.75rem, -7vw, -2.5rem));
+    transform: none;
   }
 
   .hero-birthday-title__script-img {
