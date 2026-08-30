@@ -191,7 +191,7 @@ export function EntryCard({
           {...entryArticleDataAttrs(entry)}
           className={`${diarySectionClass} entry-foto-importante min-h-0 max-w-[min(100%,1200px)] flex-col gap-5 md:min-h-[min(88vh,820px)] md:gap-10`}
         >
-          <div className="entry-foto-importante-grid grid w-full grid-cols-1 items-center gap-5 md:grid-cols-[minmax(0,15rem)_minmax(0,1fr)_minmax(0,15rem)] md:gap-10 lg:grid-cols-[minmax(0,280px)_minmax(0,1fr)_minmax(0,280px)] lg:gap-14">
+          <div className="entry-foto-importante-grid grid w-full grid-cols-1 items-center gap-5 md:grid-cols-[minmax(0,9rem)_minmax(220px,1fr)_minmax(0,9rem)] md:gap-6 lg:grid-cols-[minmax(0,280px)_minmax(0,1fr)_minmax(0,280px)] lg:gap-14">
             <div className="entry-text-col min-w-0 max-w-full md:max-w-[280px] md:justify-self-start md:self-center">
               <EntryEditorialText entry={entry} compact />
             </div>

@@ -4,9 +4,9 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { RevealOnMount } from "@/components/RevealOnMount";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
-const DATE_HOLD_MS = 220;
-const DATE_FADE_MS = 200;
-const CONTENT_REVEAL_MS = 320;
+const DATE_HOLD_MS = 320;
+const DATE_FADE_MS = 280;
+const CONTENT_REVEAL_MS = 420;
 
 const ease = "cubic-bezier(0.22, 1, 0.36, 1)";
 

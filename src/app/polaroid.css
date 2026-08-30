@@ -271,10 +271,12 @@
     display: block;
     width: 100%;
     max-width: none;
-    /* Reserve room for the left polaroid (max ~76px wide + inset + gap). */
-    padding-left: clamp(4.75rem, 18vw, 6rem);
-    /* Reserve room for the wider top/bottom-right polaroid (max ~96px). */
-    padding-right: clamp(5.25rem, 20vw, 7.25rem);
+    /* Reserve room for the left polaroid (photo width + inset + gap, scaled
+       down together with the photo itself so very narrow phones don't lose
+       almost all their width to a fixed reservation). */
+    padding-left: clamp(3rem, 18vw, 6rem);
+    /* Reserve room for the wider top/bottom-right polaroid. */
+    padding-right: clamp(3.5rem, 20vw, 7.25rem);
     box-sizing: border-box;
     transform: none;
   }
@@ -285,7 +287,7 @@
   }
 
   .hero-frame-photo--left .polaroid {
-    width: clamp(58px, 16vw, 76px);
+    width: clamp(38px, 16vw, 76px);
     transform: rotate(-6deg);
   }
 
@@ -295,7 +297,7 @@
   }
 
   .hero-frame-photo--top-right .polaroid {
-    width: clamp(72px, 20vw, 96px);
+    width: clamp(46px, 20vw, 96px);
     transform: rotate(6deg);
   }
 
@@ -305,7 +307,7 @@
   }
 
   .hero-frame-photo--bottom-right .polaroid {
-    width: clamp(48px, 13vw, 62px);
+    width: clamp(38px, 13vw, 62px);
     transform: rotate(-5deg);
   }
 

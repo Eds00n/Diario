@@ -28,6 +28,13 @@
     "is_data_especial": false
   },
   {
+    "data": "2026-02-01",
+    "foto": "WhatsApp Image 2026-08-29 at 20.15.15.jpeg",
+    "foto_object_position": "27% 50%",
+    "texto": "Você começou a me seguir no Instagram",
+    "is_data_especial": false
+  },
+  {
     "data": "2026-02-02",
     "foto": "compromisso-pascom-2.png",
     "texto": "Esse foi o grande dia",
@@ -45,6 +52,12 @@
     "texto_complemento": "Nunca saí do treino e tomei um banho tão rápido",
     "texto_abaixo": "Eu fui tão nervoso porque, em alguma quinta-feira, tivemos aquela conversa do \"não estou pronta para namorar agora.\"",
     "texto_abaixo_direita": "**Mas você esclareceu seus limites e continuamos a nos aproximar.**",
+    "is_data_especial": false
+  },
+  {
+    "data": "2026-02-08",
+    "foto": "WhatsApp Image 2026-08-29 at 20.17.17.jpeg",
+    "texto": "Te esperando",
     "is_data_especial": false
   },
   {
@@ -133,6 +146,18 @@
     "is_data_especial": false
   },
   {
+    "data": "2026-07-20",
+    "foto": "WhatsApp Image 2026-08-29 at 19.53.52.jpeg",
+    "texto": "Eu fui assisti aquele júri com você, fiquei feliz em fazer parte.",
+    "is_data_especial": false
+  },
+  {
+    "data": "2026-07-20",
+    "foto": "memoria-altar-lirios-2026-07-20.png",
+    "texto": "Você mandou falando que os lírios eram iguais",
+    "is_data_especial": false
+  },
+  {
     "data": "2026-07-23",
     "foto": "WhatsApp Image 2026-07-25 at 16.22.14.jpeg",
     "texto": "Você me deu essa fotinha kkk",
@@ -186,6 +211,16 @@
       "WhatsApp Image 2026-07-25 at 19.21.43.jpeg"
     ],
     "texto": "Vigília Pascal, foi muito especial para mim esse dia, foi a primeira vez que fui em uma vigília, e foi com você a primeira 🤍",
+    "is_data_especial": false
+  },
+  {
+    "data": "2025-11-02",
+    "fotos": [
+      "memoria-campeonato-2025-11-02-1.png",
+      "memoria-campeonato-2025-11-02-2.jpeg"
+    ],
+    "foto_object_position": "50% 28%",
+    "texto": "Eu no campeonato que você descobriu minha idade nesse dia",
     "is_data_especial": false
   },
   {
