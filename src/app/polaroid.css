@@ -1,69 +1,3 @@
-/* Hero: mensagem central, fotos emolduram dos lados */
-.hero-200-stage {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100vw;
-  max-width: 100vw;
-  margin-left: calc(50% - 50vw);
-  min-height: clamp(340px, 48vw, 480px);
-}
-
-.hero-200-stage__message {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  z-index: 1;
-  display: flex;
-  width: min(100%, 520px);
-  justify-content: center;
-  margin-inline: 0;
-  transform: translate(-50%, -50%);
-  box-sizing: border-box;
-}
-
-.hero-frame {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-}
-
-.hero-frame-photo {
-  position: absolute;
-}
-
-.hero-frame-photo--left {
-  left: clamp(0.5rem, 4vw, 2.5rem);
-  top: 50%;
-}
-
-.hero-frame-photo--left .polaroid {
-  width: clamp(150px, 16vw, 210px);
-  transform: rotate(-6deg);
-}
-
-.hero-frame-photo--top-right {
-  right: clamp(0.5rem, 5vw, 3rem);
-  top: clamp(0px, 2vw, 12px);
-}
-
-.hero-frame-photo--top-right .polaroid {
-  width: clamp(120px, 12.5vw, 168px);
-  transform: rotate(6deg);
-}
-
-.hero-frame-photo--bottom-right {
-  right: clamp(0.5rem, 5vw, 3rem);
-  bottom: clamp(0px, 2vw, 12px);
-}
-
-.hero-frame-photo--bottom-right .polaroid {
-  width: clamp(120px, 12.5vw, 168px);
-  transform: rotate(-5deg);
-}
-
 .polaroid {
   position: relative;
   margin: 0;
@@ -105,212 +39,7 @@
   opacity: 0.92;
 }
 
-.hero-birthday {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  max-width: min(100%, 520px);
-  margin-inline: auto;
-  padding-inline: 0.5rem;
-  text-align: center;
-}
-
-.hero-birthday-divider {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.65rem;
-  margin: 0.85rem auto;
-  color: #c8a96a;
-}
-
-.hero-birthday-divider__line {
-  display: block;
-  width: clamp(3.5rem, 14vw, 6.5rem);
-  height: 1px;
-  background: currentColor;
-  opacity: 0.75;
-}
-
-.hero-birthday-divider__heart {
-  flex-shrink: 0;
-  opacity: 0.95;
-}
-
-.hero-birthday-kicker {
-  margin: 0 0 1rem;
-  font-family: var(--font-display), Georgia, serif;
-  font-size: clamp(0.95rem, 2.2vw, 1.125rem);
-  font-weight: 400;
-  font-style: italic;
-  line-height: 1.4;
-  color: #c8a96a;
-}
-
-.hero-birthday-title {
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.55rem;
-}
-
-.hero-birthday-title__line {
-  font-family: var(--font-title), "Playfair Display", Georgia, serif;
-  font-size: clamp(2rem, 5.5vw, 3.25rem);
-  font-weight: 600;
-  line-height: 1.15;
-  color: var(--ink);
-}
-
-.hero-birthday-title__script-wrap {
-  position: relative;
-  display: block;
-  width: 100%;
-  height: clamp(2.35rem, 6vw, 3.35rem);
-  margin: 0.45rem auto 0;
-  overflow: visible;
-  pointer-events: none;
-}
-
-.hero-birthday-title__script-img {
-  position: absolute;
-  left: 50%;
-  top: 58%;
-  z-index: 1;
-  display: block;
-  height: clamp(22.5rem, 72vw, 36rem);
-  width: auto;
-  max-width: min(96vw, 1680px);
-  transform: translate(-50%, -50%);
-  object-fit: contain;
-}
-
-.hero-birthday-body {
-  margin: 0;
-  font-family: var(--font-display), Georgia, serif;
-  font-size: clamp(0.95rem, 2.1vw, 1.0625rem);
-  font-weight: 400;
-  font-style: italic;
-  line-height: 1.65;
-  color: var(--ink);
-}
-
-.hero-birthday-body--gold {
-  margin-top: 0.15rem;
-  color: #c8a96a;
-}
-
-.hero-birthday-body + .hero-birthday-body {
-  margin-top: 0.35rem;
-}
-
-.hero-birthday-signoff {
-  margin: 1rem 0 0;
-  font-family: var(--font-display), Georgia, serif;
-  font-size: clamp(0.95rem, 2.1vw, 1.0625rem);
-  font-weight: 400;
-  font-style: italic;
-  line-height: 1.65;
-  color: #c8a96a;
-}
-
-.hero-birthday-signature-wrap {
-  position: relative;
-  display: block;
-  width: 100%;
-  height: clamp(2.85rem, 7vw, 3.85rem);
-  margin: 0.15rem auto 0;
-  overflow: visible;
-  pointer-events: none;
-}
-
-.hero-birthday-signature {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  z-index: 1;
-  display: block;
-  height: clamp(7rem, 22vw, 11rem);
-  width: auto;
-  max-width: min(92vw, 480px);
-  transform: translate(-50%, -50%);
-  object-fit: contain;
-}
-
-.hero-birthday .hero-birthday-divider + .hero-birthday-body {
-  margin-top: 0;
-}
-
 @media (max-width: 767px) {
-  /*
-   * Mobile layout, rebuilt so text and photos can never overlap:
-   * the message block now flows normally (instead of being absolutely
-   * centered on top of the photo layer) and reserves fixed side
-   * margins wide enough for the largest size each polaroid can reach
-   * at any width up to 767px. That guarantee removes the need for the
-   * old per-element "nudge text up/left" magic-number transforms.
-   */
-  .hero-200-stage {
-    display: block;
-    position: relative;
-    width: 100%;
-    max-width: 100%;
-    margin-left: 0;
-    min-height: clamp(320px, 88vw, 420px);
-    padding-inline: clamp(0.85rem, 4vw, 1.15rem);
-    padding-block: clamp(0.75rem, 3vw, 1.1rem);
-    box-sizing: border-box;
-  }
-
-  .hero-200-stage__message {
-    position: relative;
-    left: auto;
-    top: auto;
-    z-index: 1;
-    display: block;
-    width: 100%;
-    max-width: none;
-    /* Reserve room for the left polaroid (photo width + inset + gap, scaled
-       down together with the photo itself so very narrow phones don't lose
-       almost all their width to a fixed reservation). */
-    padding-left: clamp(3rem, 18vw, 6rem);
-    /* Reserve room for the wider top/bottom-right polaroid. */
-    padding-right: clamp(3.5rem, 20vw, 7.25rem);
-    box-sizing: border-box;
-    transform: none;
-  }
-
-  .hero-frame-photo--left {
-    left: clamp(0.4rem, 2.5vw, 0.75rem);
-    top: 30%;
-  }
-
-  .hero-frame-photo--left .polaroid {
-    width: clamp(38px, 16vw, 76px);
-    transform: rotate(-6deg);
-  }
-
-  .hero-frame-photo--top-right {
-    right: clamp(0.4rem, 2.5vw, 0.75rem);
-    top: clamp(0.2rem, 1.5vw, 0.5rem);
-  }
-
-  .hero-frame-photo--top-right .polaroid {
-    width: clamp(46px, 20vw, 96px);
-    transform: rotate(6deg);
-  }
-
-  .hero-frame-photo--bottom-right {
-    right: clamp(0.4rem, 2.5vw, 0.75rem);
-    bottom: clamp(0.4rem, 3vw, 1rem);
-  }
-
-  .hero-frame-photo--bottom-right .polaroid {
-    width: clamp(38px, 13vw, 62px);
-    transform: rotate(-5deg);
-  }
-
   .polaroid {
     padding: 3px 3px 12px;
     box-shadow:
@@ -323,76 +52,630 @@
     height: 7px;
     top: -3px;
   }
-
-  .hero-birthday {
-    max-width: 100%;
-    padding-inline: 0.1rem;
-  }
-
-  .hero-birthday-lead {
-    transform: none;
-  }
-
-  .hero-birthday-kicker {
-    margin: 0 0 0.4rem;
-    font-size: clamp(1rem, 4.8vw, 1.25rem);
-    line-height: 1.25;
-    transform: none;
-  }
-
-  .hero-birthday-title__line {
-    font-size: clamp(1.75rem, 9.5vw, 2.45rem);
-    line-height: 1.06;
-    display: inline-block;
-    transform: none;
-  }
-
-  .hero-birthday-title__script-wrap {
-    height: clamp(1.35rem, 4.5vw, 1.85rem);
-    margin-top: 0.35rem;
-    transform: none;
-  }
-
-  .hero-birthday-title__script-img {
-    top: 62%;
-    left: 50%;
-    height: clamp(11.5rem, 49.5vw, 15.75rem);
-    max-width: min(100%, 660px);
-    transform: translate(-50%, -50%);
-  }
-
-  .hero-birthday-body {
-    font-size: clamp(0.58rem, 2.45vw, 0.7rem);
-    line-height: 1.48;
-  }
-
-  .hero-birthday-divider {
-    gap: 0.3rem;
-    margin: 0.4rem auto;
-  }
-
-  .hero-birthday-divider__line {
-    width: clamp(1.35rem, 7vw, 2rem);
-  }
-
-  .hero-birthday-signoff {
-    margin-top: 0.45rem;
-    font-size: clamp(0.58rem, 2.45vw, 0.7rem);
-  }
-
-  .hero-birthday-signature-wrap {
-    height: clamp(1.55rem, 4.5vw, 2rem);
-  }
-
-  .hero-birthday-signature {
-    height: clamp(3.85rem, 15vw, 5.1rem);
-    max-width: min(100%, 200px);
-  }
 }
 
 @media (min-width: 768px) {
   .hero-200-number {
     font-family: var(--font-title), "Playfair Display", Georgia, serif;
     font-weight: 600;
+  }
+}
+
+/* Carrossel de polaroids deslizando (entrada em destaque, ex.: 2026-09-06) */
+.polaroid-marquee {
+  position: relative;
+  width: 100vw;
+  max-width: 100vw;
+  margin-left: calc(50% - 50vw);
+  overflow: hidden;
+  padding-block: clamp(1.25rem, 3vw, 2rem);
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #000 8%,
+    #000 92%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #000 8%,
+    #000 92%,
+    transparent 100%
+  );
+}
+
+.polaroid-marquee__track {
+  display: flex;
+  align-items: center;
+  gap: clamp(1.25rem, 3vw, 2.25rem);
+  width: max-content;
+  padding-inline: clamp(1rem, 4vw, 2.5rem);
+}
+
+.polaroid-marquee__track--animated {
+  animation: polaroid-marquee-scroll 34s linear infinite;
+}
+
+/* Poucas fotos (≤3): sem loop nem fade nas bordas, só centralizadas e juntas. */
+.polaroid-marquee--static {
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
+.polaroid-marquee--static .polaroid-marquee__track {
+  width: 100%;
+  justify-content: center;
+  gap: clamp(0.75rem, 2.2vw, 1.5rem);
+}
+
+/* "Estáticas" é pra valer: sem o balanço contínuo do item (que soma ao tilt
+   base e empurra a foto mais pra fora nos picos da animação — isso que
+   fazia bater/cortar na borda da tela no mobile). */
+.polaroid-marquee--static .polaroid-marquee__item {
+  animation: none;
+  transform: rotate(var(--polaroid-tilt, 0deg));
+}
+
+/* No mobile os polaroids estáticos ficavam grandes/espaçados demais e
+   estouravam a tela — encolhe, aproxima e dá uma margem de segurança nas
+   bordas (a rotação ainda empurra as pontas um pouco pra fora da caixa). */
+@media (max-width: 639px) {
+  .polaroid-marquee--static .polaroid-marquee__track {
+    gap: 0.4rem;
+    padding-inline: 1.25rem;
+  }
+
+  .polaroid-marquee--static .polaroid.polaroid {
+    width: clamp(68px, 22vw, 88px);
+  }
+}
+
+.polaroid-marquee__track--animated:hover {
+  animation-play-state: paused;
+}
+
+/* :where() zera a especificidade do reset de <button> pra não brigar com o
+   padding/fundo branco de `.polaroid` (mesma especificidade, uma sobrescreveria
+   a outra por ordem no arquivo). */
+:where(.polaroid-marquee__item) {
+  border: 0;
+  font: inherit;
+  text-align: inherit;
+  appearance: none;
+}
+
+.polaroid-marquee__item {
+  flex: 0 0 auto;
+  cursor: zoom-in;
+  transform-origin: top center;
+  animation: polaroid-marquee-sway 9s ease-in-out infinite;
+  transition: transform 0.25s ease;
+}
+
+/* Duração ligeiramente diferente por posição, pra não balançarem todas em
+   sincronia (mesmo truque do varal do hero). */
+.polaroid-marquee__item:nth-child(3n + 1) {
+  animation-duration: 8s;
+}
+.polaroid-marquee__item:nth-child(3n + 2) {
+  animation-duration: 10.5s;
+}
+.polaroid-marquee__item:nth-child(3n + 3) {
+  animation-duration: 9.4s;
+}
+
+.polaroid-marquee__item:hover {
+  animation-play-state: paused;
+  transform: rotate(var(--polaroid-tilt, 0deg)) translateY(-6px) scale(1.03);
+}
+
+@keyframes polaroid-marquee-sway {
+  0%,
+  100% {
+    transform: rotate(calc(var(--polaroid-tilt, 0deg) - 2.5deg));
+  }
+  50% {
+    transform: rotate(calc(var(--polaroid-tilt, 0deg) + 2.5deg));
+  }
+}
+
+.polaroid-marquee .polaroid {
+  width: clamp(132px, 20vw, 192px);
+}
+
+@keyframes polaroid-marquee-scroll {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .polaroid-marquee__track--animated,
+  .polaroid-marquee__item {
+    animation: none;
+  }
+}
+
+/* Polaroid da tela de senha (gate de acesso) — mesma moldura/fita, com
+   legenda cursiva "nós" no rodapé em vez do baralho/carrossel. Padding e fita
+   próprios (em vez de herdar os da versão compacta do breakpoint mobile
+   acima), porque aqui sempre sobra espaço pra legenda embaixo. */
+.gate-polaroid {
+  width: clamp(120px, 22vw, 196px);
+  padding: clamp(7px, 1.8vw, 11px) clamp(7px, 1.8vw, 11px) clamp(28px, 7vw, 44px);
+}
+
+.gate-polaroid .polaroid__tape {
+  top: clamp(-12px, -3vw, -14px);
+  width: clamp(64px, 16vw, 96px);
+  height: clamp(19px, 4vw, 27px);
+}
+
+.gate-polaroid__caption {
+  position: absolute;
+  bottom: clamp(7px, 2vw, 12px);
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: clamp(18px, 4vw, 24px);
+  color: var(--ink-soft);
+}
+
+/* Hero "varal": corda única atravessando a página, com impressões penduradas
+   por um pregador viajando ao longo da curva num loop contínuo, e uma carta
+   de papel com a mensagem de aniversário por baixo. */
+.hero-clothesline {
+  position: relative;
+  width: 100vw;
+  max-width: 100vw;
+  margin-left: calc(50% - 50vw);
+  padding-bottom: clamp(16px, 3vw, 28px);
+}
+
+.hero-clothesline__rope-zone {
+  position: relative;
+  width: 100%;
+  height: clamp(230px, 34vw, 340px);
+  overflow: hidden;
+  /* Isola layout e pintura desse bloco do resto da página, pra as animações
+     daqui não obrigarem o navegador a reavaliar a página inteira a cada
+     frame — o que engasga em telas/CPUs mais fracas. */
+  contain: layout paint;
+}
+
+/* Só a corda balança com o vento; as fotos ficam fora daqui (ver .curve).
+   O balanço é bem sutil, então na prática corda e fotos continuam
+   parecendo presas juntas. */
+.hero-clothesline__windgroup {
+  position: absolute;
+  inset: 0;
+  transform-origin: top center;
+  animation: hero-clothesline-wind 9s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* Régua de referência compartilhada pela corda e pelas fotos que "andam"
+   nela — precisa ter a MESMA altura da corda (não da faixa toda, que é bem
+   mais alta só pra caber as fotos penduradas por baixo), senão o "top: X%"
+   da animação de viagem não bate com o ponto real da curva. As fotos
+   penduradas continuam visíveis abaixo dela (overflow visível aqui; quem
+   corta nas bordas é a faixa externa). */
+.hero-clothesline__curve {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: clamp(92px, 12.5vw, 120px);
+}
+
+.hero-clothesline__rope {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.hero-clothesline__anchor {
+  position: absolute;
+  top: 26.5%;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--gold);
+}
+
+.hero-clothesline__anchor--left {
+  left: 0;
+}
+
+.hero-clothesline__anchor--right {
+  right: 0;
+}
+
+/* Carrinho invisível do tamanho da régua da curva: é ele que percorre a
+   corda, animando só transform (composição na GPU, sem remedir layout).
+   Como ele tem exatamente o tamanho do contêiner, as porcentagens do
+   translate equivalem às do left/top que existiam antes. */
+.hero-clothesline__traveler {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  animation-name: hero-clothesline-travel;
+  animation-duration: 48s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
+.hero-clothesline__print {
+  position: absolute;
+  top: 0;
+  left: 0;
+  /* Largura propositalmente bem menor que o espaçamento entre fotos na
+     animação de viagem (~24% da largura do contêiner) — senão elas se
+     sobrepõem, principalmente no celular onde há menos espaço horizontal.
+     Todas as medidas do prendedor e da moldura saem dessa largura, pra a
+     proporção do polaroid ser idêntica no celular e no desktop (com
+     medidas em px/vw independentes, no celular a borda branca ficava
+     enorme em relação à foto e o conjunto parecia achatado). */
+  --card-w: clamp(74px, 18vw, 155px);
+  width: var(--card-w);
+  /* O carrinho para no ponto exato da curva, mas ele posiciona a BORDA
+     ESQUERDA da carta — e quem tem que encostar na corda é o arame do
+     prendedor, que fica no centro e um pouco abaixo do topo. Sem estes
+     deslocamentos o prendedor cai meia-carta adiante do ponto da curva e,
+     como a corda é inclinada, sobra até ~12px de folga (a foto parece
+     solta da cordinha, principalmente na metade direita). */
+  margin-left: calc(var(--card-w) * -0.5);
+  margin-top: calc(var(--card-w) * -0.0454);
+  pointer-events: auto;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: zoom-in;
+  transform-origin: top center;
+  animation-name: hero-clothesline-swing;
+  animation-duration: 48s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-delay: inherit;
+  will-change: transform;
+}
+
+.hero-clothesline__peg {
+  position: absolute;
+  top: calc(var(--card-w) * -0.045);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  width: calc(var(--card-w) * 0.084);
+  height: calc(var(--card-w) * 0.226);
+  background: linear-gradient(
+    90deg,
+    #e8d3b1 0%,
+    #dcc199 46%,
+    #c9a97c 54%,
+    #e5cea9 100%
+  );
+  border-radius: 2px 2px 3px 3px;
+  box-shadow:
+    0 1px 3px rgba(28, 28, 26, 0.26),
+    inset 0 0 0 0.5px rgba(122, 96, 60, 0.32);
+}
+
+.hero-clothesline__peg::before {
+  content: "";
+  position: absolute;
+  top: 40%;
+  left: -2px;
+  right: -2px;
+  height: 1.5px;
+  background: linear-gradient(90deg, #8f897e, #d2ccc0, #8f897e);
+  border-radius: 1px;
+}
+
+.hero-clothesline__peg::after {
+  content: "";
+  position: absolute;
+  top: 54%;
+  left: 50%;
+  width: 1px;
+  bottom: 2px;
+  background: rgba(122, 96, 60, 0.32);
+}
+
+.hero-clothesline__frame {
+  display: block;
+  margin-top: calc(var(--card-w) * 0.142);
+  background: #fffefb;
+  padding: calc(var(--card-w) * 0.052) calc(var(--card-w) * 0.052)
+    calc(var(--card-w) * 0.194);
+  border: 1px solid #ece9e2;
+  box-shadow: 0 12px 24px rgba(28, 28, 26, 0.14);
+  transform-origin: top center;
+  animation-name: hero-clothesline-hang;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
+.hero-clothesline__media {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: #efece6;
+}
+
+.hero-clothesline__media img,
+.hero-clothesline__media video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+@keyframes hero-clothesline-wind {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  40% {
+    transform: translateY(2px) rotate(0.2deg);
+  }
+  75% {
+    transform: translateY(-1.5px) rotate(-0.15deg);
+  }
+}
+
+@keyframes hero-clothesline-hang {
+  0%,
+  100% {
+    transform: rotate(-5deg);
+  }
+  50% {
+    transform: rotate(5deg);
+  }
+}
+
+/* left(t) e top(t) vêm da MESMA curva/parâmetro t da corda (bezier
+   quadrática M -20 40 Q 500 132 1020 40, em % do viewBox 1000×140):
+     X(t)% = -2 + 104·t          (é linear pra essa curva)
+     Y(t)% = (40 + 184·t·(1-t)) / 140 · 100
+     rotação(t) = 11·(1-2t)      (inclinação da tangente)
+   t vai de -0.221 a 1.183 (em vez de só 0..1) pra as fotos entrarem e
+   saírem por fora da tela — a parábola continua suave nesse trecho
+   estendido, só sobe um pouco além dos pontos de ancoragem da corda.
+
+   ANTES, left ia numa escala linear própria (-25%..121%) sem relação com o
+   t usado pelo top — ou seja, pra boa parte do percurso a altura não
+   correspondia à posição horizontal real da curva, e a foto parecia
+   "fugir" da cordinha. Agora os dois números de cada parada vêm do mesmo
+   t, então a foto sempre está exatamente em cima da curva. */
+@keyframes hero-clothesline-travel {
+  0% {
+    transform: translate(-25%, -6.9%);
+  }
+  10% {
+    transform: translate(-10.4%, 17.1%);
+  }
+  20% {
+    transform: translate(4.2%, 36%);
+  }
+  30% {
+    transform: translate(18.8%, 49.6%);
+  }
+  40% {
+    transform: translate(33.4%, 58.1%);
+  }
+  50% {
+    transform: translate(48%, 61.4%);
+  }
+  60% {
+    transform: translate(62.6%, 59.5%);
+  }
+  70% {
+    transform: translate(77.2%, 52.4%);
+  }
+  80% {
+    transform: translate(91.8%, 40.2%);
+  }
+  90% {
+    transform: translate(106.4%, 22.7%);
+  }
+  100% {
+    transform: translate(121%, 0.1%);
+  }
+}
+
+/* Inclinação da tangente da curva, no mesmo t da viagem — fica no polaroid
+   (o carrinho só translada), com a mesma duração/atraso pra os dois
+   andarem juntos. */
+@keyframes hero-clothesline-swing {
+  0% {
+    transform: rotate(15.9deg);
+  }
+  10% {
+    transform: rotate(12.8deg);
+  }
+  20% {
+    transform: rotate(9.7deg);
+  }
+  30% {
+    transform: rotate(6.6deg);
+  }
+  40% {
+    transform: rotate(3.5deg);
+  }
+  50% {
+    transform: rotate(0.4deg);
+  }
+  60% {
+    transform: rotate(-2.7deg);
+  }
+  70% {
+    transform: rotate(-5.8deg);
+  }
+  80% {
+    transform: rotate(-8.9deg);
+  }
+  90% {
+    transform: rotate(-11.9deg);
+  }
+  100% {
+    transform: rotate(-15deg);
+  }
+}
+
+.hero-clothesline__letter {
+  position: relative;
+  width: min(94%, 560px);
+  margin: clamp(6px, 1vw, 14px) auto 0;
+  padding: clamp(26px, 4vw, 40px) clamp(22px, 5vw, 54px) clamp(24px, 3.4vw, 34px);
+  text-align: center;
+  transform: rotate(-0.5deg);
+  box-sizing: border-box;
+}
+
+.hero-clothesline__letter-bg {
+  position: absolute;
+  inset: 0;
+  background: #fffdf8;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(28, 28, 26, 0.016) 0 1px, rgba(28, 28, 26, 0) 1px 3px),
+    repeating-linear-gradient(90deg, rgba(28, 28, 26, 0.012) 0 1px, rgba(28, 28, 26, 0) 1px 4px);
+  filter:
+    url(#hero-clothesline-deckle)
+    drop-shadow(0 1px 1px rgba(28, 28, 26, 0.09))
+    drop-shadow(0 20px 40px rgba(28, 28, 26, 0.13));
+}
+
+.hero-clothesline__letter-sheen {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    inset 0 -16px 24px rgba(28, 28, 26, 0.04),
+    inset 0 0 60px rgba(200, 169, 106, 0.05);
+}
+
+.hero-clothesline__letter-tape {
+  position: absolute;
+  top: -13px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-1.5deg);
+  width: clamp(78px, 10vw, 104px);
+  height: clamp(21px, 2.6vw, 28px);
+  background: rgba(200, 169, 106, 0.26);
+  box-shadow: 0 1px 2px rgba(28, 28, 26, 0.08);
+  border-left: 1px solid rgba(255, 255, 255, 0.55);
+  border-right: 1px solid rgba(255, 255, 255, 0.55);
+}
+
+.hero-clothesline__letter-content {
+  position: relative;
+}
+
+.hero-clothesline__letter-intro {
+  margin: 0;
+  font-family: var(--font-hero-body), Georgia, serif;
+  font-size: clamp(14px, 2.2vw, 19px);
+  line-height: 1.8;
+  color: #3f3f3a;
+  text-wrap: pretty;
+}
+
+.hero-clothesline__letter-intro + .hero-clothesline__letter-intro {
+  margin-top: clamp(12px, 1.8vw, 16px);
+}
+
+.hero-clothesline__letter-highlight {
+  color: #8a7a58;
+}
+
+.hero-clothesline__letter-content > .hero-clothesline__letter-divider {
+  margin: clamp(20px, 2.8vw, 26px) auto clamp(18px, 2.6vw, 22px);
+}
+
+.hero-clothesline__letter-title {
+  margin: 0;
+  font-family: var(--font-hero-title), Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(26px, 5.6vw, 40px);
+  line-height: 1.14;
+  color: var(--ink);
+}
+
+.hero-clothesline__letter-kicker {
+  margin: clamp(10px, 1.6vw, 14px) 0 0;
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-weight: 300;
+  font-size: clamp(10px, 1.3vw, 12px);
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.hero-clothesline__letter-body {
+  margin: clamp(16px, 2.4vw, 22px) 0 0;
+  font-family: var(--font-hero-body), Georgia, serif;
+  font-style: italic;
+  font-size: clamp(14px, 2.2vw, 18px);
+  line-height: 1.75;
+  color: #4f4f49;
+  text-wrap: pretty;
+}
+
+.hero-clothesline__letter-divider {
+  display: block;
+  width: 46px;
+  height: 1px;
+  background: #e0d6bf;
+  margin: clamp(16px, 2.4vw, 24px) auto 0;
+}
+
+.hero-clothesline__letter-sign {
+  margin: clamp(16px, 2.2vw, 24px) 0 0;
+  font-family: var(--font-hero-sign), cursive;
+  font-weight: 500;
+  font-size: clamp(18px, 2.4vw, 27px);
+  color: #8a7a58;
+}
+
+.hero-clothesline__scroll-hint {
+  margin: clamp(22px, 3.4vw, 30px) auto 0;
+  text-align: center;
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  animation: hero-clothesline-breathe 3.2s ease-in-out infinite;
+}
+
+@keyframes hero-clothesline-breathe {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-clothesline__windgroup,
+  .hero-clothesline__traveler,
+  .hero-clothesline__print,
+  .hero-clothesline__frame,
+  .hero-clothesline__scroll-hint {
+    animation: none;
   }
 }

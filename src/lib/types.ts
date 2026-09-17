@@ -26,6 +26,10 @@ export type Entry = {
   foto_direita?: boolean;
   /** Foto aparece no hero Polaroid; não repete na coluna da entrada. */
   polaroid_hero?: boolean;
+  /** Inclui a foto no varal do hero (HeroClothesline) — não afeta o layout
+   * da própria entrada nem os outros destaques (foto_importante/polaroid_hero),
+   * é só a lista curada de fotos que aparecem passeando na cordinha. */
+  varal_hero?: boolean;
   /** Mídia do Polaroid do hero quando diferente da foto da entrada. */
   polaroid_foto?: string;
   /** Foto começa borrada até o usuário tocar em “Avançar”. */
@@ -34,10 +38,16 @@ export type Entry = {
   foto_object_position?: string;
   /** Zoom leve com object-cover (ex.: 1.1 recorta bordas). */
   foto_object_scale?: number;
+  /** Mostra a foto inteira (object-contain), sem recortar — pra fotos com proporção incomum (ex.: print de texto). */
+  foto_sem_corte?: boolean;
+  /** 3+ fotos empilhadas verticalmente (todas visíveis), em vez do baralho padrão. */
+  fotos_pilha_vertical?: boolean;
   /** Fundo imersivo (public/images) ao rolar até esta entrada. */
   fundo_imersivo?: string;
   /** Continua o fundo imersivo da entrada anterior (mesma zona de scroll). */
   fundo_imersivo_grupo?: boolean;
+  /** Layout especial: fotos em polaroid deslizando em carrossel automático, data centralizada acima. */
+  carrossel_polaroid?: boolean;
   created_at: string;
 };
 

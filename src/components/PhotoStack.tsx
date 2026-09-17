@@ -71,14 +71,6 @@ function segmentUrls(urls: string[]): UrlSegment[] {
   return segments;
 }
 
-/** depthFromFront: 0 = carta da frente */
-const DECK_TRANSFORMS = [
-  { rotate: -5, x: 0, y: 0 },
-  { rotate: -2, x: -12, y: 14 },
-  { rotate: 2, x: -22, y: 26 },
-  { rotate: 6, x: -32, y: 38 },
-] as const;
-
 function StackVideo({
   url,
   prominent = false,
@@ -106,7 +98,7 @@ function StackVideo({
       <div className="absolute inset-0 h-full w-full overflow-hidden bg-black">
         <LoopVideoInView
           src={url}
-          className="h-full w-full object-cover object-center"
+          className="entry-photo-kenburns h-full w-full object-cover object-center"
         />
         {openButton}
       </div>
@@ -210,6 +202,9 @@ function StackPhoto({
   objectScale,
   photoOnRight = false,
   tiltMagnitude = 8,
+  noCrop = false,
+  noTilt = false,
+  singlePrint = false,
 }: {
   url: string;
   onOpen: (rect: DOMRect) => void;
@@ -224,6 +219,13 @@ function StackPhoto({
   photoOnRight?: boolean;
   /** Graus base da inclinação 3D (antes da variação por foto). */
   tiltMagnitude?: number;
+  /** Mostra a foto inteira (object-contain), sem forçar o recorte [4/5] — pra proporções incomuns. */
+  noCrop?: boolean;
+  /** Sem inclinação 3D (ex.: foto sozinha centralizada, sem texto ao lado). */
+  noTilt?: boolean;
+  /** Única mídia da entrada: "impressão física" pendurada (fita + balanço
+   * contínuo) em vez da inclinação 3D usada em pares/pilhas. */
+  singlePrint?: boolean;
 }) {
   const [revealed, setRevealed] = useState(!blurReveal);
   const hidden = blurReveal && !revealed;
@@ -262,7 +264,7 @@ function StackPhoto({
             draggable={false}
             loading="lazy"
             decoding="async"
-            className={`no-native-drag block h-full w-full object-cover object-center ${imageBlurClass}`}
+            className={`no-native-drag entry-photo-kenburns block h-full w-full object-cover object-center ${imageBlurClass}`}
             style={frameStyle}
           />
         </button>
@@ -298,6 +300,36 @@ function StackPhoto({
           </button>
           {blurOverlay}
         </div>
+      </EntryPhotoPrintFrame>
+    );
+  }
+
+  if (noCrop) {
+    return (
+      <EntryPhotoPrintFrame
+        className="w-full min-w-0"
+        sway={singlePrint && !noTilt}
+        tiltY={noTilt ? undefined : tiltYForUrl(url, photoOnRight, tiltMagnitude)}
+      >
+        <button
+          type="button"
+          className="entry-photo-gradient flex w-full cursor-zoom-in justify-center overflow-hidden rounded-[4px] border-0 p-0 text-left outline-none disabled:cursor-default"
+          onClick={(e) => {
+            if (!hidden) onOpen(flatOriginRect(e.currentTarget));
+          }}
+          disabled={hidden}
+          aria-label="Ampliar foto"
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={url}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            className={`block h-auto w-full max-h-[70vh] object-contain ${imageBlurClass}`}
+          />
+        </button>
+        {blurOverlay}
       </EntryPhotoPrintFrame>
     );
   }
@@ -338,7 +370,8 @@ function StackPhoto({
   return (
     <EntryPhotoPrintFrame
       className="w-full min-w-0"
-      tiltY={tiltYForUrl(url, photoOnRight, tiltMagnitude)}
+      sway={singlePrint && !noTilt}
+      tiltY={noTilt ? undefined : tiltYForUrl(url, photoOnRight, tiltMagnitude)}
     >
       {photoButton}
     </EntryPhotoPrintFrame>
@@ -355,6 +388,8 @@ function PhotoPairGrid({
   photoObjectPosition,
   photoObjectScale,
   sideBySide = false,
+  noCrop = false,
+  photoOnRight = false,
 }: {
   urls: string[];
   onOpen: (indexInSegment: number, rect: DOMRect) => void;
@@ -366,6 +401,10 @@ function PhotoPairGrid({
   photoObjectScale?: number;
   /** Duas fotos lado a lado (ex.: abaixo do texto). */
   sideBySide?: boolean;
+  /** Mostra as fotos inteiras (object-contain), sem recortar. */
+  noCrop?: boolean;
+  /** Lado da coluna no layout texto+foto (define a direção da inclinação 3D quando empilhadas). */
+  photoOnRight?: boolean;
 }) {
   return (
     <div
@@ -387,7 +426,8 @@ function PhotoPairGrid({
             blurReveal={blurReveal && i === 0}
             objectPosition={photoObjectPosition}
             objectScale={photoObjectScale}
-            photoOnRight={sideBySide && i === urls.length - 1}
+            noCrop={noCrop}
+            photoOnRight={sideBySide ? i === urls.length - 1 : photoOnRight}
             tiltMagnitude={sideBySide ? 3 : 8}
             onOpen={(rect) => onOpen(i, rect)}
           />
@@ -397,6 +437,11 @@ function PhotoPairGrid({
   );
 }
 
+/** Graus de rotação por posição — impressões "jogadas" numa fita, não perfeitamente alinhadas. */
+const DECK_TILTS = [-1.8, 1.6, -1, 2.2, -1.5, 1.8] as const;
+
+/** 3+ fotos (ou foto+vídeo): fita de impressões deslizando sozinha, cada uma
+ * abrindo a galeria em tela cheia no índice certo ao tocar. */
 function PhotoDeck({
   urls,
   onOpen,
@@ -404,64 +449,41 @@ function PhotoDeck({
   urls: string[];
   onOpen: (index: number, rect: DOMRect) => void;
 }) {
-  const count = urls.length;
-  const layerCount = Math.min(4, count);
-
-  const layers = Array.from({ length: layerCount }, (_, depthFromFront) => ({
-    depthFromFront,
-    photoIndex: depthFromFront,
-    url: urls[depthFromFront]!,
-  })).sort((a, b) => b.depthFromFront - a.depthFromFront);
+  const looped = [...urls, ...urls];
 
   return (
-    <button
-      type="button"
-      className="group relative w-full cursor-zoom-in text-left"
-      onClick={(e) => onOpen(0, flatOriginRect(e.currentTarget))}
-      aria-label={`Ver ${count} fotos`}
-    >
-      <div className="relative aspect-[4/5] w-full">
-        <div className="absolute inset-0 pl-6 pb-8 pt-2">
-          {layers.map(({ depthFromFront, url, photoIndex }) => {
-            const t =
-              DECK_TRANSFORMS[depthFromFront] ?? DECK_TRANSFORMS[3]!;
-            const zIndex = 10 + (layerCount - depthFromFront);
-
-            return (
-              <div
-                key={`${url}-${depthFromFront}`}
-                className="absolute inset-0 pl-6 pb-8 pt-2 transition-transform duration-300 ease-out will-change-transform group-hover:translate-y-[-2px]"
-                style={{
-                  zIndex,
-                  transform: `translate(${t.x}px, ${t.y}px) rotate(${t.rotate}deg)`,
-                }}
-              >
-                <div className="entry-photo-print relative h-full w-full overflow-visible">
-                  <div className="entry-photo-print__inner relative h-full w-full">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={url}
-                      alt=""
-                      draggable={false}
-                      loading="lazy"
-                      decoding="async"
-                      className="no-native-drag absolute inset-0 h-full w-full object-cover"
-                    />
-                  </div>
-                </div>
+    <div className="entry-photo-deck">
+      <div className="entry-photo-deck__track">
+        {looped.map((url, i) => {
+          const realIndex = i % urls.length;
+          const isVideo = isVideoUrl(url);
+          const tilt = DECK_TILTS[realIndex % DECK_TILTS.length];
+          return (
+            <button
+              key={`${url}-${i}`}
+              type="button"
+              className="entry-photo-deck__item entry-photo-print entry-photo-print--sway"
+              style={{ "--photo-sway-rotate": `${tilt}deg` } as CSSProperties}
+              onClick={(e) => onOpen(realIndex, flatOriginRect(e.currentTarget))}
+              aria-label={`Ver ${isVideo ? "vídeo" : "foto"} ${realIndex + 1} de ${urls.length}`}
+            >
+              <span className="entry-photo-print__tape" aria-hidden />
+              <div className="entry-photo-print__inner entry-photo-deck__media">
+                {isVideo ? (
+                  <>
+                    <video src={url} muted loop autoPlay playsInline />
+                    <span className="entry-photo-deck__play" aria-hidden />
+                  </>
+                ) : (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={url} alt="" loading="lazy" decoding="async" />
+                )}
               </div>
-            );
-          })}
-        </div>
-
-        <span
-          className="absolute right-1 top-1 z-[50] flex h-9 min-w-9 items-center justify-center rounded-full bg-white px-2 font-body text-[15px] font-medium tabular-nums text-ink shadow-[0_4px_14px_rgba(28,28,26,0.15)] ring-1 ring-black/[0.04]"
-          aria-hidden
-        >
-          {count}
-        </span>
+            </button>
+          );
+        })}
       </div>
-    </button>
+    </div>
   );
 }
 
@@ -477,6 +499,9 @@ export function PhotoStack({
   photoObjectScale,
   pairSideBySide = false,
   photoOnRight = false,
+  noCrop = false,
+  stackVertical = false,
+  noTilt = false,
 }: {
   urls: string[];
   prominent?: boolean;
@@ -492,6 +517,12 @@ export function PhotoStack({
   pairSideBySide?: boolean;
   /** Lado da foto no layout texto+foto (define a direção da inclinação 3D). */
   photoOnRight?: boolean;
+  /** Mostra a foto inteira (object-contain), sem recortar — pra proporções incomuns (ex.: print de texto). */
+  noCrop?: boolean;
+  /** 3+ fotos empilhadas verticalmente (todas visíveis), em vez do baralho padrão. */
+  stackVertical?: boolean;
+  /** Sem inclinação 3D (ex.: foto sozinha centralizada, sem texto ao lado). */
+  noTilt?: boolean;
 }) {
   const [carouselIndex, setCarouselIndex] = useState<number | null>(null);
   const [originRect, setOriginRect] = useState<DOMRect | null>(null);
@@ -602,6 +633,22 @@ export function PhotoStack({
           }
 
           if (segment.urls.length >= 3) {
+            if (stackVertical) {
+              return (
+                <div key={`stack-${segIndex}-${segment.urls[0]}`} className="w-full min-w-0 space-y-4">
+                  {segment.urls.map((url, i) => (
+                    <StackPhoto
+                      key={url}
+                      url={url}
+                      noCrop={noCrop}
+                      photoOnRight={photoOnRight}
+                      noTilt
+                      onOpen={(rect) => openDeck(segment.urls, i, rect)}
+                    />
+                  ))}
+                </div>
+              );
+            }
             return (
               <PhotoDeck
                 key={`deck-${segIndex}-${segment.urls[0]}`}
@@ -623,6 +670,8 @@ export function PhotoStack({
                 photoObjectPosition={photoObjectPosition}
                 photoObjectScale={photoObjectScale}
                 sideBySide={pairSideBySide}
+                noCrop={noCrop}
+                photoOnRight={photoOnRight}
                 onOpen={(i, rect) => openDeck(segment.urls, i, rect)}
               />
             );
@@ -641,6 +690,9 @@ export function PhotoStack({
               objectPosition={photoObjectPosition}
               objectScale={photoObjectScale}
               photoOnRight={photoOnRight}
+              noCrop={noCrop}
+              noTilt={noTilt}
+              singlePrint={!prominent}
               onOpen={(rect) => openAtGlobalIndex(single, rect)}
             />
           );

@@ -6,6 +6,8 @@
       "WhatsApp Image 2026-07-25 at 15.19.37.jpeg"
     ],
     "texto": "Você me mandou essa foto, eu fiquei todo feliz por aparecer na capa ensinando as crianças",
+    "polaroid_foto": "WhatsApp Image 2026-07-25 at 15.19.37.jpeg",
+    "varal_hero": true,
     "is_data_especial": false
   },
   {
@@ -30,7 +32,7 @@
   {
     "data": "2026-02-01",
     "foto": "WhatsApp Image 2026-08-29 at 20.15.15.jpeg",
-    "foto_object_position": "27% 50%",
+    "foto_sem_corte": true,
     "texto": "Você começou a me seguir no Instagram",
     "is_data_especial": false
   },
@@ -39,6 +41,7 @@
     "foto": "compromisso-pascom-2.png",
     "texto": "Esse foi o grande dia",
     "foto_importante": true,
+    "varal_hero": true,
     "is_data_especial": false
   },
   {
@@ -85,7 +88,8 @@
       "WhatsApp Image 2026-07-25 at 16.09.29.jpeg"
     ],
     "texto": "SHALOM",
-    "is_data_especial": false
+    "is_data_especial": false,
+    "carrossel_polaroid": true
   },
   {
     "data": "2026-02-24",
@@ -97,6 +101,7 @@
     "data": "2026-05-01",
     "foto": "WhatsApp Image 2026-07-25 at 16.14.58.jpeg",
     "texto": "Eu sei que não gosta da foto, mas você estava comigo e continua sendo maravilhosa",
+    "varal_hero": true,
     "is_data_especial": false
   },
   {
@@ -127,7 +132,8 @@
     ],
     "texto": "Dia dos namorados, mandei mensagem para o universo todo atrás de lírios",
     "fundo_imersivo": "fundo-lirios-namorados.png",
-    "is_data_especial": false
+    "is_data_especial": false,
+    "carrossel_polaroid": true
   },
   {
     "data": "2026-06-12",
@@ -136,6 +142,7 @@
     "foto_object_position": "50% 42%",
     "texto": "E deu certo",
     "foto_importante": true,
+    "varal_hero": true,
     "fundo_imersivo_grupo": true,
     "is_data_especial": false
   },
@@ -161,6 +168,7 @@
     "data": "2026-07-23",
     "foto": "WhatsApp Image 2026-07-25 at 16.22.14.jpeg",
     "texto": "Você me deu essa fotinha kkk",
+    "varal_hero": true,
     "is_data_especial": false
   },
   {
@@ -168,6 +176,7 @@
     "foto": "WhatsApp Image 2026-07-25 at 16.26.03.jpeg",
     "texto": "Tiramos a nossa {{primeira foto}}",
     "foto_importante": true,
+    "varal_hero": true,
     "is_data_especial": false
   },
   {
@@ -203,7 +212,8 @@
       "WhatsApp Image 2026-07-25 at 19.37.44.jpeg"
     ],
     "texto": "Um dos melhores dias da minha vida. Nunca tive essa sensação. Esse dia eu fui muito feliz. Foi tudo muito novo",
-    "is_data_especial": false
+    "is_data_especial": false,
+    "carrossel_polaroid": true
   },
   {
     "data": "2026-04-04",
@@ -253,9 +263,7 @@
   },
   {
     "data": "2026-08-13",
-    "foto": "WhatsApp Video 2026-08-29 at 15.52.42.mp4",
     "texto": "Entrei no meu primeiro emprego na \"minha área\"",
-    "foto_importante": true,
     "is_data_especial": false
   },
   {
@@ -268,6 +276,7 @@
     "data": "2026-08-23",
     "foto": "WhatsApp Image 2026-08-29 at 15.55.56.jpeg",
     "texto": "Um dia antes do meu serviço você foi me ver, nunca vou esquecer desse dia!",
+    "varal_hero": true,
     "is_data_especial": false
   },
   {
@@ -289,6 +298,76 @@
       "WhatsApp Image 2026-08-29 at 15.59.43.jpeg"
     ],
     "texto": "Você tá andando a caminho do seu sonho, não tenho palavras pra descrever quão desejável isso é pra mim, te ver crescer!!!",
+    "is_data_especial": false
+  },
+  {
+    "data": "2026-08-30",
+    "data_fim": "2026-08-31",
+    "foto": "WhatsApp Image 2026-09-02 at 10.22.34.jpeg",
+    "texto": "Você me disse que estavam planejando viajar pra São Paulo no final do ano",
+    "texto_complemento": "Peguei o serviço e a madrugada muito mal nunca chorei assim\nMinha decisão não foi por falta de amor, pelo contrário eu quis que vc crescesse\nRezei tanto pra Deus não fazer isso cmg.",
+    "is_data_especial": false
+  },
+  {
+    "data": "2026-09-04",
+    "data_fim": "2026-09-05",
+    "fotos": [
+      "WhatsApp Image 2026-09-06 at 18.15.20.jpeg",
+      "WhatsApp Image 2026-09-05 at 08.02.33.jpeg"
+    ],
+    "foto_sem_corte": true,
+    "fotos_pilha_vertical": true,
+    "texto": "Foi um dos dias mais importantes para minha vida e relacionamento, foi o dia que eu ouvi oq não queria mas entendi depois 2 frases que você disse",
+    "texto_complemento": "Essa foi a mensagem mais difícil de aceitar, eu tava certo quando falei \"se eles falaram, vocês estão planejando\"",
+    "is_data_especial": false
+  },
+  {
+    "data": "2026-09-05",
+    "fotos": [
+      "WhatsApp Image 2026-09-06 at 20.45.42.jpeg",
+      "memoria-add-1788738236033.jpeg",
+      "WhatsApp Image 2026-09-06 at 20.48.19.jpeg"
+    ],
+    "fotos_pilha_vertical": true,
+    "foto_sem_corte": true,
+    "texto": "Eu não via como ida e volta via como apenas ida, não fazia sentido te tirar da sua família, eu realmente não enxergava saída e não queria sofrer então tentai nos afastar pela segunda vez\n\nEntão você me falou que sua disse que seria para sua família cuidar de você e para sua segurança e crescimento\n\nE você abriu meus olhos falando sobre nossas vidas juntos e como podemos superar juntos\n\n“Veja isso como motivação, nós vamos se ajudando”\n\n“Vamos crescer juntos”\n\n“Olhe isso como um início e não um fim”\n\nEntre várias outras frases fizeram enxergar e visualizar de outra forma, eu percebi que você tava se esforçando pra não acabar e isso girou a chave que existe um mundo nessa ida mas é possível conseguirmos construir uma vida juntos para viver nosso sonho.",
+    "is_data_especial": false
+  },
+  {
+    "data": "2026-08-25",
+    "texto": "",
+    "is_data_especial": false,
+    "foto": "memoria-add-1788740340175.jpeg",
+    "foto_sem_corte": true
+  },
+  {
+    "data": "2026-08-27",
+    "texto": "",
+    "is_data_especial": false,
+    "foto": "memoria-add-1788741168964.jpeg",
+    "foto_sem_corte": true
+  },
+  {
+    "data": "2026-09-07",
+    "texto": "Você foi me ver no desfile, não me achou, mas foi!!! e se perdeu!!!! Kkkkkkkkk",
+    "is_data_especial": false,
+    "foto": "memoria-add-1789275105802.mp4"
+  },
+  {
+    "data": "2026-09-06",
+    "fotos": [
+      "WhatsApp Image 2026-09-13 at 01.44.44.jpeg",
+      "WhatsApp Image 2026-09-13 at 01.44.44 (1).jpeg",
+      "WhatsApp Image 2026-09-13 at 01.44.45.jpeg",
+      "WhatsApp Image 2026-09-13 at 01.44.45 (1).jpeg",
+      "WhatsApp Image 2026-09-13 at 01.44.45 (2).jpeg",
+      "WhatsApp Image 2026-09-13 at 01.44.45 (3).jpeg",
+      "WhatsApp Image 2026-09-13 at 01.44.46.jpeg",
+      "image-1789275505226.png",
+      "WhatsApp Image 2026-09-13 at 01.45.36.jpeg"
+    ],
+    "texto": "Comecei a fazer oq eu queria para te dar de presente, fiz uns modelos e empresa fez como eu queria, coloquei um veiculo que você falou pra mim quando disse que iria.",
+    "carrossel_polaroid": true,
     "is_data_especial": false
   }
 ]

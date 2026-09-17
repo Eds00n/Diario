@@ -8,6 +8,14 @@ import {
 } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
+/** Data em que começou o namoro — usada no contador de "dias juntos" do hero. */
+const RELATIONSHIP_START = "2026-02-02";
+
+/** Dias desde `RELATIONSHIP_START` até hoje (contagem de calendário, inclusiva do dia 0). */
+export function daysTogether(now = new Date()): number {
+  return differenceInCalendarDays(startOfDay(now), parseISO(RELATIONSHIP_START));
+}
+
 export function formatMonthYear(dateStr: string): string {
   return format(parseISO(dateStr), "MMMM yyyy", { locale: ptBR });
 }

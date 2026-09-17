@@ -2,6 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { GateCardShell } from "@/components/GateCardShell";
 import {
   setClientAuthenticated,
   verifyClientPassword,
@@ -32,32 +33,48 @@ export function SiteLoginFormClient() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="mt-10 text-left">
-      <label
-        htmlFor="senha"
-        className="mb-2 block text-[13px] font-medium uppercase tracking-[0.12em] text-gold"
-      >
-        senha
-      </label>
-      <input
-        id="senha"
-        name="senha"
-        type="password"
-        autoComplete="current-password"
-        required
-        className="w-full border border-hairline bg-paper/80 px-4 py-3 font-body text-[15px] text-ink outline-none ring-0 focus:border-gold/60"
-      />
-      {showError ? (
-        <p className="mt-3 text-[13px] text-ink-soft" role="alert">
-          Senha incorreta.
-        </p>
-      ) : null}
-      <button
-        type="submit"
-        className="mt-6 w-full bg-ink py-3 font-body text-[13px] font-medium uppercase tracking-[0.14em] text-paper transition-colors hover:bg-ink/90"
-      >
-        Entrar
-      </button>
-    </form>
+    <GateCardShell>
+      <form onSubmit={handleSubmit} className="mt-5 flex w-full flex-col gap-2.5 md:mt-8">
+        <label
+          htmlFor="senha"
+          className="text-left text-[10px] font-medium uppercase tracking-[0.22em] text-gold"
+        >
+          senha
+        </label>
+        <input
+          id="senha"
+          name="senha"
+          type="password"
+          autoComplete="current-password"
+          required
+          placeholder="a nossa palavra"
+          onChange={() => setShowError(false)}
+          className={`h-[52px] w-full rounded-[3px] border bg-paper px-4 font-body text-[15px] text-ink outline-none transition-[border-color,box-shadow] focus:shadow-[0_0_0_3px_rgba(200,169,106,0.16)] md:h-[54px] md:px-[18px] md:text-base ${
+            showError
+              ? "border-gold shadow-[0_0_0_3px_rgba(200,169,106,0.16)]"
+              : "border-hairline focus:border-gold/60"
+          }`}
+        />
+        {showError ? (
+          <div className="flex items-start gap-2 pl-0.5 text-left" role="alert">
+            <span className="text-[13px] leading-[1.35] text-gold" aria-hidden>
+              ♡
+            </span>
+            <span className="font-display text-[16px] italic leading-[1.35] text-ink-soft md:text-[17px]">
+              Não foi essa palavra. Tenta de novo —{" "}
+              <span className="font-script text-[19px] not-italic text-gold md:text-[21px]">
+                vai da certo
+              </span>
+            </span>
+          </div>
+        ) : null}
+        <button
+          type="submit"
+          className="mt-1 h-[52px] w-full rounded-[3px] bg-ink font-body text-[12px] font-medium uppercase tracking-[0.24em] text-paper transition-colors hover:bg-[#2e2e2a] md:h-[54px]"
+        >
+          Entrar
+        </button>
+      </form>
+    </GateCardShell>
   );
 }

@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { useMemo, type ReactNode } from "react";
+import { AddMemoryButton } from "@/components/AddMemoryButton";
 import { EntryCard } from "@/components/EntryCard";
 import { EntryImmersiveZone } from "@/components/EntryImmersiveZone";
 import { LilyField } from "@/components/LilyField";
 import { RevealOnMount } from "@/components/RevealOnMount";
 import { TimelineBackgroundProvider } from "@/components/TimelineBackground";
-import { HeroBirthdayMessage } from "@/components/HeroBirthdayMessage";
-import { HeroPolaroidStack } from "@/components/HeroPolaroidStack";
+import { HeroClothesline } from "@/components/HeroClothesline";
 import type { Entry } from "@/lib/types";
 
 function groupEntriesByMonth(entries: Entry[]): Map<string, Entry[]> {
@@ -49,14 +49,9 @@ export function Timeline({
 
       <section className="relative z-[1] flex min-h-[calc(100dvh-clamp(4.5rem,11vh,7rem))] w-full min-w-0 flex-col items-center justify-center overflow-x-clip bg-transparent px-5 py-12 sm:px-6 md:px-10 md:py-16">
         <header className="w-full max-w-[min(100%,980px)] bg-transparent">
-          <div className="hero-200-stage">
-            <HeroPolaroidStack entries={entries} />
-            <div className="hero-200-stage__message">
-              <RevealOnMount delayMs={140}>
-                <HeroBirthdayMessage />
-              </RevealOnMount>
-            </div>
-          </div>
+          <RevealOnMount delayMs={140}>
+            <HeroClothesline entries={entries} />
+          </RevealOnMount>
           {showAdminLink && (
             <RevealOnMount delayMs={400}>
               <Link
@@ -77,6 +72,9 @@ export function Timeline({
       ) : (
         <div className="relative z-[1] -mt-[clamp(4.5rem,11vh,7rem)]">
         <>
+          {dataSource === "local-json" && (
+            <AddMemoryButton defaultDate={entries[0]?.data ?? ""} />
+          )}
           {months.map((monthKey, sectionIndex) => {
             const monthEntries = grouped.get(monthKey)!;
             return (
@@ -153,6 +151,14 @@ export function Timeline({
                       } else {
                         nodes.push(renderCard(entry, index));
                         index += 1;
+                      }
+                      if (dataSource === "local-json") {
+                        nodes.push(
+                          <AddMemoryButton
+                            key={`add-after-${entry.id}`}
+                            defaultDate={entry.data}
+                          />,
+                        );
                       }
                     }
                     return nodes;

@@ -52,7 +52,7 @@ export const LoopVideoInView = forwardRef<
       loop
       muted
       playsInline
-      preload="metadata"
+      preload="auto"
       aria-hidden
       onLoadedMetadata={onLoadedMetadata}
     />

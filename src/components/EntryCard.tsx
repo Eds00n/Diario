@@ -1,6 +1,7 @@
 import { EntryDateIntro } from "@/components/EntryDateIntro";
 import { EntryGoldOrnament } from "@/components/EntryGoldOrnament";
 import { PhotoStack } from "@/components/PhotoStack";
+import { PolaroidCarouselMarquee } from "@/components/PolaroidCarouselMarquee";
 import { formatEntryDate, formatEntryDayMonth } from "@/lib/dates";
 import { getEntryEditorialCopy } from "@/lib/entryEditorial";
 import { EntryTextEmphasis } from "@/components/EntryTextEmphasis";
@@ -36,6 +37,8 @@ function entryPhotoStackProps(entry: Entry, revealedOnLoad = false) {
     blurReveal: revealedOnLoad ? false : entry.foto_revelar_blur,
     photoObjectPosition: entry.foto_object_position,
     photoObjectScale: entry.foto_object_scale,
+    noCrop: entry.foto_sem_corte,
+    stackVertical: entry.fotos_pilha_vertical,
   };
 }
 
@@ -43,10 +46,13 @@ function EntryEditorialText({
   entry,
   compact = false,
   centered = false,
+  hideBody = false,
 }: {
   entry: Entry;
   compact?: boolean;
   centered?: boolean;
+  /** Mostra só o cabeçalho de data (sem título/citação/placeholder "Sem texto"). */
+  hideBody?: boolean;
 }) {
   const { title, caption } = getEntryEditorialCopy(entry);
   const hasTitle = Boolean(title?.trim());
@@ -68,39 +74,41 @@ function EntryEditorialText({
         <EntryGoldOrnament variant="under-date" />
       </div>
 
-      {hasTitle && entry.foto_importante ? (
-        <h2
-          className={`entry-important-title font-title max-w-full break-words whitespace-pre-wrap text-pretty font-normal leading-tight text-stone-900 ${
-            compact
-              ? "text-xl sm:text-3xl md:text-4xl"
-              : "text-xl sm:text-4xl md:text-5xl"
-          }`}
-        >
-          <EntryTextEmphasis text={title!} />
-        </h2>
-      ) : null}
+      {hideBody ? null : (
+        <>
+          {hasTitle && entry.foto_importante ? (
+            <h2
+              className={`entry-important-title font-title max-w-full break-words whitespace-pre-wrap text-pretty font-normal leading-tight text-stone-900 ${
+                compact
+                  ? "text-xl sm:text-3xl md:text-4xl"
+                  : "text-xl sm:text-4xl md:text-5xl"
+              }`}
+            >
+              <EntryTextEmphasis text={title!} />
+            </h2>
+          ) : null}
 
-      {hasCaption ? (
-        <p
-          className={`entry-quote mt-2 whitespace-pre-wrap text-pretty italic text-stone-700 md:mt-6 ${
-            hasTitle
-              ? "entry-quote--with-title"
-              : entry.citacao_apenas
-                ? "entry-quote--solo entry-quote--citacao-apenas"
-                : "entry-quote--solo"
-          }`}
-        >
-          <EntryTextEmphasis text={caption} />
-        </p>
-      ) : !hasTitle ? (
-        <p className="text-lg italic text-stone-600">Sem texto neste dia.</p>
-      ) : null}
+          {hasCaption ? (
+            <p
+              className={`entry-quote mt-2 whitespace-pre-wrap text-pretty italic text-stone-700 md:mt-6 ${
+                hasTitle
+                  ? "entry-quote--with-title"
+                  : entry.citacao_apenas
+                    ? "entry-quote--solo entry-quote--citacao-apenas"
+                    : "entry-quote--solo"
+              }`}
+            >
+              <EntryTextEmphasis text={caption} />
+            </p>
+          ) : !hasTitle ? (
+            <p className="text-lg italic text-stone-600">Sem texto neste dia.</p>
+          ) : null}
 
-      {hasCaption || hasTitle ? (
-        <EntryGoldOrnament
-          className={`mt-2 ${centered ? "mx-auto" : ""}`}
-        />
-      ) : null}
+          {hasCaption || hasTitle ? (
+            <EntryGoldOrnament className={`mt-2 ${centered ? "mx-auto" : ""}`} />
+          ) : null}
+        </>
+      )}
 
       {entry.is_data_especial ? (
         <span className="mt-2 inline-block font-body text-[11px] uppercase tracking-[0.18em] text-stone-500">
@@ -139,13 +147,62 @@ export function EntryCard({
   const photosBelow = entry.fotos_abaixo ?? [];
   const highlight = entry.foto_importante === true;
   const highlightBanner = highlight && entry.foto_importante_banner === true;
-  const twoPhotosBelowText = photos.length === 2 && !highlight;
+  const twoPhotosBelowText =
+    photos.length === 2 && !highlight && !entry.fotos_pilha_vertical;
+  const editorialCopy = getEntryEditorialCopy(entry);
+  const hasText =
+    Boolean(editorialCopy.title?.trim()) || Boolean(editorialCopy.caption.trim());
+  const photoOnlyCentered = !highlight && photos.length > 0 && !hasText;
 
   const introLabel = formatEntryDayMonth(entry.data, entry.data_fim);
 
   const gridOrderClass = reverse
     ? "[&_.entry-photo-col]:order-2 [&_.entry-text-col]:order-1"
     : "";
+
+  if (entry.carrossel_polaroid) {
+    return (
+      <EntryDateIntro dateLabel={introLabel} delayMs={revealDelay} immediate={revealedOnLoad}>
+        <article
+          {...entryArticleDataAttrs(entry)}
+          className={`${diarySectionClass} entry-polaroid-carousel min-h-0 flex-col gap-6 md:gap-10`}
+        >
+          <div className="mx-auto flex w-full max-w-xl flex-col items-center gap-2 text-center md:gap-4">
+            <time
+              className="w-full text-[11px] tracking-[0.1em] text-stone-600 md:text-sm md:tracking-[0.12em]"
+              dateTime={entry.data_fim ? `${entry.data}/${entry.data_fim}` : entry.data}
+            >
+              {formatEntryDate(entry.data, entry.data_fim)}
+            </time>
+            <EntryGoldOrnament variant="under-date" />
+          </div>
+
+          {photos.length > 0 ? <PolaroidCarouselMarquee urls={photos} /> : null}
+
+          {hasText ? (
+            <div className="mx-auto w-full max-w-xl text-center">
+              {editorialCopy.title ? (
+                <h2 className="entry-important-title font-title max-w-full break-words whitespace-pre-wrap text-pretty text-xl font-normal leading-tight text-stone-900 sm:text-3xl md:text-4xl">
+                  <EntryTextEmphasis text={editorialCopy.title} />
+                </h2>
+              ) : null}
+              {editorialCopy.caption.trim() ? (
+                <p
+                  className={`entry-quote mt-2 whitespace-pre-wrap text-pretty italic text-stone-700 md:mt-6 ${
+                    editorialCopy.title ? "entry-quote--with-title" : "entry-quote--solo"
+                  }`}
+                >
+                  <EntryTextEmphasis text={editorialCopy.caption} />
+                </p>
+              ) : null}
+            </div>
+          ) : null}
+
+          <EntryPageMarker pageNumber={pageNumber} />
+        </article>
+      </EntryDateIntro>
+    );
+  }
 
   if (highlightBanner) {
     return (
@@ -223,6 +280,25 @@ export function EntryCard({
     );
   }
 
+  if (photoOnlyCentered) {
+    return (
+      <EntryDateIntro dateLabel={introLabel} delayMs={revealDelay} immediate={revealedOnLoad}>
+        <article
+          {...entryArticleDataAttrs(entry)}
+          className={`${diarySectionClass} min-h-0 flex-col`}
+        >
+          <div className="mx-auto w-full max-w-xl">
+            <EntryEditorialText entry={entry} centered hideBody />
+          </div>
+          <div className="mx-auto mt-2 w-full max-w-[280px] min-w-0 sm:max-w-[320px]">
+            <PhotoStack urls={photos} {...entryPhotoStackProps(entry, revealedOnLoad)} noTilt />
+          </div>
+          <EntryPageMarker pageNumber={pageNumber} />
+        </article>
+      </EntryDateIntro>
+    );
+  }
+
   if (twoPhotosBelowText) {
     return (
       <EntryDateIntro dateLabel={introLabel} delayMs={revealDelay} immediate={revealedOnLoad}>
@@ -256,7 +332,7 @@ export function EntryCard({
     );
   }
 
-  if (entry.polaroid_hero) {
+  if (entry.polaroid_hero || photos.length === 0) {
     return (
       <EntryDateIntro dateLabel={introLabel} delayMs={revealDelay} immediate={revealedOnLoad}>
         <article

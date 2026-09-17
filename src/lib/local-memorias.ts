@@ -50,12 +50,16 @@ type MemoriasJsonItem = {
   foto_importante_banner?: boolean;
   foto_direita?: boolean;
   polaroid_hero?: boolean;
+  varal_hero?: boolean;
   polaroid_foto?: string;
   foto_revelar_blur?: boolean;
   foto_object_position?: string;
   foto_object_scale?: number;
+  foto_sem_corte?: boolean;
+  fotos_pilha_vertical?: boolean;
   fundo_imersivo?: string;
   fundo_imersivo_grupo?: boolean;
+  carrossel_polaroid?: boolean;
 };
 
 function toMediaUrls(files: string[]): string[] {
@@ -111,16 +115,20 @@ export function loadMemoriasFromJson(): Entry[] {
       foto_importante_banner: item.foto_importante_banner ?? false,
       foto_direita: item.foto_direita ?? false,
       polaroid_hero: item.polaroid_hero ?? false,
+      varal_hero: item.varal_hero ?? false,
       polaroid_foto: item.polaroid_foto
         ? mediaUrlForFile(item.polaroid_foto)
         : undefined,
       foto_revelar_blur: item.foto_revelar_blur ?? false,
       foto_object_position: item.foto_object_position,
       foto_object_scale: item.foto_object_scale,
+      foto_sem_corte: item.foto_sem_corte ?? false,
+      fotos_pilha_vertical: item.fotos_pilha_vertical ?? false,
       fundo_imersivo: item.fundo_imersivo
         ? assetPath(`/images/${item.fundo_imersivo.replace(/^\/+/, "")}`)
         : undefined,
       fundo_imersivo_grupo: item.fundo_imersivo_grupo ?? false,
+      carrossel_polaroid: item.carrossel_polaroid ?? false,
       created_at: `${item.data}T12:00:00.000Z`,
     };
   });
