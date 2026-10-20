@@ -1,6 +1,6 @@
 "use server";
 
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import {
   SITE_AUTH_COOKIE,
@@ -18,10 +18,12 @@ export async function submitSiteLogin(formData: FormData) {
   }
 
   const store = await cookies();
+  // Só marca "secure" quando o acesso é por HTTPS — o site roda em http://IP e o cookie sumiria.
+  const proto = (await headers()).get("x-forwarded-proto")?.split(",")[0]?.trim();
   store.set(SITE_AUTH_COOKIE, await siteAuthCookieValue(), {
     httpOnly: true,
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    secure: proto === "https",
     path: "/",
     maxAge: 60 * 60 * 24 * 400,
   });

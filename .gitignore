@@ -42,3 +42,8 @@ next-env.d.ts
 
 .pages-build-backup
 /public/memorias/
+
+# dados do diário (ficam fora do git)
+diario-data/
+.env*.local
+.env.production

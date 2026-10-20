@@ -1,0 +1,221 @@
+/* ── Nosso Diário · diário vivo ─────────────────────────────── */
+
+.dv {
+  --ouro: #c8a96a;
+  --ouro-escuro: #8a6d33;
+  --ouro-linha: #e3d5b5;
+  --ouro-fundo: #fbf6ec;
+  --erro: #9a4a3f;
+  font-family: var(--font-body), "Work Sans", system-ui, sans-serif;
+  color: var(--ink);
+}
+
+.dv-display {
+  font-family: var(--font-display), "Cormorant Garamond", Georgia, serif;
+}
+.dv-titulo {
+  font-family: var(--font-title), "Playfair Display", Georgia, serif;
+  font-weight: 600;
+}
+.dv-assinatura {
+  font-family: var(--font-hero-sign), "Caveat", cursive;
+  font-weight: 500;
+}
+
+.dv-rotulo {
+  font-size: 10.5px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.dv-losango {
+  display: inline-block;
+  flex: none;
+  width: 7px;
+  height: 7px;
+  background: var(--ouro);
+  transform: rotate(45deg);
+}
+
+.dv-divisor {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.dv-divisor::before,
+.dv-divisor::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--ouro-linha);
+}
+
+/* Polaroid */
+.dv-polaroid {
+  background: #fff;
+  box-shadow:
+    0 1px 2px rgba(28, 28, 26, 0.08),
+    0 12px 26px -12px rgba(28, 28, 26, 0.3);
+}
+.dv-foto {
+  position: relative;
+  overflow: hidden;
+  background: #ece8df;
+}
+.dv-foto > img,
+.dv-foto > video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Botão dourado */
+.dv-botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 52px;
+  padding: 0 28px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--ouro);
+  color: var(--ink);
+  font: 500 15px/1 var(--font-body), sans-serif;
+  letter-spacing: 0.02em;
+  box-shadow: 0 6px 16px -8px rgba(138, 109, 51, 0.6);
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
+}
+.dv-botao:hover {
+  background: #c0a060;
+}
+.dv-botao:active {
+  transform: scale(0.98);
+}
+.dv-botao:focus-visible,
+.dv button:focus-visible,
+.dv a:focus-visible {
+  outline: 2px solid var(--ouro);
+  outline-offset: 3px;
+}
+
+.dv-sem-scroll {
+  scrollbar-width: none;
+}
+.dv-sem-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* Entrada suave ao aparecer na tela */
+.dv-revelar {
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.dv-revelar.dv-visivel {
+  opacity: 1;
+  transform: none;
+}
+
+/* Brilho da memória recém-adicionada (some em 2s) */
+.dv-brilho {
+  position: absolute;
+  inset: -14px;
+  border-radius: 12px;
+  background: rgba(200, 169, 106, 0.06);
+  box-shadow:
+    0 0 0 1px rgba(200, 169, 106, 0.6),
+    0 0 36px 6px rgba(200, 169, 106, 0.25);
+  pointer-events: none;
+  animation: dv-brilho-some 2.4s ease-out 0.4s forwards;
+}
+@keyframes dv-brilho-some {
+  to {
+    opacity: 0;
+  }
+}
+
+/* Esqueleto */
+.dv-esqueleto {
+  background: linear-gradient(100deg, #efebe4 30%, #f7f4ef 50%, #efebe4 70%);
+  background-size: 200% 100%;
+  animation: dv-shimmer 1.4s linear infinite;
+}
+@keyframes dv-shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* Modal */
+.dv-fundo-modal {
+  animation: dv-fade 0.25s ease-out;
+}
+.dv-sheet {
+  animation: dv-sobe 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.dv-dialogo {
+  animation: dv-aparece 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes dv-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes dv-sobe {
+  from {
+    transform: translateY(100%);
+  }
+}
+@keyframes dv-aparece {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+}
+
+.dv-campo {
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid var(--hairline);
+  background: transparent;
+  padding: 0 0 10px;
+  outline: none;
+  color: var(--ink);
+  transition: border-color 0.2s ease;
+}
+.dv-campo:focus {
+  border-bottom: 1.5px solid var(--ouro);
+  padding-bottom: 9.5px;
+}
+.dv-campo::placeholder {
+  color: #9a998f;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dv-revelar {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .dv-sheet,
+  .dv-dialogo,
+  .dv-fundo-modal,
+  .dv-esqueleto {
+    animation: none;
+  }
+  .dv-brilho {
+    animation-duration: 0.01s;
+    animation-delay: 2s;
+  }
+}

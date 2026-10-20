@@ -39,6 +39,10 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: projectRoot,
   },
+  experimental: {
+    // O proxy (login) lê o corpo da requisição; sem isso uploads acima de 10 MB (vídeos) chegam cortados.
+    proxyClientMaxBodySize: "210mb",
+  },
   images: {
     unoptimized: isStaticExport ? true : undefined,
     formats: isStaticExport ? undefined : ["image/webp"],

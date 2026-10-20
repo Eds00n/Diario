@@ -2,8 +2,19 @@ import type { RequestCookies } from "next/dist/compiled/@edge-runtime/cookies";
 
 export const SITE_AUTH_COOKIE = "diario_auth";
 
+let avisouSemSenha = false;
+const SENHA_IMPOSSIVEL = `sem-senha-${Math.random().toString(36).slice(2)}${Date.now()}`;
+
 export function getSitePassword(): string {
-  return process.env.SITE_PASSWORD?.trim() || "456987";
+  const senha = process.env.SITE_PASSWORD?.trim();
+  if (senha) return senha;
+  if (process.env.NODE_ENV !== "production") return "456987";
+  // Em produção sem SITE_PASSWORD ninguém entra (antes caía numa senha fixa do repositório público).
+  if (!avisouSemSenha) {
+    avisouSemSenha = true;
+    console.warn("[diario] SITE_PASSWORD não definida — login bloqueado. Defina no .env.production.");
+  }
+  return SENHA_IMPOSSIVEL;
 }
 
 function bytesToBase64Url(bytes: Uint8Array): string {
