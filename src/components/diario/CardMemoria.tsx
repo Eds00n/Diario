@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { MidiaView, VideoLoop, Visualizador } from "./Midia";
 import { Lirio } from "./Lirio";
 import { MESES, partesData, rotuloDataCard, varianteDe } from "@/lib/diario/format";
@@ -14,6 +14,27 @@ type Props = {
   onEditar: (m: MemoriaPublica) => void;
   onExcluir: (m: MemoriaPublica) => void;
 };
+
+/** **negrito** e {{destaque}} herdados da retrospectiva antiga. */
+function destacar(texto: string): ReactNode[] {
+  return texto.split(/(\*\*[^*]+\*\*|\{\{[^}]+\}\})/g).map((parte, i) => {
+    if (parte.startsWith("**") && parte.endsWith("**")) {
+      return (
+        <strong key={i} className="font-semibold">
+          {parte.slice(2, -2)}
+        </strong>
+      );
+    }
+    if (parte.startsWith("{{") && parte.endsWith("}}")) {
+      return (
+        <span key={i} className="font-medium not-italic uppercase tracking-[0.08em] text-[#8a6d33]">
+          {parte.slice(2, -2)}
+        </span>
+      );
+    }
+    return parte;
+  });
+}
 
 const SOMBRA_FORTE = "0 1px 2px rgba(28,28,26,.08), 0 14px 28px -12px rgba(28,28,26,.32)";
 
@@ -34,7 +55,7 @@ function Texto({ texto, limite, citacao }: { texto: string; limite: number; cita
             : undefined
         }
       >
-        {longo && !aberto ? texto.replace(/\n{2,}/g, "\n") : paragrafos.map((p, i) => <p key={i}>{p}</p>)}
+        {longo && !aberto ? destacar(texto.replace(/\n{2,}/g, "\n")) : paragrafos.map((p, i) => <p key={i}>{destacar(p)}</p>)}
       </div>
       {longo && !aberto ? (
         <button
@@ -399,7 +420,7 @@ export function CardMemoria({ memoria, novo, nomeEle, nomeEla, onEditar, onExclu
             {m.texto && (
               <div className="flex max-w-[46ch] flex-col gap-3 whitespace-pre-line text-[15.5px] font-light leading-[1.7] text-[#33332f] [text-wrap:pretty]">
                 {m.texto.split(/\n{2,}/).map((p, i) => (
-                  <p key={i}>{p}</p>
+                  <p key={i}>{destacar(p)}</p>
                 ))}
               </div>
             )}
