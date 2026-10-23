@@ -90,19 +90,38 @@ export function MidiaView({
   if (midia.tipo === "video") {
     return <VideoLoop arquivo={midia.arquivo} className={className} />;
   }
+  return <FotoView arquivo={midia.arquivo} ajuste={ajuste} alt={alt} className={className} />;
+}
+
+/**
+ * Prints de conversa e fotos deitadas não cabem no recorte 4:5 da polaroid:
+ * cortadas, viram um borrão ampliado. Essas aparecem inteiras, sobre o papel.
+ */
+export function ehRecorte(largura: number, altura: number) {
+  if (!largura || !altura) return false;
+  const r = largura / altura;
+  return r > 1.25 || r < 0.45;
+}
+
+function FotoView({ arquivo, ajuste, alt, className }: { arquivo: string; ajuste?: Ajuste; alt: string; className: string }) {
+  const [recorte, setRecorte] = useState(false);
+  const inteira = ajuste?.inteira || recorte;
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src={urlMidia(midia.arquivo)}
+      src={urlMidia(arquivo)}
       alt={alt}
       loading="lazy"
       decoding="async"
       draggable={false}
       className={className}
+      onLoad={(e) => setRecorte(ehRecorte(e.currentTarget.naturalWidth, e.currentTarget.naturalHeight))}
       style={{
-        objectPosition: ajuste?.posicao,
-        objectFit: ajuste?.inteira ? "contain" : undefined,
-        background: ajuste?.inteira ? "#fff" : undefined,
+        objectPosition: inteira ? "center" : ajuste?.posicao,
+        objectFit: inteira ? "contain" : undefined,
+        background: inteira ? "#fff" : undefined,
+        padding: inteira ? "6%" : undefined,
+        boxSizing: "border-box",
       }}
     />
   );
